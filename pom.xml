@@ -1,0 +1,132 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cn.benjamin.loxia2</groupId>
+  <artifactId>parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>Loxia2 Platform Parent</name>
+  <url>http://code.google.com/p/loxia2/</url>
+  
+  <licenses>
+       <license>
+           <name>GNU General Public License, Version 3.0</name>
+           <url>http://www.gnu.org/licenses/gpl.txt</url>
+           <distribution>repo</distribution>
+       </license>
+   </licenses>
+
+   <properties>
+   		<loxia2.version>1.0-SNAPSHOT</loxia2.version>
+        <spring.version>2.5.6</spring.version>
+   </properties>
+   <modules>
+        <module>core</module>
+        <module>repository</module>
+        <module>security</module>
+        <module>support</module>
+        <module>web</module>
+   </modules>
+   
+   <scm>
+	<connection>scm:svn:http://loxia2.googlecode.com/svn/trunk</connection>
+     	<developerConnection>scm:svn:https://loxia2.googlecode.com/svn/trunk</developerConnection>
+	<url>http://loxia2.googlecode.com/svn/trunk</url>
+   </scm>
+    
+   <distributionManagement>
+        <repository>
+            <id>loxia2</id>
+            <url>svn:https://loxia2.googlecode.com/svn/repository</url>
+        </repository>
+   </distributionManagement>
+    
+   <repositories>
+        <repository>
+            <id>loxia2</id>
+            <url>http://loxia2.googlecode.com/svn/repository</url>
+        </repository>
+    	<repository>
+            <id>central</id>
+      	    <name>Central Repository for Maven2</name>
+      	    <url>http://repo1.maven.org/maven2/</url>
+    	</repository>
+  </repositories>  
+  
+  <build>	
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+			    	<encoding>utf-8</encoding>
+	                <source>1.5</source>
+	                <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+		    </plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>1.4.3</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${pom.groupId}</Bundle-SymbolicName>							<Export-Package>
+							${pom.groupId}.*;version=${pom.version};-noimport:=true
+						</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+       </plugins>
+	    <extensions>
+	      <extension>
+	        <groupId>org.jvnet.wagon-svn</groupId>
+	        <artifactId>wagon-svn</artifactId>
+			<version>1.9</version>
+	      </extension>
+	    </extensions>
+    </build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+			</plugin>
+			<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clover-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>clirr-maven-plugin</artifactId>
+			</plugin>		
+		</plugins>
+	</reporting>    
+    <dependencyManagement>
+    </dependencyManagement>
+</project>
