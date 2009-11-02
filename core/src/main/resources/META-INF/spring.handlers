@@ -1,1 +1,1 @@
-http\://loxia.benjamin.cn/schema/core=cn.benjamin.loxia.spring.GenericDaoBeanDefinitionParser
+http\://loxia.benjamin.cn/schema/core=cn.benjamin.loxia.spring.LoxiaNamespaceHandler
