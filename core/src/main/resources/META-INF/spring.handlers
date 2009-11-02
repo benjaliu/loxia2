@@ -1,1 +1,1 @@
-http\://loxia.benjamin.cn/schema/core=cn.muthos.polyforms.util.spring.UtilNamespaceHandler
+http\://loxia.benjamin.cn/schema/core=cn.benjamin.loxia.spring.GenericDaoBeanDefinitionParser
