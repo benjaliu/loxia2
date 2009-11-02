@@ -26,7 +26,8 @@ public class GenericEntityDaoImpl<T extends BaseModel, PK extends Serializable> 
 	
 	@PostConstruct
 	public void init(){
-		this.modelClass = getGenericModelClass();
+		if(this.modelClass == null)
+			this.modelClass = getGenericModelClass();
 		logger.debug("Model Class {} is set successfully.", this.modelClass);
 	}	
 	
@@ -92,4 +93,8 @@ public class GenericEntityDaoImpl<T extends BaseModel, PK extends Serializable> 
 		return (Class<T>)pType.getActualTypeArguments()[0];
 	}
 
+	public void setModelClass(Class<T> modelClass) {
+		this.modelClass = modelClass;
+	}
+	
 }
