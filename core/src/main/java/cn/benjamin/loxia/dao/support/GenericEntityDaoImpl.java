@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.benjamin.loxia.dao.DaoService;
 import cn.benjamin.loxia.dao.GenericEntityDao;
+import cn.benjamin.loxia.dao.ModelClassSupport;
 import cn.benjamin.loxia.model.BaseModel;
 
-public class GenericEntityDaoImpl<T extends BaseModel, PK extends Serializable> implements GenericEntityDao<T, PK> {
+public class GenericEntityDaoImpl<T extends BaseModel, PK extends Serializable> implements GenericEntityDao<T, PK>,
+	ModelClassSupport{
 	
 	protected static final Logger logger = LoggerFactory.getLogger(GenericEntityDaoImpl.class);
 
@@ -91,6 +93,10 @@ public class GenericEntityDaoImpl<T extends BaseModel, PK extends Serializable> 
 		
 		ParameterizedType pType = (ParameterizedType)type;
 		return (Class<T>)pType.getActualTypeArguments()[0];
+	}
+
+	public Class<T> getModelClass() {
+		return modelClass;
 	}
 
 	public void setModelClass(Class<T> modelClass) {

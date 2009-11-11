@@ -1,10 +1,13 @@
 package cn.benjamin.loxia.dao.support;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -104,6 +107,41 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 				return EntityStatus.DETACHED;
 			}
 		}
+	}
+
+	public int batchUpdateByNamedQuery(String queryName, Map<String,Object> params) {
+		Query query = entityManager.createNamedQuery(queryName);
+		for(String key: params.keySet()){
+			query.setParameter(key, params.get(key));
+		}
+		return query.executeUpdate();
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> List<T> findByNamedQuery(String queryName, Map<String,Object> params) {
+		Query query = entityManager.createNamedQuery(queryName);
+		for(String key: params.keySet()){
+			query.setParameter(key, params.get(key));
+		}
+		return (List<T>)query.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> List<T> findByNamedQuery(String queryName, Map<String,Object> params, int start, int pageSize) {
+		Query query = entityManager.createNamedQuery(queryName);
+		for(String key: params.keySet()){
+			query.setParameter(key, params.get(key));
+		}
+		query.setFirstResult(start);
+		query.setMaxResults(pageSize);
+		return (List<T>)query.getResultList();
+	}
+
+	public <T> T findOneByNamedQuery(String queryName, Map<String,Object> params) {
+		List<T> list = findByNamedQuery(queryName, params);
+		if(list.isEmpty())
+			return null;
+		return list.get(0);
 	}
 
 }

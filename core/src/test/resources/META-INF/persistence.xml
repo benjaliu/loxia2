@@ -3,11 +3,12 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
 	version="1.0">
 	<persistence-unit name="loxia" transaction-type="RESOURCE_LOCAL">
-
+		<mapping-file>META-INF/orm.xml</mapping-file>
 		<properties>
             <property name="hibernate.hbm2ddl.auto" value="create-drop" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.jdbc.batch_size" value="100" />
         </properties>
+        
 	</persistence-unit>
 </persistence>

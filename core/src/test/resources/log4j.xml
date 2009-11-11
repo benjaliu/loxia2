@@ -19,6 +19,7 @@
 
     <logger name="cn.benjamin.loxia"><level value="DEBUG"/></logger>
     <logger name="org.springframework"><level value="DEBUG"/></logger>
+    <logger name="org.hibernate"><level value="DEBUG"/></logger>
     
     <root>
         <level value="WARN"/>

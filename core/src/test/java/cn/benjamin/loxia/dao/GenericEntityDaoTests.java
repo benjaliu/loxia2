@@ -1,5 +1,7 @@
 package cn.benjamin.loxia.dao;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -38,5 +40,10 @@ public class GenericEntityDaoTests extends AbstractTestNGSpringContextTests {
 		user.setPassword("loxia");
 		user.setUserName("Loxia User");
 		userDao.save(user);
+		System.out.println("==============================");
+		List<User> users = userDao.findUsers();		
+		u = userDao.findUserByLoginName("user");
+		System.out.println(users.size());
+		System.out.println(u.getUserName());
 	}
 }

@@ -13,16 +13,17 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.util.ClassUtils;
 
 import cn.benjamin.loxia.dao.GenericEntityDao;
+import cn.benjamin.loxia.dao.ModelClassSupport;
 import cn.benjamin.loxia.dao.support.GenericEntityDaoImpl;
 
 public class GenericDaoBeanFactoryPostProcessor implements
 		BeanFactoryPostProcessor {
-
+	
 	public void postProcessBeanFactory(
 			ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		for (String beanDefinitionName : beanFactory.getBeanDefinitionNames()) {
+		for (String beanDefinitionName : beanFactory.getBeanDefinitionNames()) {			
 			BeanDefinition beanDefinition = beanFactory
-					.getBeanDefinition(beanDefinitionName);
+					.getBeanDefinition(beanDefinitionName);	
 			if (beanDefinition instanceof LoxiaBeanDefinition) {
 				LoxiaBeanDefinition loxiaBeanDefinition = (LoxiaBeanDefinition) beanDefinition;
 				try {
@@ -52,7 +53,7 @@ public class GenericDaoBeanFactoryPostProcessor implements
 										&& targetBeanDefinition.getParentName()
 												.equals(GenericDaoBeanDefinitionParser.BASE_BEAN_NAME)) {
 									targetBeanDefinition
-											.setBeanClass(GenericEntityDaoImpl.class);									
+											.setBeanClass(GenericEntityDaoImpl.class);												
 									break;
 								}
 							}
@@ -66,6 +67,13 @@ public class GenericDaoBeanFactoryPostProcessor implements
 									.getValue();
 							targetBeanDefinition.getPropertyValues()
 									.addPropertyValue("modelClass", targetType);
+							
+							Class<?>[] newInterfaces = new Class<?>[interfaces.length+1];
+							for(int i=0; i< interfaces.length; i++)
+								newInterfaces[i] = interfaces[i];
+							newInterfaces[interfaces.length] = ModelClassSupport.class;
+							loxiaBeanDefinition.getPropertyValues().
+								addPropertyValue("interfaces", newInterfaces);
 						}
 					}
 				} catch (ClassNotFoundException e) {
