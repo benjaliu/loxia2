@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.ejb.HibernateEntityManager;
+import org.hibernate.ejb.HibernateQuery;
 import org.hibernate.engine.EntityEntry;
 import org.hibernate.engine.ForeignKeys;
 import org.hibernate.engine.SessionImplementor;
@@ -20,7 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.benjamin.loxia.dao.DaoService;
+import cn.benjamin.loxia.dao.Sort;
 import cn.benjamin.loxia.model.BaseModel;
+import cn.benjamin.loxia.utils.StringUtil;
 
 public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 
@@ -116,14 +119,17 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 		}
 		return query.executeUpdate();
 	}
-
-	@SuppressWarnings("unchecked")
-	public <T> List<T> findByNamedQuery(String queryName, Map<String,Object> params) {
-		Query query = entityManager.createNamedQuery(queryName);
+	
+	public int batchUpdateByQuery(String queryString, Map<String, Object> params) {
+		Query query = entityManager.createQuery(queryString);
 		for(String key: params.keySet()){
 			query.setParameter(key, params.get(key));
 		}
-		return (List<T>)query.getResultList();
+		return query.executeUpdate();
+	}
+
+	public <T> List<T> findByNamedQuery(String queryName, Map<String,Object> params) {
+		return findByNamedQuery(queryName, params, -1, -1);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -132,8 +138,40 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 		for(String key: params.keySet()){
 			query.setParameter(key, params.get(key));
 		}
-		query.setFirstResult(start);
-		query.setMaxResults(pageSize);
+		if(start > 0)
+			query.setFirstResult(start);
+		if(pageSize > 0)
+			query.setMaxResults(pageSize);
+		return (List<T>)query.getResultList();
+	}
+	
+	public <T> List<T> findByQuery(String queryString, Map<String, Object> params) {
+		return findByQuery(queryString, params, null, -1, -1);
+	}
+	
+	public <T> List<T> findByQuery(String queryString, Map<String, Object> params,
+			Sort[] sorts) {
+		return findByQuery(queryString, params, sorts, -1, -1);
+	}
+	
+	public <T> List<T> findByQuery(String queryString, Map<String, Object> params, int start, int pageSize) {
+		return findByQuery(queryString, params, null, start, pageSize);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> List<T> findByQuery(String queryString, Map<String, Object> params,
+			Sort[] sorts, int start, int pageSize) {
+		if(sorts != null && sorts.length > 0){
+			queryString += " order by " + StringUtil.join(sorts);
+		}
+		Query query = entityManager.createQuery(queryString);
+		for(String key: params.keySet()){
+			query.setParameter(key, params.get(key));
+		}
+		if(start > 0)
+			query.setFirstResult(start);
+		if(pageSize > 0)
+			query.setMaxResults(pageSize);
 		return (List<T>)query.getResultList();
 	}
 
@@ -142,6 +180,25 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 		if(list.isEmpty())
 			return null;
 		return list.get(0);
+	}
+	
+	public <T> T findOneByQuery(String queryString, Map<String,Object> params){
+		List<T> list = findByQuery(queryString, params, null);
+		if(list.isEmpty())
+			return null;
+		return list.get(0);
+	}
+
+	public <T> List<T> findByNamedQuery(String queryName,
+			Map<String, Object> params, Sort[] sorts) {
+		return findByNamedQuery(queryName, params, sorts, -1, -1);
+	}
+
+	public <T> List<T> findByNamedQuery(String queryName,
+			Map<String, Object> params, Sort[] sorts, int start, int pageSize) {
+		Query query = entityManager.createNamedQuery(queryName);
+		HibernateQuery hQuery = (HibernateQuery) query;
+		return findByQuery(hQuery.getHibernateQuery().getQueryString(), params, sorts, start, pageSize);
 	}
 
 }

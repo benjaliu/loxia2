@@ -160,6 +160,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
+				<artifactId>spring-aspects</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
@@ -210,6 +215,12 @@
 				<artifactId>struts2-spring-plugin</artifactId>
 				<version>${struts2.version}</version>
 			</dependency>
+			
+			<dependency>
+		      	<groupId>velocity</groupId>
+		      	<artifactId>velocity-dep</artifactId>
+		      	<version>1.4</version>
+		    </dependency>
 			
 			<dependency>
 				<groupId>hsqldb</groupId>

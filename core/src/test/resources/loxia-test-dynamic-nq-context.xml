@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"	
+	xmlns:loxia="http://loxia.benjamin.cn/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+		
+	<bean id="User.findByLoginName" class="cn.benjamin.loxia.dao.support.DynamicQueryHolder">
+		<constructor-arg>
+			<value>
+				<![CDATA[select u from User u
+					where 1=1
+					#if($loginName)
+					and u.loginName = :loginName
+					#end
+				]]>
+			</value>
+		</constructor-arg>
+	</bean>
+</beans>

@@ -5,9 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
+@Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Query {
+public @interface DynamicQueryParam {
 	String value() default "";
-	boolean pagable() default false;
+	boolean virtual() default false;
 }

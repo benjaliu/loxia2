@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Query {
+public @interface DynamicQuery {
 	String value() default "";
 	boolean pagable() default false;
 }

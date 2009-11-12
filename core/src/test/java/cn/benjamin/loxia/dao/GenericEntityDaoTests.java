@@ -41,9 +41,13 @@ public class GenericEntityDaoTests extends AbstractTestNGSpringContextTests {
 		user.setUserName("Loxia User");
 		userDao.save(user);
 		System.out.println("==============================");
-		List<User> users = userDao.findUsers();		
+		List<User> users = userDao.findUsers(new Sort[]{new Sort("u.userName")});		
 		u = userDao.findUserByLoginName("user");
 		System.out.println(users.size());
 		System.out.println(u.getUserName());
+		List<User> anoUsers = userDao.findUserByName(0, 20, "U", new Sort[]{new Sort("u.userName")});
+		System.out.println(anoUsers.size());
+		System.out.println(userDao.findByLoginName(0, 20, null).size());
+		System.out.println(userDao.findByLoginName(0, 20, "a").size());
 	}
 }
