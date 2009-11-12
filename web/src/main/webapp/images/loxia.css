@@ -1,0 +1,39 @@
+.loxia {
+}
+
+.loxiaInput,
+.loxiaTextarea{
+	border:1px solid #ccc;
+}
+
+.loxiaInputFocused,
+.loxiaTextareaFocused{
+	border:1px solid #000;
+}
+	
+.loxiaInputRequired,
+.loxiaTextareaRequired {
+	background-color: #ffff99;
+}
+
+.loxiaSelectRequired {
+}
+
+.loxiaInputError,
+.loxiaTextareaError{
+	border:1px solid #ff3300;
+}
+
+.loxiaTooltip
+{
+	z-index: auto;
+	display: none;
+	position:absolute;	
+	overflow: hidden;
+	text-indent: 5px;
+	line-height: 20px;
+	font-size: 12px;
+	font-family: Arial;
+	opacity:0.9;
+    filter: alpha(opacity=90);
+}

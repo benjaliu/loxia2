@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<title>Template</title>
+<link rel="stylesheet" type="text/css" href="images/loxia.css"/>
+<script type="text/javascript" src="scripts/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="scripts/loxia/jquery-loxiacore-1.0.js"></script>
+<script type="text/javascript">
+var $j = jQuery.noConflict();
+
+function hi(msg){
+	$j.log("hi " + msg);
+}
+function f1(value){
+	return "f1" + value;
+}
+</script>
+</head>
+<body>
+<button class="loxia" onclick="$j.log('hi');">en</button>
+<input class="loxia" type="button" value="hah" onclick="$j.loxia.hitch('hi')('Mike');"/>
+<input class="loxia" required="true" checkmaster="checkNumber" formatter="f1"/>
+<select id="a" class="loxia"/>
+<input type="text" class="loxia"/>
+<textarea class="loxia" required="true"  checkmaster="checkDate"></textarea>
+</body>
+</html>
