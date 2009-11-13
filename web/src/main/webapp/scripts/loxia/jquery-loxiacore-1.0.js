@@ -68,11 +68,12 @@
 		_formToObj : function (form){
 			var ret = {};
 			var exclude = "file|submit|image|reset|button|";
+			var _this = this;
 			$(form.elements).each(function(){
 				var name = this.name;
 				var type = (this.type||"").toLowerCase();
 				if(name && type && exclude.indexOf(type) == -1 && !this.disabled){
-					_l._setValue(ret, name, _l._fieldValue(this));
+					_this._setValue(ret, name, _this._fieldValue(this));
 				}
 			});
 			return ret;
