@@ -37,6 +37,61 @@
 			}
 			return !scope ? method : function(){ return method.apply(scope, arguments || []); };
 		},
+		_setValue() : function(obj, name, value){
+			if(value == null) return;
+			var val = obj[name];
+			if(this.isString(val)){
+				obj[name] = [val, value];
+			}else if($.isArray(val)){
+				obj[name].push(value);
+			}else{
+				obj[name] = value;
+			}
+		},
+		_fieldValue : function(domNode){
+			var ret = null;
+			var type = (domNode.type||"").toLowerCase();
+			if(domNode.name && type && !domNode.disabled){
+				if(type == "radio" || type == "checkbox"){
+						if(domNode.checked){ ret = domNode.value }
+				}else if(domNode.multiple){
+					ret = [];
+					$("option",domNode).each(function(){
+						if(this.selected)
+							ret.push(this.value);
+					});
+				}else{
+					ret = domNode.value;
+				}
+			}
+		},
+		_formToObj : function (form){
+			var ret = {};
+			var exclude = "file|submit|image|reset|button|";
+			$(form.elements).each(function(){
+				var name = this.name;
+				var type = (this.type||"").toLowerCase();
+				if(name && type && exclude.indexOf(type) == -1 && !this.disabled){
+					_l._setValue(ret, name, _l._fieldValue(this));
+				}
+			});
+			return ret;
+		},
+		asyncXhr : function(options){
+			//set default type to "json"
+			options.dataType = options.dataType || "json";
+			$.ajax(options);
+		},
+		asyncXhrGet : function(options){
+		},
+		asyncXhrPost : function(options){
+		},
+		syncXhr : function(options){
+		},
+		syncXhrGet : function(options){
+		},
+		syncXhrPost : function(options){
+		},
 		html : {
 			getPosition: function(obj) {
 			    var curleft = 0;
@@ -123,6 +178,10 @@
 				$(this).addClass(baseClass + "Required");
 			}
 			
+			if($(this).val()){
+				$(this).attr("lastRightValue", $(this).val());
+			}
+			
 			$(this).focus(function(){				
 				$.log(this);
 				if(!isButton && !isCheckBox && !isRadio){
@@ -138,7 +197,7 @@
 					$(this).removeClass(baseClass + "Focused");
 					$.tooltip.hide(this);
 				
-					//do check
+					//do check					
 					_l.lidget.clearState(this);
 					
 					var value = $(this).val();
@@ -151,6 +210,8 @@
 						$(this).addClass(baseClass + "Error");
 						$(this).attr("state","false");
 						$(this).attr("errorMsg","Mandatory Field");
+					}else if(value == $(this).attr("lastRightValue")){
+						$(this).attr("state","true");
 					}else{
 						var checkmasters = $(this).attr("checkmaster");
 						if(checkmasters){
@@ -171,8 +232,10 @@
 							}
 						}
 					}
-					if(!$(this).attr("state"))
+					if(!$(this).attr("state")){
 						$(this).attr("state","true");
+						$(this).attr("lastRightValue", value);
+					}
 					
 					if($(this).attr("state") == "true"){
 						//format
