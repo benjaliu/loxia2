@@ -1,5 +1,5 @@
 (function($) {
-	var _globle = this;
+	var _global = this;
 	$.loxia = {
 		SUCCESS : "success",
 		ERROR : "error",
@@ -31,13 +31,13 @@
 				scope = null;
 			}
 			if(this.isString(method)){
-				scope = scope || _globle;
+				scope = scope || _global;
 				if(!scope[method]){ throw(['hitch: scope["', method, '"] is null (scope="', scope, '")'].join('')); }
 				return function(){ return scope[method].apply(scope, arguments || []); }; // Function
 			}
 			return !scope ? method : function(){ return method.apply(scope, arguments || []); };
 		},
-		_setValue() : function(obj, name, value){
+		_setValue : function(obj, name, value){
 			if(value == null) return;
 			var val = obj[name];
 			if(this.isString(val)){
@@ -64,8 +64,10 @@
 					ret = domNode.value;
 				}
 			}
+			return ret;
 		},
 		_formToObj : function (form){
+			form = this.isString(form) ? $("#" + form).get(0) : form;
 			var ret = {};
 			var exclude = "file|submit|image|reset|button|";
 			var _this = this;
@@ -78,20 +80,116 @@
 			});
 			return ret;
 		},
-		asyncXhr : function(options){
+		asyncXhr : function(url, args, callback){
+			var options = {};
+			if(arguments.length == 1)
+				options = url;
+			else{
+				options = args;
+				options["url"] = url;
+				if(callback)
+					options["success"] = callback;
+			}
 			//set default type to "json"
 			options.dataType = options.dataType || "json";
+			//init data if not set
+			options.data = options.data || {};
+			if(options.form){
+				$j.extend(options.data, this._formToObj(options.form));				
+			}
+			//console.dir(options);
 			$.ajax(options);
 		},
-		asyncXhrGet : function(options){
+		asyncXhrGet : function(url, args, callback){
+			if(args) args["type"] = "GET";
+			else url["type"] = "GET";
+			this.asyncXhr(url, args, callback);
 		},
-		asyncXhrPost : function(options){
+		asyncXhrPost : function(url, args, callback){
+			if(args) args["type"] = "POST";
+			else url["type"] = "POST";
+			this.asyncXhr(url, args, callback);
 		},
-		syncXhr : function(options){
+		syncXhr : function(url, args){
+			var _data;
+			var addiOpts = {
+				async : false,
+				success : function(data, textStatus){
+					_data = data;
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown){
+					_data = {};
+					var exception = {};
+					exception["message"] = "Error occurs when fetching data from url:" + this.url;
+					exception["cause"] = textStatus? textStatus : errorThrown;
+					_data["exception"] = exception;
+				}
+			}
+			if(args){
+				$.extend(args, addiOpts);
+			}else
+				$.extend(url, addiOpts);
+			this.asyncXhr(url, args);
+			//console.dir(_data);
+			return _data;
 		},
-		syncXhrGet : function(options){
+		syncXhrGet : function(url, args){
+			if(args) args["type"] = "GET";
+			else url["type"] = "GET";
+			return this.syncXhr(url, args);
 		},
-		syncXhrPost : function(options){
+		syncXhrPost : function(url, args){
+			if(args) args["type"] = "POST";
+			else url["type"] = "POST";
+			return this.syncXhr(url, args);
+		},
+		validateForm : function(form){
+			form = this.isString(form) ? $("#" + form).get(0) : form;
+			var errorMsg = [];
+			var fieldErrorNums = 0;
+			$(".loxia[baseType='Input'],.loxia[baseType='Select'],.loxia[baseType='Textarea']").
+				each(function(){
+					if($(this).attr("state")){
+						if("true" != $(this).attr("state")) fieldErrorNums ++;
+					}else{
+						var chkflg = $.loxia.lidget.check(this);
+						if(!chkflg) fieldErrorNums ++;
+					}
+				});
+			
+			if(fieldErrorNums > 0){
+				errorMsg.push("" + fieldErrorNums + " field error(s) found.");
+				return errorMsg;
+			}
+			
+			var formValidateMethod = $(form).attr("validate");
+			if(!formValidateMethod){
+				formValidateMethod = $(form).attr("name") + "Validate";
+			}
+			if(_global[formValidateMethod] && $.isFunction(_global[formValidateMethod])){
+				var ret = $.loxia.hitch(_global[formValidateMethod])(form);
+				if(ret != $.loxia.SUCCESS){
+					errorMsg.push("Form validate error.");
+					if($.loxia.isString(ret))
+						errorMsg.push(ret);
+					else{
+						for(var i=0; i< ret.length; i++)
+							errorMsg.push(ret[i]);
+					}					
+				}
+			}
+			return errorMsg;
+		},
+		submitForm : function(form){
+			form = this.isString(form) ? $("#" + form).get(0) : form;
+			var errorMsg = this.validateForm(form);
+			if(errorMsg.length == 0){
+				//success				
+				form.submit();
+			}else{
+				//show errors	
+				$(form).trigger("submitFailureEvent", [errorMsg]);
+			}
 		},
 		html : {
 			getPosition: function(obj) {
@@ -108,12 +206,14 @@
 		},
 		lidget : {
 			clearState : function(obj){
+				if(!$(obj).hasClass("loxia")) return;
 				$(obj).removeClass($(obj).attr("baseClass") + "Error");
 				$(obj).attr("state","");
 				$(obj).attr("errorMsg","");
 			},
 			
 			setState : function(obj, state, msg){
+				if(!$(obj).hasClass("loxia")) return;
 				state = state == true ? true : false;
 				$(obj).removeClass($(obj).attr("baseClass") + "Error");
 				$(obj).attr("state",state);
@@ -121,6 +221,49 @@
 					$(obj).attr("errorMsg",msg);
 					$(obj).addClass($(obj).attr("baseClass") + "Error");
 				}
+			},
+			
+			check : function(obj){
+				if(!$(obj).hasClass("loxia")) return true;
+				this.clearState(obj);
+				
+				var value = $(obj).val();
+				var baseClass = $(obj).attr("baseClass");
+				var required = ($(obj).attr("required") == "true");
+				if(required && value == ""){
+					$(obj).addClass(baseClass + "Error");
+					$(obj).attr("state","false");
+					$(obj).attr("errorMsg","Mandatory Field");
+					return false;
+				}else if(value == $(obj).attr("lastRightValue")){
+					$(obj).attr("state","true");
+					return true;
+				}else{
+					var checkmasters = $(obj).attr("checkmaster");
+					if(checkmasters){
+						var cms = checkmasters.split(",");
+						for(var cm,i=0; cm=cms[i]; i++){
+							var result = $.loxia.hitch(cm)(value,obj);
+							if(result.indexOf($.loxia.SUCCESS) != 0){
+								$(obj).addClass(baseClass + "Error");
+								$(obj).attr("state","false");
+								$(obj).attr("errorMsg", result);
+								return false;
+							}
+							if(result.length > 8){
+								//set the formatted value
+								value = result.substring(8);
+								$(obj).val(value);
+							}
+						}
+					}
+				}
+				if(!$(obj).attr("state")){
+					$(obj).attr("state","true");
+					$(obj).attr("lastRightValue", value);
+					return true;
+				}
+				return false;
 			}
 		}
 	};
@@ -128,8 +271,8 @@
 	
 	$.log = function(msg){
 		if(!_l.defaultConfig.debug) return;
-		if(_globle.console){
-			_globle.console.log(msg);
+		if(_global.console){
+			_global.console.log(msg);
 		}else
 			alert(msg.outerHTML ? msg.outerHTML : msg);
 	};
@@ -184,7 +327,6 @@
 			}
 			
 			$(this).focus(function(){				
-				$.log(this);
 				if(!isButton && !isCheckBox && !isRadio){
 					$(this).addClass(baseClass + "Focused");
 					var msg = $(this).attr("errorMsg");
@@ -198,53 +340,21 @@
 					$(this).removeClass(baseClass + "Focused");
 					$.tooltip.hide(this);
 				
-					//do check					
-					_l.lidget.clearState(this);
-					
 					var value = $(this).val();
 					if($(this).attr("trim") == "true"){
 						value = $.trim(value);
 						$(this).val(value);
 					}
-					var required = ($(this).attr("required") == "true");
-					if(required && value == ""){
-						$(this).addClass(baseClass + "Error");
-						$(this).attr("state","false");
-						$(this).attr("errorMsg","Mandatory Field");
-					}else if(value == $(this).attr("lastRightValue")){
-						$(this).attr("state","true");
-					}else{
-						var checkmasters = $(this).attr("checkmaster");
-						if(checkmasters){
-							var cms = checkmasters.split(",");
-							for(var cm,i=0; cm=cms[i]; i++){
-								var result = _l.hitch(cm)(value,this);
-								if(result.indexOf(_l.SUCCESS) != 0){
-									$(this).addClass(baseClass + "Error");
-									$(this).attr("state","false");
-									$(this).attr("errorMsg", result);
-									break;
-								}
-								if(result.length > 8){
-									//set the formatted value
-									value = result.substring(8);
-									$(this).val(value);
-								}
-							}
-						}
-					}
-					if(!$(this).attr("state")){
-						$(this).attr("state","true");
-						$(this).attr("lastRightValue", value);
-					}
 					
-					if($(this).attr("state") == "true"){
+					//do check
+					if(_l.lidget.check(this)){						
 						//format
 						if($(this).attr("formatter")){
+							value = $(this).val();
 							value = _l.hitch($(this).attr("formatter"))(value);
 							$(this).val(value);
-						}						
-					}
+						}	
+					}					
 				}
 			});
 		});
@@ -255,7 +365,7 @@
 		return _l.SUCCESS + "^" + "12345";
 	};
 	checkDate = function(){
-		return "date format error";
+		return _l.SUCCESS;
 	}; 
  })(jQuery);
 

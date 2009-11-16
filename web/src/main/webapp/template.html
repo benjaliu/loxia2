@@ -5,8 +5,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 <title>Template</title>
 <link rel="stylesheet" type="text/css" href="images/loxia.css"/>
+<link rel="stylesheet" type="text/css" href="images/jquery.datepick.css"/>
 <script type="text/javascript" src="scripts/jquery-1.3.2.min.js"></script>
-<script type="text/javascript" src="scripts/loxia/jquery-loxiacore-1.0.js"></script>
+<script type="text/javascript" src="scripts/loxia/jquery.loxiacore-1.0.js"></script>
+<script type="text/javascript" src="scripts/loxia/jquery.loxiadatepicker-1.0.js"></script>
 <script type="text/javascript">
 var $j = jQuery.noConflict();
 
@@ -16,14 +18,28 @@ function hi(msg){
 function f1(value){
 	return "f1" + value;
 }
+
+$j(document).ready(function(){
+	$j(".datepicker").datepick();
+	$j("#idForm").bind("submitFailureEvent", function(event,data){
+		for(var i=0; i< data.length; i++)
+			console.log(data[i]);
+	});
+});
+function sampleFormValidate(oForm){
+	return "This is a Error";
+}
 </script>
 </head>
 <body>
-<button class="loxia" onclick="$j.log('hi');">en</button>
-<input class="loxia" type="button" value="hah" onclick="$j.loxia.hitch('hi')('Mike');"/>
-<input class="loxia" required="true" checkmaster="checkNumber" formatter="f1"/>
-<select id="a" class="loxia"/>
-<input type="text" class="loxia"/>
-<textarea class="loxia" required="true"  checkmaster="checkDate"></textarea>
+<form id="idForm" name="sampleForm">
+<button class="loxia" type="button" onclick="var data = $j.loxia.syncXhr('file://D:/Work%20Folder/Projects_ext/loxia2/web/src/main/webapp/testdata.json',{data:{a:'b'},form:'idForm'}); console.dir(data);">en</button>
+<input name="foo" class="loxia" type="button" value="hah" onclick="$j.loxia.submitForm('idForm')"/>
+<input name="bar" class="loxia" required="true" checkmaster="checkNumber" formatter="f1"/>
+<input name="date" class="loxia datepicker" required="true" checkmaster="checkDate"/>
+<select id="a" name="sel" class="loxia"/>
+<input type="text" name="kitten.cat" class="loxia"/>
+<textarea class="loxia" name="kitten.desc" required="true"  checkmaster="checkDate"></textarea>
+</form>
 </body>
 </html>

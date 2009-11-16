@@ -1,0 +1,5 @@
+{name: "Scott",
+age: 28,
+gender: "male",
+interests : ["fishing","hiking"],
+department : {name: "IT", desc: "IT Dept."}}
