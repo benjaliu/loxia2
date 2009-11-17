@@ -3,12 +3,25 @@
 	$.loxia = {
 		SUCCESS : "success",
 		ERROR : "error",
-		defaultConfig: {debug: false},
+		defaultConfig: {debug: false,
+			tooltipContainers : [
+       			  "<table class='loxiatip loxiatipUp' cellspacing='0' cellpadding='0'><tbody><tr><td class='tip-topleft'></td><td class='tip-top'></td><td class='tip-topright'></td></tr><tr><td class='tip-left'></td><td class='tip-content'></td><td class='tip-right'></td></tr><tr><td class='tip-bottomleft'></td><td><table class='tip-bottom' cellspacing='0' cellpadding='0'><tr><th></th><td><div></div></td><th></th></tr></table></td><td class='tip-bottomright'></td></tr></tbody></table>", //up
+       			  "<table class='loxiatip loxiatipDown' cellspacing='0' cellpadding='0'><tbody><tr><td class='tip-topleft'></td><td><table class='tip-top' cellspacing='0' cellpadding='0'><tr><th></th><td><div></div></td><th></th></tr></table></td><td class='tip-topright'></td></tr><tr><td class='tip-left'></td><td class='tip-content'></td><td class='tip-right'></td></tr><tr><td class='tip-bottomleft'></td><td class='tip-bottom'></td><td class='tip-bottomright'></td></tr></tbody></table>", //down
+       			  "<table class='loxiatip loxiatipLeft' cellspacing='0' cellpadding='0'><tbody><tr><td class='tip-topleft'></td><td class='tip-top'></td><td class='tip-topright'></td></tr><tr><td class='tip-left'></td><td class='tip-content'></td><td class='tip-right-tail'><div class='tip-right'></div><div class='tip-right-tail'></div><div class='tip-right'></div></td></tr><tr><td class='tip-bottomleft'></td><td class='tip-bottom'></td><td class='tip-bottomright'></td></tr></tbody></table>", //left
+       			  "<table class='loxiatip loxiatipRight' cellspacing='0' cellpadding='0'><tbody><tr><td class='tip-topleft'></td><td class='tip-top'></td><td class='tip-topright'></td></tr><tr><td class='tip-left-tail'><div class='tip-left'></div><div class='tip-left-tail'></div><div class='tip-left'></div></td><td class='tip-content'></td><td class='tip-right'></td></tr><tr><td class='tip-bottomleft'></td><td class='tip-bottom'></td><td class='tip-bottomright'></td></tr></tbody></table>" //right
+       			]
+		},
 		init: function(settings){
 			$.extend(this.defaultConfig,settings);
 			
 			//init tooltip
-			$('body').append('<div class="loxiaTooltip"></div>');
+			if(!this.defaultConfig.tooltipContainers ||
+					this.defaultConfig.tooltipContainers.length != 4)
+				throw new Exception("Error configuration for tooltips");
+			for(var c,i=0;c=this.defaultConfig.tooltipContainers[i];i++){
+				$(c).appendTo("body");
+			}
+			$(".loxiatip").hide();
 			
 			this.initLidgets();
 						
@@ -16,11 +29,39 @@
 		initLidgets: function(context){
 			if(context == undefined)
 				$('button.loxia,select.loxia,input.loxia,textarea.loxia').lidget();
+			else if($(context).hasClass("loxia"))
+				$(context).lidget();
 			else
 				$('button.loxia,select.loxia,input.loxia,textarea.loxia', context).lidget();
 		},
 		isString: function(obj){
 			return typeof obj == "string" || obj instanceof String;
+		},
+		getViewport : function(){
+			var viewportwidth;
+			var viewportheight;
+			 
+			// the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight			 
+			if (typeof window.innerWidth != 'undefined')
+			{
+			     viewportwidth = window.innerWidth,
+			     viewportheight = window.innerHeight
+			}			 
+			// IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+			else if (typeof document.documentElement != 'undefined'
+			    && typeof document.documentElement.clientWidth !=
+			    'undefined' && document.documentElement.clientWidth != 0)
+			{
+			      viewportwidth = document.documentElement.clientWidth,
+			      viewportheight = document.documentElement.clientHeight
+			}			 
+			// older versions of IE			 
+			else
+			{
+			      viewportwidth = document.getElementsByTagName('body')[0].clientWidth,
+			      viewportheight = document.getElementsByTagName('body')[0].clientHeight
+			}
+			return [viewportwidth,viewportheight];
 		},
 		upperFirstLetter: function(str){
 			return str.substring(0,1).toUpperCase() + str.substring(1);
@@ -192,6 +233,7 @@
 			}
 		},
 		html : {
+			UP : "Up", DOWN : "Down", LEFT : "Left", RIGHT : "Right",			
 			getPosition: function(obj) {
 			    var curleft = 0;
 			      var curtop = 0;
@@ -202,7 +244,71 @@
 			            } while (obj = obj.offsetParent);
 			      }
 			      return [curleft,curtop];
-			}			
+			},
+			showTooltip: function(obj, msg){
+				var tooltipHolder = [200,50];
+				var	position = [];
+				var objPos = this.getPosition(obj);
+				var tipPos = [objPos[0],objPos[1]];
+				var offset = [0,0];
+				var relatePos = [objPos[0] - $(document).scrollLeft(),
+				                 objPos[1] - $(document).scrollTop()];
+				var viewPos = $.loxia.getViewport();
+				
+				var posLeft = (viewPos[0] - relatePos[0] - obj.offsetWidth) > tooltipHolder[0];
+				var posTop = (viewPos[1] - relatePos[1] - obj.offsetHeight) > tooltipHolder[1];
+				
+				var direction = this.RIGHT;
+				if(!posLeft){
+					if(posTop)
+						direction = this.DOWN;
+					else{
+						direction = 
+							(relatePos[0] - tooltipHolder[0] >= relatePos[1] - tooltipHolder[1])?
+									this.LEFT : this.UP;
+					}
+				}
+				
+				var tooltip = $(".loxiatip" + direction);
+				if(msg.indexOf("**") ==0){
+					$(".tip-content",tooltip).html($("#" + msg.substring(2)).html());
+				}else{
+					$(".tip-content",tooltip).text(msg);					
+				}
+				tooltip.attr("show", "true");
+				
+				if(direction == this.RIGHT){
+					tipPos[0] = tipPos[0] + obj.offsetWidth;
+					tipPos[1] = tipPos[1] - (tooltip.height() - obj.offsetHeight)/2;
+					offset[0] = -10;
+				}else if(direction == this.LEFT){
+					tipPos[0] = tipPos[0] - tooptip.width();
+					tipPos[1] = tipPos[1] - (tooltip.height() - obj.offsetHeight)/2;
+					offset[0] = 10;
+				}else if(direction == this.DOWN){
+					tipPos[1] = tipPos[1] + obj.offsetHeight + 2;
+					offset[1] = -10;
+				}else{
+					tipPos[1] = tipPos[1] - toolptip.height - 2;
+					offset[1] = 10;
+				}
+				tipPos[0] = tipPos[0] < 0 ? 0 : tipPos[0];
+				tipPos[1] = tipPos[1] < 0 ? 0 : tipPos[1];
+				console.log(objPos);
+				console.log(tipPos);
+				tooltip.css({
+						'position': 'absolute',
+						'left': (tipPos[0] + offset[0]) + 'px',
+						'top': (tipPos[1] + offset[1]) + 'px',
+						'opacity': 0
+					});
+				tooltip.show();
+				tooltip.animate({opacity: 1, left: tipPos[0], top: tipPos[1]},"fast");
+				
+			},
+			hideTooltip: function(obj){
+				$(".loxiatip[show='true']").attr("show","").hide();
+			}
 		},
 		lidget : {
 			clearState : function(obj){
@@ -280,25 +386,6 @@
 		$.log(msg);
 	    return this;
 	};
-	
-	
-	$.tooltip = {
-		//will be implemented more complex
-		defaultSettings: {},
-		show : function(obj,msg,settings){
-			settings = $.extend({},this.defaultSettings,settings);
-			
-			var position = _l.html.getPosition(obj);
-			var toolTip = $('.loxiaTooltip');			
-			toolTip.css({left : (position[0] + obj.offsetWidth + 2)+'px', 
-	            	top : position[1]+'px'});
-			toolTip.html(msg);
-			toolTip.fadeIn("fast");
-		},
-		hide : function(obj){
-			$(".loxiaTooltip").hide();
-		}
-	};
 
 	$.fn.lidget = function(){
 		this.each(function(){			
@@ -331,14 +418,14 @@
 					$(this).addClass(baseClass + "Focused");
 					var msg = $(this).attr("errorMsg");
 					if(msg)
-						$.tooltip.show(this,msg);
+						$.loxia.html.showTooltip(this,msg);
 				}
 			});
 			
 			$(this).blur(function(){
 				if(!isButton && !isCheckBox && !isRadio){
 					$(this).removeClass(baseClass + "Focused");
-					$.tooltip.hide(this);
+					$.loxia.html.hideTooltip(this);
 				
 					var value = $(this).val();
 					if($(this).attr("trim") == "true"){
