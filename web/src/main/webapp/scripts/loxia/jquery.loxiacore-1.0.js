@@ -190,8 +190,8 @@
 			var fieldErrorNums = 0;
 			$(".loxia[baseType='Input'],.loxia[baseType='Select'],.loxia[baseType='Textarea']").
 				each(function(){
-					if($(this).attr("state")){
-						if("true" != $(this).attr("state")) fieldErrorNums ++;
+					if($(this).data("state") != undefined){
+						if(!$(this).data("state")) fieldErrorNums ++;
 					}else{
 						var chkflg = $.loxia.lidget.check(this);
 						if(!chkflg) fieldErrorNums ++;
@@ -314,17 +314,17 @@
 			clearState : function(obj){
 				if(!$(obj).hasClass("loxia")) return;
 				$(obj).removeClass($(obj).attr("baseClass") + "Error");
-				$(obj).attr("state","");
-				$(obj).attr("errorMsg","");
+				$(obj).removeData("state");
+				$(obj).removeData("errorMsg");
 			},
 			
 			setState : function(obj, state, msg){
 				if(!$(obj).hasClass("loxia")) return;
 				state = state == true ? true : false;
 				$(obj).removeClass($(obj).attr("baseClass") + "Error");
-				$(obj).attr("state",state);
+				$(obj).data("state",state);
 				if(! state){
-					$(obj).attr("errorMsg",msg);
+					$(obj).data("errorMsg",msg);
 					$(obj).addClass($(obj).attr("baseClass") + "Error");
 				}
 			},
@@ -337,12 +337,10 @@
 				var baseClass = $(obj).attr("baseClass");
 				var required = ($(obj).attr("required") == "true");
 				if(required && value == ""){
-					$(obj).addClass(baseClass + "Error");
-					$(obj).attr("state","false");
-					$(obj).attr("errorMsg","Mandatory Field");
+					this.setState(obj, false, "Mandatory Field");
 					return false;
-				}else if(value == $(obj).attr("lastRightValue")){
-					$(obj).attr("state","true");
+				}else if(value == $(obj).data("lastRightValue")){
+					this.setState(obj, true);
 					return true;
 				}else{
 					var checkmasters = $(obj).attr("checkmaster");
@@ -351,9 +349,7 @@
 						for(var cm,i=0; cm=cms[i]; i++){
 							var result = $.loxia.hitch(cm)(value,obj);
 							if(result.indexOf($.loxia.SUCCESS) != 0){
-								$(obj).addClass(baseClass + "Error");
-								$(obj).attr("state","false");
-								$(obj).attr("errorMsg", result);
+								this.setState(obj, false, result);
 								return false;
 							}
 							if(result.length > 8){
@@ -364,12 +360,9 @@
 						}
 					}
 				}
-				if(!$(obj).attr("state")){
-					$(obj).attr("state","true");
-					$(obj).attr("lastRightValue", value);
-					return true;
-				}
-				return false;
+				this.setState(obj, true);
+				$(obj).data("lastRightValue", value);
+				return true;
 			}
 		}
 	};
@@ -410,13 +403,13 @@
 			}
 			
 			if($(this).val()){
-				$(this).attr("lastRightValue", $(this).val());
+				$(this).data("lastRightValue", $(this).val());
 			}
 			
 			$(this).focus(function(){				
 				if(!isButton && !isCheckBox && !isRadio){
 					$(this).addClass(baseClass + "Focused");
-					var msg = $(this).attr("errorMsg");
+					var msg = $(this).data("errorMsg");
 					if(msg)
 						$.loxia.html.showTooltip(this,msg);
 				}
