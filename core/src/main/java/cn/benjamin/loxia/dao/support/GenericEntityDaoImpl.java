@@ -22,7 +22,7 @@ public class GenericEntityDaoImpl<T extends BaseModel, PK extends Serializable> 
 	protected static final Logger logger = LoggerFactory.getLogger(GenericEntityDaoImpl.class);
 
 	@Autowired
-	private DaoService daoService;
+	protected DaoService daoService;
 	
 	private Class<T> modelClass;
 	
