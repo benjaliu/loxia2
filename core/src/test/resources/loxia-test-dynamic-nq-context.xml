@@ -17,4 +17,22 @@
 			</value>
 		</constructor-arg>
 	</bean>
+	<bean id="User.findByLoginNameSql" class="cn.benjamin.loxia.dao.support.DynamicQueryHolder">
+		<constructor-arg>
+			<value>
+				<![CDATA[select * from users u
+					where 1=1
+					#if($loginName)
+						and u.loginName = :loginName
+					#end
+					#if($userName)
+						and u.userName = :userName
+					#end
+					#if($password)
+						and u.password = :password
+					#end
+				]]>
+			</value>
+		</constructor-arg>
+	</bean>
 </beans>

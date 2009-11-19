@@ -49,5 +49,7 @@ public class GenericEntityDaoTests extends AbstractTestNGSpringContextTests {
 		System.out.println(anoUsers.size());
 		System.out.println(userDao.findByLoginName(0, 20, null).size());
 		System.out.println(userDao.findByLoginName(0, 20, "a").size());
+		userDao.findByLoginNameSql(0, 20, "u", null, null);
+		userDao.findByLoginNameSql(0, 20, "u", null, "w");
 	}
 }

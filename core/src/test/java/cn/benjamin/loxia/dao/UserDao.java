@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.benjamin.loxia.annotation.DynamicQuery;
-import cn.benjamin.loxia.annotation.DynamicQueryParam;
 import cn.benjamin.loxia.annotation.NamedQuery;
+import cn.benjamin.loxia.annotation.NativeQuery;
 import cn.benjamin.loxia.annotation.Query;
 import cn.benjamin.loxia.annotation.QueryParam;
 import cn.benjamin.loxia.model.User;
@@ -25,5 +25,11 @@ public interface UserDao extends GenericEntityDao<User ,Long> {
 	List<User> findUserByName(int start, int pageSize, @QueryParam("userName") String userName, Sort[] sorts);
 	
 	@DynamicQuery(pagable = true)
-	List<User> findByLoginName(int start, int pageSize, @DynamicQueryParam("loginName") String loginName);
+	List<User> findByLoginName(int start, int pageSize, @QueryParam("loginName") String loginName);
+	
+	@NativeQuery(sqlResultMapping="user", pagable=true)
+	List<Object[]> findByLoginNameSql(int start, int pageSize, 
+			@QueryParam("loginName") String loginName, 
+			@QueryParam("userName") String userName, 
+			@QueryParam("password") String password);
 }

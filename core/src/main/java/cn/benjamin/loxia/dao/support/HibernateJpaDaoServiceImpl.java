@@ -114,35 +114,73 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 
 	public int batchUpdateByNamedQuery(String queryName, Map<String,Object> params) {
 		Query query = entityManager.createNamedQuery(queryName);
-		for(String key: params.keySet()){
-			query.setParameter(key, params.get(key));
+		logger.debug("Batch Update[{}]",((HibernateQuery)query).getHibernateQuery().getQueryString());
+		if(params != null && !params.keySet().isEmpty()){
+			logger.debug("Parameter List:");
+			int i=1;
+			for(String key: params.keySet()){
+				logger.debug("{}) [{}] : {}", new Object[]{i++, key, params.get(key)});
+				query.setParameter(key, params.get(key));
+			}
 		}
 		return query.executeUpdate();
 	}
 	
 	public int batchUpdateByQuery(String queryString, Map<String, Object> params) {
 		Query query = entityManager.createQuery(queryString);
-		for(String key: params.keySet()){
-			query.setParameter(key, params.get(key));
+		logger.debug("Batch Update[{}]", queryString);
+		if(params != null && !params.keySet().isEmpty()){
+			logger.debug("Parameter List:");
+			int i=1;
+			for(String key: params.keySet()){
+				logger.debug("{}) [{}] : {}", new Object[]{i++, key, params.get(key)});
+				query.setParameter(key, params.get(key));
+			}
 		}
 		return query.executeUpdate();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <T> List<T> findByQueryNative(Query query, Map<String,Object> params, int start, int pageSize){
+		logger.debug("Find[{}]",((HibernateQuery)query).getHibernateQuery().getQueryString());
+		if(params != null && !params.keySet().isEmpty()){
+			logger.debug("Parameter List:");
+			int i=1;
+			for(String key: params.keySet()){
+				logger.debug("{}) [{}] : {}", new Object[]{i++, key, params.get(key)});
+				query.setParameter(key, params.get(key));
+			}
+		}
+		if(start > 0)
+			query.setFirstResult(start);
+		if(pageSize > 0)
+			query.setMaxResults(pageSize);
+		return query.getResultList();
 	}
 
 	public <T> List<T> findByNamedQuery(String queryName, Map<String,Object> params) {
 		return findByNamedQuery(queryName, params, -1, -1);
 	}
 	
-	@SuppressWarnings("unchecked")
+	public <T> List<T> findByNamedQuery(String queryName,
+			Map<String, Object> params, Sort[] sorts) {
+		return findByNamedQuery(queryName, params, sorts, -1, -1);
+	}
+	
 	public <T> List<T> findByNamedQuery(String queryName, Map<String,Object> params, int start, int pageSize) {
+		return findByNamedQuery(queryName, params, null, start, pageSize);
+	}
+	
+	public <T> List<T> findByNamedQuery(String queryName,
+			Map<String, Object> params, Sort[] sorts, int start, int pageSize) {
 		Query query = entityManager.createNamedQuery(queryName);
-		for(String key: params.keySet()){
-			query.setParameter(key, params.get(key));
+		if(sorts == null || sorts.length == 0){
+			return findByQueryNative(query, params, start, pageSize);
+		}else {
+			HibernateQuery hQuery = (HibernateQuery) query;
+			return findByQuery(hQuery.getHibernateQuery().getQueryString(), params, sorts, start, pageSize);
 		}
-		if(start > 0)
-			query.setFirstResult(start);
-		if(pageSize > 0)
-			query.setMaxResults(pageSize);
-		return (List<T>)query.getResultList();
+		
 	}
 	
 	public <T> List<T> findByQuery(String queryString, Map<String, Object> params) {
@@ -158,16 +196,34 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 		return findByQuery(queryString, params, null, start, pageSize);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public <T> List<T> findByQuery(String queryString, Map<String, Object> params,
 			Sort[] sorts, int start, int pageSize) {
 		if(sorts != null && sorts.length > 0){
 			queryString += " order by " + StringUtil.join(sorts);
 		}
 		Query query = entityManager.createQuery(queryString);
-		for(String key: params.keySet()){
-			query.setParameter(key, params.get(key));
+		return findByQueryNative(query, params, start, pageSize);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> List<T> findByQueryEx(String queryString, Map<String, Object> params,
+			Sort[] sorts, int start, int pageSize) {
+		if(sorts != null && sorts.length > 0){
+			queryString += " order by " + StringUtil.join(sorts);
 		}
+		logger.debug("Find[{}]", queryString);
+		Query query = entityManager.createQuery(queryString);
+		HibernateQuery hQuery = (HibernateQuery) query;
+		String [] paramNames = hQuery.getHibernateQuery().getNamedParameters();
+		if(paramNames != null && paramNames.length >0){
+			logger.debug("Parameter List:");
+			int i=1;
+			for(String key: hQuery.getHibernateQuery().getNamedParameters()){
+				logger.debug("{}) [{}] : {}", new Object[]{i++, key, params.get(key)});
+				query.setParameter(key, params.get(key));
+			}
+		}
+		
 		if(start > 0)
 			query.setFirstResult(start);
 		if(pageSize > 0)
@@ -188,17 +244,54 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 			return null;
 		return list.get(0);
 	}
-
-	public <T> List<T> findByNamedQuery(String queryName,
-			Map<String, Object> params, Sort[] sorts) {
-		return findByNamedQuery(queryName, params, sorts, -1, -1);
+	
+	public <T> T findOneByQueryEx(String queryString, Map<String,Object> params){
+		List<T> list = findByQueryEx(queryString, params, null, -1, -1);
+		if(list.isEmpty())
+			return null;
+		return list.get(0);
 	}
 
-	public <T> List<T> findByNamedQuery(String queryName,
-			Map<String, Object> params, Sort[] sorts, int start, int pageSize) {
-		Query query = entityManager.createNamedQuery(queryName);
-		HibernateQuery hQuery = (HibernateQuery) query;
-		return findByQuery(hQuery.getHibernateQuery().getQueryString(), params, sorts, start, pageSize);
+	public <T> List<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping) {
+		return findByNativeQuery(queryString, params, resultSetMapping, -1, -1);
+	}
+
+	public <T> List<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping,
+			int start, int pageSize) {
+		return findByNativeQuery(queryString, params, resultSetMapping, null, start, pageSize);
+	}
+
+	public <T> List<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping,
+			Sort[] sorts) {
+		return findByNativeQuery(queryString, params, resultSetMapping, sorts, -1, -1);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> List<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping,
+			Sort[] sorts, int start, int pageSize) {
+		if(sorts != null && sorts.length > 0){
+			queryString += " order by " + StringUtil.join(sorts);
+		}
+		logger.debug("NativeFind[{}]", queryString);
+		Query query = entityManager.createNativeQuery(queryString, resultSetMapping);
+		if(params != null && params.length > 0){
+			for(int i=0; i< params.length; i++){
+				logger.debug("{}) : {}", i+1, params[i]);
+				query.setParameter(i+1, params[i]);
+			}
+		}
+		if(start > 0)
+			query.setFirstResult(start);
+		if(pageSize > 0)
+			query.setMaxResults(pageSize);
+		return (List<T>)query.getResultList();	
+	}
+
+	public <T> T findOneByNativeQuery(String queryString, Object[] params, String resultSetMapping) {
+		List<T> list = findByNativeQuery(queryString, params, resultSetMapping);
+		if(list.isEmpty())
+			return null;
+		return list.get(0);
 	}
 
 }

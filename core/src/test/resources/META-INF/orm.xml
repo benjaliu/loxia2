@@ -8,4 +8,9 @@
 	<named-query name="User.findUserByLoginName">
 		<query><![CDATA[select u from User u where u.loginName = :loginName]]></query>
 	</named-query>
+	<sql-result-set-mapping name="user">
+		<column-result name="loginName"/>
+		<column-result name="userName"/>
+		<column-result name="password"/>
+	</sql-result-set-mapping>
 </entity-mappings>
