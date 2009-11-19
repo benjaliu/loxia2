@@ -149,3 +149,26 @@
 {
 	background-color: #fff;
 }
+
+.loxiatable { padding: 0px; margin: -1px 0px; border-collapse: collapse; width: 100%; border: 0px solid #dedede; overflow: hidden; }
+.loxiatable td, .compassTable th { line-height: 26px; color: #666; }
+.loxiatable th { white-space: nowrap; color: #666; cursor: pointer; text-indent: 5px; border-width: 1px 0px 0px 0px; border-style: solid; border-color: #efefef; border-collapse: collapse; background: url(th-bg.gif) bottom left repeat-x #f9f9f9; }
+	.loxiatable th.sorted { }
+
+.loxiatable tr { border-collapse: collapse; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #ebebeb; }
+.loxiatable td { border-right: 0px solid #dedede; padding: 0px 5px; }
+
+.loxiatable .even { background-color: #eef2ff; /*eef2ff*/ }
+.loxiatable .odd { background-color: #fff; }
+.loxiatable tr.hover { background-color: #f3f1f1; }
+.loxiatable th.hover { border-bottom: 1px solid #aaccf6; background: url(th-hover-bg.gif) bottom left repeat-x #ebf3fd; color: #17294c; }
+	.loxiatable th.hover div { }
+	.loxiatable th div { background: url(unsorted.gif) 100% 50% no-repeat; width: auto; }
+	.loxiatable th.sort-asc { background: url(th-sort-bg.gif) bottom left repeat-x #fff9dd !important; border-color: #e8e467; color: #000 !important; }
+		.loxiatable th.sort-asc div { background-image: url(sort-asc.gif); }
+	.loxiatable th.sort-desc { background: url(th-sort-bg.gif) bottom left repeat-x #fff9dd !important; border-color: #e8e467; color: #000 !important; }
+		.loxiatable th.sort-desc div { background-image: url(sort-desc.gif); }
+	.loxiatable th.nosort div { background: transparent; cursor: default; }
+.loxiatable tr.selected { /*background: #daeaff !important;*/ background: #e9f2fe; /*daeaff*/ border-color: #e5eff7; }
+.loxiatable tr.selected td { }
+.loxiatable tr.selected td, .compassTable tr.selected td a {}

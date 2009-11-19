@@ -66,6 +66,23 @@
 		upperFirstLetter: function(str){
 			return str.substring(0,1).toUpperCase() + str.substring(1);
 		},
+		getObject: function(propName, context){
+			context = context || _global;
+			var parts = propName.split(".");			
+			for(var i=0, pn; context &&(pn = parts[i]); i++){
+				context = (pn in context ? context[pn] : undefined);
+			}
+			return context;
+		},
+		setObject: function(propName, value, context){
+			context = context || _global;
+			var parts = propName.split(".");	
+			var p = parts.pop();
+			for(var i=0, pn; context &&(pn = parts[i]); i++){
+				context = (pn in context ? context[pn] : context[pn]={});
+			}
+			return (context && p ? (context[p]=value) : undefined);
+		},
 		hitch : function(scope, method){
 			if(!method){
 				method = scope;

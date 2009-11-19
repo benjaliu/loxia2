@@ -6,9 +6,17 @@
 <title>Template</title>
 <link rel="stylesheet" type="text/css" href="images/loxia/loxia.css"/>
 <link rel="stylesheet" type="text/css" href="images/jquery.datepick.css"/>
+<style>
+ * {
+ 	font-family: verdana,arial;
+ 	font-size: 10pt;
+ }
+</style>
 <script type="text/javascript" src="scripts/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.livequery.js"></script>
 <script type="text/javascript" src="scripts/loxia/jquery.loxiacore-1.0.js"></script>
 <script type="text/javascript" src="scripts/loxia/jquery.loxiadatepicker-1.0.js"></script>
+<script type="text/javascript" src="scripts/loxia/jquery.loxiatable-1.0.js"></script>
 <script type="text/javascript">
 var $j = jQuery.noConflict();
 
@@ -25,6 +33,9 @@ $j(document).ready(function(){
 		for(var i=0; i< data.length; i++)
 			console.log(data[i]);
 	});
+
+	$j("#idTable").loxiatable({data:[{a: "Hello", b: "I", c : "am", d : "fine."},
+	                                 {a: 500, b: true, c : ""}]});
 });
 function sampleFormValidate(oForm){
 	return "This is one error";
@@ -43,6 +54,17 @@ function checkAny(value){
 <select id="a" name="sel" class="loxia"/>
 <input type="text" name="kitten.cat" class="loxia"/>
 <textarea class="loxia" name="kitten.desc" required="true"  checkmaster="checkDate"></textarea>
+<table id="idTable" style="width: 100%">
+	<thead><tr><th colspan="4">Head</th></tr>
+	<tr><th property="a">A</th><th property="b" sort="b">B</th><th property="c" sort="c|desc">C</th><th property="d" sort="d|asc">D</th></tr></thead>
+	<tbody>
+		<tr><td>First Tbody A</td><td>First Tbody B</td><td>First Tbody C</td><td>First Tbody D</td></tr>
+	</tbody>
+	<tbody>
+		<tr><td>Second Tbody A</td><td>Second Tbody B</td><td>Second Tbody C</td><td>Second Tbody D</td></tr>
+	</tbody>
+	<tfoot></tfoot>
+</table>
 </form>
 <div id="error" style="display: none;">This is one <B>Error</B><br/>Please check it.</div>
 </body>
