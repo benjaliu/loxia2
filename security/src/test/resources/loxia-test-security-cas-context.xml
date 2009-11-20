@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+		<sec:http entry-point-ref="casProcessingFilterEntryPoint" access-denied-page="/accessDenied.jsp"
+		access-decision-manager-ref="accessDecisionManager">		
+		<sec:intercept-url pattern="/accessdenied.jsp" filters="none"/>
+		<sec:intercept-url pattern="/images/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+		<sec:intercept-url pattern="/javascript/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+		<sec:intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY"/>		
+		
+		<sec:anonymous/>
+	</sec:http>	
+	
+	<bean id="serviceProperties" class="org.springframework.security.ui.cas.ServiceProperties">
+	    <property name="service" value="${auth.security.check}"/>	    
+  	</bean>
+  	
+  	<sec:authentication-manager alias="authenticationManager"/>      
+      
+	<bean id="casProcessingFilter" class="org.springframework.security.ui.cas.CasProcessingFilter">
+	  	<sec:custom-filter after="CAS_PROCESSING_FILTER"/>
+	  	<property name="authenticationManager" ref="authenticationManager"/>
+	  	<property name="authenticationFailureUrl" value="/WEB-INF/login/loginFailure.jsp"/>
+	  	<property name="defaultTargetUrl" value="/"/>
+	  	<property name="filterProcessesUrl"	value="/j_acegi_cas_security_check" />
+	</bean>
+
+	<bean id="casProcessingFilterEntryPoint" 
+	    	class="org.springframework.security.ui.cas.CasProcessingFilterEntryPoint">
+	  	<property name="loginUrl" value="${auth.loginUrl}"/>
+	  	<property name="serviceProperties" ref="serviceProperties"/>
+	</bean>	
+	
+	<bean id="casAuthenticationProvider" class="org.springframework.security.providers.cas.CasAuthenticationProvider">
+        <sec:custom-authentication-provider />
+        <property name="userDetailsService" ref="userDetailsService"/>
+        <property name="serviceProperties" ref="serviceProperties" />
+        <property name="statelessTicketCache" ref="statelessTicketCache" />
+        <property name="ticketValidator">
+        	<bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+        		<constructor-arg index="0" value="${auth.server}" />
+            </bean>
+        </property>
+        <property name="key" value="my_password_for_this_auth_provider_only"/>
+    </bean>
+    
+    <bean id="statelessTicketCache"
+		class="org.springframework.security.providers.cas.cache.EhCacheBasedTicketCache">
+		<property name="cache" ref="cache" />
+	</bean>
+
+	<bean id="cache"
+		class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager">
+			<bean
+				class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" />
+		</property>
+		<property name="cacheName" value="userCache" />
+	</bean>
+	
+	<bean id="userDetailsService" class="cn.benjamin.loxia.security.LoxiaUserDetailsService">      
+	</bean>	
+
+	<bean id="accessDecisionManager"
+		class="org.springframework.security.vote.AffirmativeBased">
+		<property name="allowIfAllAbstainDecisions" value="false" />
+		<property name="decisionVoters">
+			<list>
+				<bean class="org.springframework.security.vote.RoleVoter" />
+				<bean class="org.springframework.security.vote.AuthenticatedVoter" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- This bean is optional; it isn't used by any other bean as it only listens and logs -->
+	<bean class="org.springframework.security.event.authentication.LoggerListener" />
+</beans>

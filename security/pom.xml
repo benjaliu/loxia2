@@ -15,5 +15,26 @@
 	<name>Loxia2 Platform Security Module</name>
 	
 	<dependencies>
+		<dependency>
+			<groupId>cn.benjamin.loxia2</groupId>
+			<artifactId>loxia2-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.benjamin.loxia2</groupId>
+			<artifactId>loxia2-repository</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>2.0.5.RELEASE</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 </project>
