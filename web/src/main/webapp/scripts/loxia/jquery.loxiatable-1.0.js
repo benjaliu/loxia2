@@ -48,7 +48,17 @@
 		}
 	};
 	$.fn.ltInit = function(settings){
-		var $t = $(this);		
+		var $t = $(this);	
+		
+		if(settings.url)
+			$t.data("url", settings.url);
+		if(settings.form)
+			$t.data("form", settings.form);
+		if(settings.select)
+			$t.data("select", settings.select);
+		if(settings.images)
+			$t.data("images", settings.images);
+		
 		$t.ltLoadData(settings.data, false);
 		$t.ltInitStyle(settings);
 		$t.ltInitHeadAction(settings);
@@ -59,6 +69,7 @@
 		var $t = $(this);
 		var sortStatus = [];
 		if(settings.sort){
+			$t.data("sort", settings.sort);
 			var sortlist = settings.sort.split(",");
 			sortStatus.push(sortlist[0]);
 			sortStatus.push(sortlist[1]||"asc");
@@ -82,6 +93,57 @@
 		$t.find('tbody:first tr:even').addClass("even");
 			
 		return this;
+	}
+	
+	$.fn.ltRefreshTable = function(settings){
+		var $t = $(this);
+		var imagePath = settings.images || $t.data("images");
+		$t.find('.ltPager .load img').attr('src', imagePath+'/load.gif');
+		settings = $.extend({
+			error : function(XMLHttpRequest, textStatus, errorThrown){
+			//TODO exception handling here
+			var exception = {};
+			exception["message"] = "Error occurs when fetching data from url:" + this.url;
+			exception["cause"] = textStatus? textStatus : errorThrown;
+			//console.dir(exception);
+			}
+		},settings);
+		console.dir(settings);
+		var url = settings.url || $t.data("url");
+		$.loxia.asyncXhr(url, settings, function(data, textStatus){
+			//console.dir(data);
+			if(data.exception){
+				//TODO exception handling here
+			}else{
+				$t.ltLoadData(data.data, true);
+				
+				if(data.sort){
+					$t.data("sort",data.sort);
+					var sortStatus = [];
+
+					var sortlist = data.sort.split(",");
+					sortStatus.push(sortlist[0]);
+					sortStatus.push(sortlist[1]||"asc");
+					
+					$t.find("thead tr:last th").each(function(i){
+						if(data.sort){
+							$(this).removeClass("sort-asc sort-desc");
+							var sort = $(this).attr("sort");
+							if(sort == sortStatus[0]){
+								$(this).addClass("sort-" + sortStatus[1]);
+							}		
+						}						
+					});
+				}
+
+				$t.find('tbody:first tr:odd').addClass("odd");
+				$t.find('tbody:first tr:even').addClass("even");
+				
+				if(data.page)
+					$t.ltSetPager(data);
+				//TODO remove Loading here							
+			}
+		});
 	}
 	
 	$.fn.ltInitHeadAction = function(settings){		
@@ -110,30 +172,11 @@
 							currentPage: settings.currentPage,
 							pageSize: settings.pageSize,
 							sortString: sortStr
-						},
-						error : function(XMLHttpRequest, textStatus, errorThrown){
-							//TODO exception handling here
-							var exception = {};
-							exception["message"] = "Error occurs when fetching data from url:" + this.url;
-							exception["cause"] = textStatus? textStatus : errorThrown;
-							//console.dir(exception);
 						}
 				};
 				if(settings.form) args["form"] = settings.form;
 				//TODO add Loading here
-				$.loxia.asyncXhr(settings.url, args, function(data, textStatus){
-					//console.dir(data);
-					if(data.exception){
-						//TODO exception handling here
-					}else{
-						$t.ltLoadData(data.data, true);
-						$("thead tr:last th", $t).removeClass("sort-asc sort-desc");
-						$th.addClass("sort-" + sortOrder);
-						$t.find('tbody:first tr:odd').addClass("odd");
-						$t.find('tbody:first tr:even').addClass("even");
-						//TODO remove Loading here							
-					}
-				});
+				$t.ltRefreshTable(args);
 			});
 		});
 		
@@ -144,31 +187,31 @@
 		var $t = $(this);
 		if(!settings.page) return this;
 		
+		$t.data("page", true);
 		$t.data("pageSize", settings.pageSize);
 		$t.data("currentPage", settings.currentPage);
 		$t.data("pageCount", settings.pageCount);
 		$t.data("itemCount", settings.itemCount);
 		$t.data("pageItemCount", settings.pageItemCount);
+		
+		$(".perPage select",$t).val("" + settings.pageSize);
+		$(".pages input.pageInput").val(settings.currentPage);
+		$(".pages .totalPages").text(settings.pageCount);
+		$(".displaying .totalCount").text(settings.itemCount);
+		
+		$t.ltSetPagerImages(settings, settings.currentPage, settings.pageCount);
 	}
 	
 	$.fn.ltInitPager = function(settings){
 		var $t = $(this);
 		if(!settings.page) return this;
 
-		$t.data("pageSize", settings.pageSize);
-		$t.data("currentPage", settings.currentPage);
-		$t.data("pageCount", settings.pageCount);
-		$t.data("itemCount", settings.itemCount);
-		$t.data("pageItemCount", settings.pageItemCount);
-
-
 		var pager =
 			'<div class="ltPager">' +
 			'<div class="inner"><div class="perPage">' +
 			'Per Page: <select>';
-			for (i=0; i<settings.pageSizeOptions.length; i++) {
-				var selected = settings.pageSize == settings.pageSizeOptions[i] ? ' selected="selected"' : '';
-				pager += '<option value="'+settings.pageSizeOptions[i]+'"'+selected+'>'+settings.pageSizeOptions[i]+'</option>';
+			for (i=0; i<settings.pageSizeOptions.length; i++) {				
+				pager += '<option value="'+settings.pageSizeOptions[i]+'">'+settings.pageSizeOptions[i]+'</option>';
 			}
 
 		var itemStart = settings.pageSize * (settings.currentPage - 1) + 1;
@@ -183,15 +226,15 @@
 			'<div class="imgWrap"><img src="'+settings.images+'/last.gif" alt="Last" title="Last Page" /></div>' +
 			'<div class="separator"></div></div>';
 			
-		pager += '<div class="pages">Page <input class="loxia pageInput" checkmaster="checkNumber" value="'+ settings.currentPage + '"/>' +
-			'/<span class="totalPages">' + $t.data("pageCount") + '</span><input type="button" class="loxia" value="Go"/></div>';
+		pager += '<div class="pages">Page <input class="loxia pageInput" checkmaster="checkNumber" value=""/>' +
+			'/<span class="totalPages"></span><input type="button" class="loxia" value="Go"/></div>';
 		
 		pager +=			
 			'<div>' +
 			'<div class="separator"></div>' +
 			'<div class="imgWrap load"><img src="'+settings.images+'/loading.gif" alt="Load" title="Reload" /></div>' +
 			'<div class="separator"></div>' +
-			'<div class="displaying">Displaying ' + itemStart + ' to ' + itemEnd + ' of ' + $t.data("itemCount") + ' items</div>' +
+			'<div class="displaying"><span class="totalCount"></span> items</div>' +
 			'</div>';
 
 /*			if (opts.toggle) {
@@ -213,40 +256,126 @@
 				}
 			);
 		
-		$.loxia.initLidgets($t.find("tbody:last tr:last"));
+		$.loxia.initLidgets($t.find("tbody:last tr:last"));			
 		
-		$t.ltSetPagerImages(settings, settings.currentPage, settings.pageCount);
+		$t.ltSetPager(settings);
 		
+		$(".ltPager", $t).livequery(function() {
+			$(".ltPager img", $t).unbind("click").bind("click", function() {
+				var src = $(this).attr("src");
+				if (src.match(/disabled\.gif$/)) {
+					return false;
+				}
+				var action = $(this).attr("alt");
+				
+				var moveToPage = $t.data("currentPage");
+				switch (action) {
+				case 'Next':
+					moveToPage += 1;
+					break;
+
+				case 'Previous':
+					moveToPage -= 1;
+					break;
+
+				case 'First':
+					moveToPage = 1;
+					break;
+
+				case 'Last':
+					moveToPage = $t.data("pageCount");
+					break;
+				}
+				var settings = {
+					url: $t.data("url"),
+					data: {
+						pageSize: $t.data("pageSize"),
+						currentPage: moveToPage
+					}
+				};
+				if($t.data("sort"))
+					settings["sort"] = $t.data("sort");
+				if($t.data("form"))
+					settings["form"] = $t.data("form");
+				//TODO add Loading here				
+				$t.ltRefreshTable(settings);
+			});
+			
+			$(".ltPager .pages .loxiaButton", $t).unbind("click").bind("click", function(){
+				var $input = $(".ltPager .pages .pageInput", $t);
+				if(!$input.data("state"))
+					$.loxia.lidget.check($input);
+				
+				if($input.data("state")){
+					var moveToPage = parseInt($input.val());
+					
+					var settings = {
+						url: $t.data("url"),
+						data: {
+							pageSize: $t.data("pageSize"),
+							currentPage: moveToPage
+						}
+					};
+					if($t.data("sort"))
+						settings["sort"] = $t.data("sort");
+					if($t.data("form"))
+						settings["form"] = $t.data("form");
+					//TODO add Loading here				
+					$t.ltRefreshTable(settings);
+				}				
+			});
+			
+			$(".ltPager select", $t).unbind("change").bind("change", function() {
+				var pageSize = parseInt($(this).val());
+				
+				var settings = {
+					url: $t.data("url"),
+					data: {
+						pageSize: pageSize,
+						currentPage: 1
+					}
+				};
+				if($t.data("sort"))
+					settings["sort"] = $t.data("sort");
+				if($t.data("form"))
+					settings["form"] = $t.data("form");
+				//TODO add Loading here				
+				$t.ltRefreshTable(settings);
+			});
+		});
 		return this;
 	}	
 	
 	$.fn.ltSetPagerImages = function(settings, page, pages) {
-		$this = $(this);
-
+		var $t = $(this);
+		var imagePath = settings.images || $t.data("images");
+		
 		if (page == 1) {
-			$this.find(".ltPager img[src$='prev.gif']").attr('src', settings.images+'/prev-disabled.gif');
-			$this.find(".ltPager img[src$='first.gif']").attr('src', settings.images+'/first-disabled.gif');
+			$t.find(".ltPager img[src$='prev.gif']").attr('src', imagePath+'/prev-disabled.gif');
+			$t.find(".ltPager img[src$='first.gif']").attr('src', imagePath+'/first-disabled.gif');
 
-			$this.find('.ltPager').find("img[src$='next-disabled.gif']").attr('src', settings.images+'/next.gif');
-			$this.find('.ltPager').find("img[src$='last-disabled.gif']").attr('src', settings.images+'/last.gif');
+			$t.find('.ltPager').find("img[src$='next-disabled.gif']").attr('src', imagePath+'/next.gif');
+			$t.find('.ltPager').find("img[src$='last-disabled.gif']").attr('src', imagePath+'/last.gif');
 		}
 
 		if (page >= pages) {
-			$this.find(".ltPager img[src$='next.gif']").attr('src', settings.images+'/next-disabled.gif');
-			$this.find(".ltPager img[src$='last.gif']").attr('src', settings.images+'/last-disabled.gif');
+			$t.find(".ltPager img[src$='next.gif']").attr('src', imagePath+'/next-disabled.gif');
+			$t.find(".ltPager img[src$='last.gif']").attr('src', imagePath+'/last-disabled.gif');
 
 			if (page != 1) {
-				$this.find(".ltPager img[src$='prev-disabled.gif']").attr('src', settings.images+'/prev.gif');
-				$this.find(".ltPager img[src$='first-disabled.gif']").attr('src', settings.images+'/first.gif');
+				$t.find(".ltPager img[src$='prev-disabled.gif']").attr('src', imagePath+'/prev.gif');
+				$t.find(".ltPager img[src$='first-disabled.gif']").attr('src', imagePath+'/first.gif');
 			}
 		}
 
 		if (page != 1 && page != pages) {
-			$this.find('.ltPager').find("img[src$='next-disabled.gif']").attr('src', settings.images+'/next.gif');
-			$this.find('.ltPager').find("img[src$='last-disabled.gif']").attr('src', settings.images+'/last.gif');
+			$t.find('.ltPager').find("img[src$='next-disabled.gif']").attr('src', imagePath+'/next.gif');
+			$t.find('.ltPager').find("img[src$='last-disabled.gif']").attr('src', imagePath+'/last.gif');
 
-			$this.find(".ltPager img[src$='prev-disabled.gif']").attr('src', settings.images+'/prev.gif');
-			$this.find(".ltPager img[src$='first-disabled.gif']").attr('src', settings.images+'/first.gif');
+			$t.find(".ltPager img[src$='prev-disabled.gif']").attr('src', imagePath+'/prev.gif');
+			$t.find(".ltPager img[src$='first-disabled.gif']").attr('src', imagePath+'/first.gif');
 		}
+		
+		$t.find('.ltPager .load img').attr('src', imagePath+'/load.png');
 	};
 })(jQuery);
