@@ -459,7 +459,7 @@
 	};
  	
 	checkNumber = function(){
-		return _l.SUCCESS + "^" + "12345";
+		return _l.SUCCESS;
 	};
 	checkDate = function(){
 		return _l.SUCCESS;
