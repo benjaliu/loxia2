@@ -169,6 +169,18 @@
 	.loxiatable th.sort-desc { background: url(th-sort-bg.gif) bottom left repeat-x #fff9dd !important; border-color: #e8e467; color: #000 !important; }
 		.loxiatable th.sort-desc div { background-image: url(sort-desc.gif); }
 	.loxiatable th.nosort div { background: transparent; cursor: default; }
-.loxiatable tr.selected { /*background: #daeaff !important;*/ background: #e9f2fe; /*daeaff*/ border-color: #e5eff7; }
+.loxiatable tr.selected { /*background: #daeaff !important;*/ background: #daeaff; /*daeaff*/ border-color: #e5eff7; }
 .loxiatable tr.selected td { }
-.loxiatable tr.selected td, .compassTable tr.selected td a {}
+.loxiatable tr.selected td, .loxiatable tr.selected td a {}
+
+.loxiatable .ltPager { color: #555; position: relative; width: auto; margin-left: -1px; font-size: 11px; line-height: 20px; background: url(pager-bg.gif) bottom left repeat-x #666; height: 30px; border: 1px solid #d7d7d7; }
+.loxiatable .ltPager .inner { position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; }
+.loxiatable .ltPager .imgWrap { border: 1px solid transparent; }
+.loxiatable .ltPager .imgWrap img { float: left; padding: 1px; border-width: 1px 0px 0px 1px; border-style: solid; border-color: transparent; cursor: pointer; }
+.loxiatable .ltPager .imgWrapHover { border: 1px solid #bbb; }
+.loxiatable .ltPager .imgWrapHover img { border-color: #fff !important; border-style: solid; border-width: 1px 0px 0px 1px; }
+.loxiatable .ltPager div { float: left; }
+.loxiatable .ltPager .separator { height: 20px; margin: 0px 6px; border-left: 1px solid #aaa; border-right: 1px solid #fff; }
+
+.loxiatable .ltPager .pageInput { width: 4em; text-align: right; padding-right: 1px}
+.loxiatable .ltPager .perPage { }
