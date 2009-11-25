@@ -21,18 +21,15 @@
 			for(var c,i=0;c=this.defaultConfig.tooltipContainers[i];i++){
 				$(c).appendTo("body");
 			}
-			$(".loxiatip").hide();
-			
-			this.initLidgets();
-						
+			$(".loxiatip").hide();					
 		},
 		initLidgets: function(context){
 			if(context == undefined)
-				$('button.loxia,select.loxia,input.loxia,textarea.loxia').lidget();
-			else if($(context).hasClass("loxia"))
+				$('button.lidget,select.lidget,input.lidget,textarea.lidget').lidget();
+			else if($(context).hasClass("lidget"))
 				$(context).lidget();
 			else
-				$('button.loxia,select.loxia,input.loxia,textarea.loxia', context).lidget();
+				$('button.lidget,select.lidget,input.lidget,textarea.lidget', context).lidget();
 		},
 		isString: function(obj){
 			return typeof obj == "string" || obj instanceof String;
@@ -94,6 +91,16 @@
 				return function(){ return scope[method].apply(scope, arguments || []); }; // Function
 			}
 			return !scope ? method : function(){ return method.apply(scope, arguments || []); };
+		},
+		val : function(obj){
+			if($(obj).is(".loxia")) return this.lidget.val(obj);
+			if($(obj).is("input,select,textarea")) return $(obj).val();
+			var firstInputItem = $(obj).find("input,select,textarea").get(0);
+			if(firstInputItem){
+				if($(firstInputItem).is(".loxia")) return this.lidget.val(firstInputItem);
+				else return $(firstInputItem).val();
+			}else
+				return $(obj).text();
 		},
 		_setValue : function(obj, name, value){
 			if(value == null) return;
@@ -299,14 +306,14 @@
 					tipPos[1] = tipPos[1] - (tooltip.height() - obj.offsetHeight)/2;
 					offset[0] = -10;
 				}else if(direction == this.LEFT){
-					tipPos[0] = tipPos[0] - tooptip.width();
+					tipPos[0] = tipPos[0] - tooltip.width();
 					tipPos[1] = tipPos[1] - (tooltip.height() - obj.offsetHeight)/2;
 					offset[0] = 10;
 				}else if(direction == this.DOWN){
 					tipPos[1] = tipPos[1] + obj.offsetHeight + 2;
 					offset[1] = -10;
 				}else{
-					tipPos[1] = tipPos[1] - toolptip.height - 2;
+					tipPos[1] = tipPos[1] - tooltip.height - 2;
 					offset[1] = 10;
 				}
 				tipPos[0] = tipPos[0] < 0 ? 0 : tipPos[0];
@@ -346,6 +353,11 @@
 				}
 			},
 			
+			val: function(obj){
+				if(!$(obj).hasClass("loxia")) return null;
+				return $(obj).data("lastRightValue");
+			},
+			
 			check : function(obj){
 				if(!$(obj).hasClass("loxia")) return true;
 				this.clearState(obj);
@@ -379,6 +391,7 @@
 				}
 				this.setState(obj, true);
 				$(obj).data("lastRightValue", value);
+				$(obj).trigger("valueChangedEvent",[value]);
 				return true;
 			}
 		}
@@ -399,6 +412,7 @@
 
 	$.fn.lidget = function(){
 		this.each(function(){			
+			$(this).removeClass("lidget").addClass("loxia");
 			var type = _l.upperFirstLetter($.trim(this.tagName.toLowerCase()));
 			var isButton = ((type == "Input") && $(this).attr("type").toLowerCase() == "button")
 							|| type == "Button";
@@ -423,6 +437,11 @@
 				$(this).data("lastRightValue", $(this).val());
 			}
 			
+			if($(this).hasClass("datepicker")){
+				console.log($(this).attr("name"));
+				$(this).datepick();
+			}
+			
 			$(this).focus(function(){				
 				if(!isButton && !isCheckBox && !isRadio){
 					$(this).addClass(baseClass + "Focused");
@@ -432,8 +451,8 @@
 				}
 			});
 			
-			$(this).blur(function(){
-				if(!isButton && !isCheckBox && !isRadio){
+			if($(this).is("select")){
+				$(this).change(function(){
 					$(this).removeClass(baseClass + "Focused");
 					$.loxia.html.hideTooltip(this);
 				
@@ -444,17 +463,34 @@
 					}
 					
 					//do check
-					if(_l.lidget.check(this)){						
-						//format
-						if($(this).attr("formatter")){
-							value = $(this).val();
-							value = _l.hitch($(this).attr("formatter"))(value);
+					_l.lidget.check(this);	
+				});
+			}else{
+				$(this).blur(function(){
+					if(!isButton && !isCheckBox && !isRadio){
+						$(this).removeClass(baseClass + "Focused");
+						$.loxia.html.hideTooltip(this);
+					
+						var value = $(this).val();
+						if($(this).attr("trim") == "true"){
+							value = $.trim(value);
 							$(this).val(value);
-						}	
-					}					
-				}
-			});
+						}
+						
+						//do check
+						if(_l.lidget.check(this)){						
+							//format
+							if($(this).attr("formatter")){
+								value = $(this).val();
+								value = _l.hitch($(this).attr("formatter"))(value);
+								$(this).val(value);
+							}	
+						}					
+					}
+				});
+			}
 		});
+				
 		return this;
 	};
  	
@@ -465,9 +501,3 @@
 		return _l.SUCCESS;
 	}; 
  })(jQuery);
-
-(function($){
-	$(document).ready(function(){
-		$.loxia.init({debug:true});
-	});
-})(jQuery);

@@ -1,5 +1,5 @@
 (function($){
-	$.fn.loxiatable = function(settings){		
+	$.fn.loxiaTable = function(settings){		
 		settings = $.extend({},{
 			sort: "",			
 			page: false,
@@ -82,7 +82,7 @@
 						}else if(selectors[j].charAt(0) == '-'){
 							row += "<td><input type='radio'" + strSelected + " name='" + name + "' value='" + value + "'/></td>";
 						}else
-							throw new Exception("Load Data for Selector Error.");
+							throw new exception("Load Data for Selector Error.");
 					}else{
 						value = (value == undefined || value == null ||
 								($.loxia.isString(value) && !value)) ? "&nbsp;" : value;
@@ -202,7 +202,7 @@
 		if($t.data("selectCols") == 1)
 			$t.find("tbody:first input:checked").parents("tr").addClass("selected");
 		return this;
-	}
+	};
 	
 	$.fn.ltRefreshTable = function(settings){
 		var $t = $(this);
@@ -266,7 +266,7 @@
 				//TODO remove Loading here							
 			}
 		});
-	}
+	};
 	
 	$.fn.ltInitHeadAction = function(settings){		
 		var $t = $(this);
@@ -303,7 +303,7 @@
 		});
 		
 		return this;
-	}
+	};
 	
 	$.fn.ltSetPager = function(settings){
 		var $t = $(this);
@@ -322,7 +322,7 @@
 		$(".displaying .totalCount").text(settings.itemCount);
 		
 		$t.ltSetPagerImages(settings, settings.currentPage, settings.pageCount);
-	}
+	};
 	
 	$.fn.ltInitPager = function(settings){
 		var $t = $(this);
@@ -466,7 +466,7 @@
 			});
 		});
 		return this;
-	}	
+	};	
 	
 	$.fn.ltSetPagerImages = function(settings, page, pages) {
 		var $t = $(this);
@@ -500,4 +500,106 @@
 		
 		$t.find('.ltPager .load img').attr('src', imagePath+'/load.png');
 	};
+})(jQuery);
+
+(function($){
+	var ltRowIndex = 0;
+	$.fn.loxiaDynTable = function(settings){		
+		settings = $.extend({},{	
+			canAdd: true,
+			canDelete: true,
+			append: 0,
+			images: "images/loxia"
+		},settings);
+		this.each(function(){
+			$(this).addClass("loxiatable editable");
+			$(this).ltDynInit(settings);
+		});
+		return this;
+	};
+	
+	$.fn.ltDynInit = function(settings){
+		var $t = $(this);
+		if($("tbody", $t).length != 2)
+			throw new exception("Current table need at least and only 2 tbodies.");
+		
+		$t.find("thead tr:last th").each(function(i){
+			$(this).addClass("nosort col-" + i);
+			$(this).html("<div class='th-col-" + i + "'>" + $(this).html() + "</div>");
+			$t.find("tbody tr").find("td:eq(" + i + ")").addClass(" col-" + i);
+			$t.data("cols", ++i);
+			
+			$(this).hover(function(){
+				$(this).toggleClass("hover");
+			},function(){
+				$(this).toggleClass("hover");
+			});
+		});
+		
+		$t.find("tbody .col-0 input[type='checkbox']").each(function(){
+			$(this).parents("td").addClass("selector");
+		});
+				
+		var $tptTbody = $("tbody:last", $t);
+		var templateStr = $tptTbody.html();
+		$t.data("template", templateStr);
+		$("tr",$tptTbody).remove();
+		
+		$.loxia.initLidgets($t.find("tbody:first"));
+		
+		for(var i=0; i< settings.append; i++)
+			$t.ltAppendRow(settings);
+		
+		$t.ltRefreshStyle(settings);
+		
+		$("tbody:first tr", $t).livequery(function(){
+			var $tr = $(this);
+			$("input,select,textarea", $tr).each(function(){
+				if($(this).parents("td").is(".selector")) return;
+				if($(this).is(".loxia")) 
+					$(this).unbind("valueChangedEvent").bind("valueChangedEvent", function(event, data){
+						$t.trigger("rowChangedEvent",[[$tr,$(this)]]);
+					});
+				else if($(this).is("select"))
+					$(this).unbind("change").bind("change", function(event, data){
+						$t.trigger("rowChangedEvent",[[$tr,$(this)]]);
+					});
+				else
+					$(this).unbind("blur").bind("blur", function(event, data){
+						$t.trigger("rowChangedEvent",[[$tr,$(this)]]);
+					});
+			});
+		});
+		return this;
+	};
+	
+	$.fn.ltRefreshStyle = function(settings){
+		var $t = $(this);		
+		$t.find('tbody:first tr:odd').addClass("odd");
+		$t.find('tbody:first tr:even').addClass("even");
+			
+		return this;
+	};
+	
+	$.fn.ltSetExecBar = function(settings){
+		var $t = $(this);
+		//TODO
+		return this;
+	}
+	
+	$.fn.ltAppendRow = function(settings){
+		var $t = $(this);	
+		var rowIndex = "" + (--ltRowIndex);
+		var row = $t.data("template").replace(/\(#\)/ig, "(" + rowIndex + ")");
+		$t.find("tbody:first").append(row);
+		$.loxia.initLidgets($t.find("tbody:first tr:last"));
+		$t.trigger("RowAppendedEvent", [$t.find("tbody:first tr:last")]);
+		return this;
+	};
+	
+	$.fn.ltDeleteRows = function(settings){
+		$t.find("tbody:first").remove("tr:has(.col-0 input:checked)");
+		$t.trigger("RowDeletedEvent");
+		return this;
+	}
 })(jQuery);

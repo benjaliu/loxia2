@@ -28,15 +28,40 @@ function f1(value){
 }
 
 $j(document).ready(function(){
-	$j(".datepicker").datepick();
+	$j.loxia.init({debug:true});
+	
 	$j("#idForm").bind("submitFailureEvent", function(event,data){
 		for(var i=0; i< data.length; i++)
 			console.log(data[i]);
 	});
 
-	$j("#idTable").loxiatable({data:[{a: "Hello", b: "I", c : "am", d : "fine."},
-	                                 {a: 500, b: true, c : ""}]});
+	$j("#idTable").loxiaTable({sort:"c,asc",data:[{a: "Hello", b: "I", c : "am", d : "fine."},
+	                                 {a: 500, b: true, c : ""}],
+	                           selected :{col_0 :{Hello:"Hello"}},
+	                           page: true,
+	                           cacheSelect: true,
+	                           pageCount:10,
+	                           currentPage:2,
+	                           url: "file://D:/Work%20Folder/Projects_ext/loxia2/web/src/main/webapp/testtable.json"});
+
+    $j("#idTable").bind("dataReloadedEvent", function(event,data){
+        console.dir(data);
+    });
+    $j("#idTable").bind("selectChangedEvent", function(event,data){
+    	var count = 0;
+    	for (k in data[1]) if (data[1].hasOwnProperty(k)) count++;
+        console.log("Current Selected:" + count);
+    });
+
+    $j("#idEditTable").loxiaDynTable({append: 1});
+
+    $j("#idEditTable").bind("rowChangedEvent", function(event,data){
+    	console.dir(data);
+    });
+    
+    $j.loxia.initLidgets();    	
 });
+
 function sampleFormValidate(oForm){
 	return "This is one error";
 }
@@ -47,23 +72,34 @@ function checkAny(value){
 </head>
 <body>
 <form id="idForm" name="sampleForm">
-<button class="loxia" type="button" onclick="var data = $j.loxia.syncXhr('file://D:/Work%20Folder/Projects_ext/loxia2/web/src/main/webapp/testdata.json',{data:{a:'b'},form:'idForm'}); console.dir(data);">en</button>
-<input name="foo" class="loxia" type="button" value="hah" onclick="$j.loxia.submitForm('idForm')"/>
-<input name="bar" class="loxia" required="true" checkmaster="checkNumber" formatter="f1"/>
-<input name="date" class="loxia datepicker" required="true" checkmaster="checkDate,checkAny"/>
-<select id="a" name="sel" class="loxia"/>
-<input type="text" name="kitten.cat" class="loxia"/>
-<textarea class="loxia" name="kitten.desc" required="true"  checkmaster="checkDate"></textarea>
+<button class="lidget" type="button" onclick="var data = $j.loxia.syncXhr('file://D:/Work%20Folder/Projects_ext/loxia2/web/src/main/webapp/testdata.json',{data:{a:'b'},form:'idForm'}); console.dir(data);">en</button>
+<input name="foo" class="lidget" type="button" value="hah" onclick="$j.loxia.submitForm('idForm')"/>
+<input name="bar" class="lidget" required="true" checkmaster="checkNumber" formatter="f1"/>
+<input name="date" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/>
+<select id="a" name="sel" class="lidget" required="true"><option value="">blank</option><option value="a">a</option></select>
+<input type="text" name="kitten.cat" class="lidget"/>
+<textarea class="lidget" name="kitten.desc" required="true"  checkmaster="checkDate"></textarea>
 <table id="idTable" style="width: 100%">
-	<thead><tr><th colspan="4">Head</th></tr>
-	<tr><th property="a">A</th><th property="b" sort="b">B</th><th property="c" sort="c|desc">C</th><th property="d" sort="d|asc">D</th></tr></thead>
+	<thead><tr><th colspan="5">Head</th></tr>
+	<tr><th property="a" name="ak"><input type="checkbox"/></th><th property="a" name="bk"><input type="radio"/>Please Select</th><th property="a">A</th><th property="b" sort="b">B</th><th property="c" sort="c">C</th><th property="d" sort="d">D</th></tr></thead>
 	<tbody>
-		<tr><td>First Tbody A</td><td>First Tbody B</td><td>First Tbody C</td><td>First Tbody D</td></tr>
+		<tr><td><input name="ak" type="checkbox"/></td><td><input name="bk" type="radio"/></td><td>First Tbody A</td><td>First Tbody B</td><td>First Tbody C</td><td>First Tbody D</td></tr>
 	</tbody>
 	<tbody>
 		<tr><td>Second Tbody A</td><td>Second Tbody B</td><td>Second Tbody C</td><td>Second Tbody D</td></tr>
 	</tbody>
 	<tfoot></tfoot>
+</table>
+<table id="idEditTable">
+	<thead><tr><th colspan="5">Head</th></tr>
+	<tr><th><input type="checkbox"/></th><th>Please Select</th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead>
+	<tbody>
+		<tr><td><input name="ak" type="checkbox"/></td><td><select id="a" name="sel(0)" class="lidget"/></td><td><input name="abc" /></td><td><textarea class="lidget" name="kitten(0).desc" required="true"></textarea></td><td>First Tbody C</td><td><input name="date(0)" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/></td></tr>
+		<tr><td>&nbsp;</td><td><select id="a" name="sel(1)" class="lidget"/></td><td>First Tbody A</td><td><textarea class="lidget" name="kitten(1).desc" required="true"></textarea></td><td>First Tbody C</td><td><input name="date(1)" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/></td></tr>
+	</tbody>		
+	<tbody>
+		<tr><td><input name="ak" type="checkbox"/></td><td><select id="a" name="sel(#)" class="lidget"/></td><td>First Tbody A</td><td><textarea class="lidget" name="kitten(#).desc" required="true"></textarea></td><td>First Tbody C</td><td><input id="date(#)" name="date(#)" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/></td></tr>
+	</tbody>
 </table>
 </form>
 <div id="error" style="display: none;">This is one <B>Error</B><br/>Please check it.</div>
