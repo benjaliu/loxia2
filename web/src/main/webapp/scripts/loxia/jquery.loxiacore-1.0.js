@@ -4,6 +4,7 @@
 		SUCCESS : "success",
 		ERROR : "error",
 		defaultConfig: {debug: false,
+			dateFormat: "yy-mm-dd",
 			tooltipContainers : [
        			  "<table class='loxiatip loxiatipUp' cellspacing='0' cellpadding='0'><tbody><tr><td class='tip-topleft'></td><td class='tip-top'></td><td class='tip-topright'></td></tr><tr><td class='tip-left'></td><td class='tip-content'></td><td class='tip-right'></td></tr><tr><td class='tip-bottomleft'></td><td><table class='tip-bottom' cellspacing='0' cellpadding='0'><tr><th></th><td><div></div></td><th></th></tr></table></td><td class='tip-bottomright'></td></tr></tbody></table>", //up
        			  "<table class='loxiatip loxiatipDown' cellspacing='0' cellpadding='0'><tbody><tr><td class='tip-topleft'></td><td><table class='tip-top' cellspacing='0' cellpadding='0'><tr><th></th><td><div></div></td><th></th></tr></table></td><td class='tip-topright'></td></tr><tr><td class='tip-left'></td><td class='tip-content'></td><td class='tip-right'></td></tr><tr><td class='tip-bottomleft'></td><td class='tip-bottom'></td><td class='tip-bottomright'></td></tr></tbody></table>", //down
@@ -437,7 +438,7 @@
 			}
 			
 			if($(this).hasClass("datepicker")){
-				$(this).datepick();
+				$(this).datepick({dateFormat: $.loxia.defaultConfig.dateFormat});
 			}
 			
 			$(this).focus(function(){				

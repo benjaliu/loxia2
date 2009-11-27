@@ -32,7 +32,7 @@ $j(document).ready(function(){
 	
 	$j("#idForm").bind("submitFailureEvent", function(event,data){
 		for(var i=0; i< data.length; i++)
-			console.log(data[i]);
+			$j.log(data[i]);
 	});
 
 	$j("#idTable").loxiaTable({sort:"c,asc",data:[{a: "Hello", b: "I", c : "am", d : "fine."},
@@ -45,18 +45,18 @@ $j(document).ready(function(){
 	                           url: "file://D:/Work%20Folder/Projects_ext/loxia2/web/src/main/webapp/testtable.json"});
 
     $j("#idTable").bind("dataReloadedEvent", function(event,data){
-        console.dir(data);
+        $j.log(data);
     });
     $j("#idTable").bind("selectChangedEvent", function(event,data){
     	var count = 0;
     	for (k in data[1]) if (data[1].hasOwnProperty(k)) count++;
-        console.log("Current Selected:" + count);
+        $j.log("Current Selected:" + count);
     });
 
     $j("#idEditTable").loxiaDynTable({append: 1});
 
     $j("#idEditTable").bind("rowChangedEvent", function(event,data){
-    	console.dir(data);
+    	$j.log(data);
     });
     
     $j.loxia.initLidgets();    	
@@ -72,7 +72,7 @@ function checkAny(value){
 </head>
 <body>
 <form id="idForm" name="sampleForm">
-<button class="lidget" type="button" onclick="var data = $j.loxia.syncXhr('file://D:/Work%20Folder/Projects_ext/loxia2/web/src/main/webapp/testdata.json',{data:{a:'b'},form:'idForm'}); console.dir(data);">en</button>
+<button class="lidget" type="button" onclick="var data = $j.loxia.syncXhr('file://D:/Work%20Folder/Projects_ext/loxia2/web/src/main/webapp/testdata.json',{data:{a:'b'},form:'idForm'}); $j.log(data);">en</button>
 <input name="foo" class="lidget" type="button" value="hah" onclick="$j.loxia.submitForm('idForm')"/>
 <input name="bar" class="lidget" required="true" checkmaster="checkNumber" formatter="f1"/>
 <input name="date" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/>
@@ -91,7 +91,7 @@ function checkAny(value){
 	<tfoot></tfoot>
 </table>
 <table id="idEditTable">
-	<thead><tr><th colspan="5">Head</th></tr>
+	<thead><tr><th colspan="6">Head</th></tr>
 	<tr><th><input type="checkbox"/></th><th formula="$2*($3+$4*2):2">Please Select</th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead>
 	<tbody>
 		<tr><td><input name="ak" type="checkbox"/></td><td>&nbsp;</td><td><input name="abc" value="3"/></td><td><textarea class="lidget" name="kitten(0).desc" required="true">2</textarea></td><td>2</td><td><input name="date(0)" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/></td></tr>
