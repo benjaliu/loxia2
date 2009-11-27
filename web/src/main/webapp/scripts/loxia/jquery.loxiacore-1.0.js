@@ -319,8 +319,6 @@
 				}
 				tipPos[0] = tipPos[0] < 0 ? 0 : tipPos[0];
 				tipPos[1] = tipPos[1] < 0 ? 0 : tipPos[1];
-				console.log(objPos);
-				console.log(tipPos);
 				tooltip.css({
 						'position': 'absolute',
 						'left': (tipPos[0] + offset[0]) + 'px',
@@ -439,7 +437,6 @@
 			}
 			
 			if($(this).hasClass("datepicker")){
-				console.log($(this).attr("name"));
 				$(this).datepick();
 			}
 			
