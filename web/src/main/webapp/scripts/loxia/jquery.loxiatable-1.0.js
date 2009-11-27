@@ -151,7 +151,6 @@
 			var changed = false;
 			$t.find("tbody:first tr").find("td:eq(" + i + ") input").each(function(){
 				var value = $(this).val().replace(/\./ig,"_");
-				console.log($(this).is(":checked"));
 				if($(this).is(":checked") != checked){
 					changed = true;
 					$(this).attr("checked", checked);
