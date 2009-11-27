@@ -93,6 +93,7 @@
 			return !scope ? method : function(){ return method.apply(scope, arguments || []); };
 		},
 		val : function(obj){
+			if(obj == undefined) return null;
 			if($(obj).is(".loxia")) return this.lidget.val(obj);
 			if($(obj).is("input,select,textarea")) return $(obj).val();
 			var firstInputItem = $(obj).find("input,select,textarea").get(0);

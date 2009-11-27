@@ -92,14 +92,17 @@ function checkAny(value){
 </table>
 <table id="idEditTable">
 	<thead><tr><th colspan="5">Head</th></tr>
-	<tr><th><input type="checkbox"/></th><th>Please Select</th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead>
+	<tr><th><input type="checkbox"/></th><th formula="$2*($3+$4*2):2">Please Select</th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead>
 	<tbody>
-		<tr><td><input name="ak" type="checkbox"/></td><td><select id="a" name="sel(0)" class="lidget"/></td><td><input name="abc" /></td><td><textarea class="lidget" name="kitten(0).desc" required="true"></textarea></td><td>First Tbody C</td><td><input name="date(0)" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/></td></tr>
-		<tr><td>&nbsp;</td><td><select id="a" name="sel(1)" class="lidget"/></td><td>First Tbody A</td><td><textarea class="lidget" name="kitten(1).desc" required="true"></textarea></td><td>First Tbody C</td><td><input name="date(1)" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/></td></tr>
+		<tr><td><input name="ak" type="checkbox"/></td><td>&nbsp;</td><td><input name="abc" value="3"/></td><td><textarea class="lidget" name="kitten(0).desc" required="true">2</textarea></td><td>2</td><td><input name="date(0)" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/></td></tr>
+		<tr><td>&nbsp;</td><td>&nbsp;</td><td>4</td><td><textarea class="lidget" name="kitten(1).desc" required="true">7</textarea></td><td>2</td><td><input name="date(1)" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/></td></tr>
 	</tbody>		
 	<tbody>
-		<tr><td><input name="ak" type="checkbox"/></td><td><select id="a" name="sel(#)" class="lidget"/></td><td>First Tbody A</td><td><textarea class="lidget" name="kitten(#).desc" required="true"></textarea></td><td>First Tbody C</td><td><input id="date(#)" name="date(#)" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/></td></tr>
+		<tr><td><input name="ak" type="checkbox"/></td><td>&nbsp;</td><td>5</td><td><textarea class="lidget" name="kitten(#).desc" required="true"></textarea></td><td>2</td><td><input id="date(#)" name="date(#)" class="lidget datepicker" required="true" checkmaster="checkDate,checkAny"/></td></tr>
 	</tbody>
+	<tfoot>
+		<tr><td>Summary:</td><td decimal="2">&nbsp;</td><td>&nbsp;</td><td  decimal="2" colspan="2">&nbsp;</td><td>&nbsp;</td></tr>
+	</tfoot>
 </table>
 </form>
 <div id="error" style="display: none;">This is one <B>Error</B><br/>Please check it.</div>

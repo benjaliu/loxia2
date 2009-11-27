@@ -207,7 +207,7 @@
 	$.fn.ltRefreshTable = function(settings){
 		var $t = $(this);
 		var imagePath = settings.images || $t.data("images");
-		$t.find('.ltPager .load img').attr('src', imagePath+'/load.gif');
+		$t.find('.ltToolbar .load img').attr('src', imagePath+'/load.gif');
 		if(!$t.data("cacheSelect")){
 			var selected = $t.data("selected");
 			for(key in selected){
@@ -329,7 +329,7 @@
 		if(!settings.page) return this;
 
 		var pager =
-			'<div class="ltPager">' +
+			'<div class="ltToolbar">' +
 			'<div class="inner"><div class="perPage">' +
 			'Per Page: <select>';
 			for (i=0; i<settings.pageSizeOptions.length; i++) {				
@@ -348,8 +348,9 @@
 			'<div class="imgWrap"><img src="'+settings.images+'/last.gif" alt="Last" title="Last Page" /></div>' +
 			'<div class="separator"></div></div>';
 			
-		pager += '<div class="pages">Page <input class="loxia pageInput" checkmaster="checkNumber" value=""/>' +
-			'/<span class="totalPages"></span><input type="button" class="loxia" value="Go"/></div>';
+		pager += '<div class="pages">Page <input class="lidget pageInput" checkmaster="checkNumber" value=""/>' +
+			'/<span class="totalPages"></span></div>' +
+			'<div class="pager"><div class="imgWrap"><img src="'+settings.images+'/goto.gif" alt="Goto" title="Go to Page" /></div></div>';
 		
 		pager +=			
 			'<div>' +
@@ -369,7 +370,7 @@
 		var $tbody = $t.find("tbody:last").append('<tr><td colspan="' + $t.data("cols")+ '">'
 				+ pager + "</td></tr>");
 		
-		$('.ltPager .imgWrap',$t).hover(
+		$('.ltToolbar .imgWrap',$t).hover(
 				function() {
 					$(this).toggleClass('imgWrapHover');
 				},
@@ -382,14 +383,15 @@
 		
 		$t.ltSetPager(settings);
 		
-		$(".ltPager", $t).livequery(function() {
-			$(".ltPager img", $t).unbind("click").bind("click", function() {
+		$(".ltToolbar", $t).livequery(function() {
+			$(".ltToolbar img", $t).unbind("click").bind("click", function() {
 				var src = $(this).attr("src");
 				if (src.match(/disabled\.gif$/)) {
 					return false;
 				}
 				var action = $(this).attr("alt");
 				
+				var moveto = true;
 				var moveToPage = $t.data("currentPage");
 				switch (action) {
 				case 'Next':
@@ -407,30 +409,18 @@
 				case 'Last':
 					moveToPage = $t.data("pageCount");
 					break;
-				}
-				var settings = {
-					url: $t.data("url"),
-					data: {
-						pageSize: $t.data("pageSize"),
-						currentPage: moveToPage
-					}
-				};
-				if($t.data("sort"))
-					settings["sort"] = $t.data("sort");
-				if($t.data("form"))
-					settings["form"] = $t.data("form");
-				//TODO add Loading here				
-				$t.ltRefreshTable(settings);
-			});
-			
-			$(".ltPager .pages .loxiaButton", $t).unbind("click").bind("click", function(){
-				var $input = $(".ltPager .pages .pageInput", $t);
-				if(!$input.data("state"))
-					$.loxia.lidget.check($input);
-				
-				if($input.data("state")){
-					var moveToPage = parseInt($input.val());
 					
+				case 'Goto':
+					var $input = $(".ltToolbar .pages .pageInput", $t);
+					if(!$input.data("state"))
+						$.loxia.lidget.check($input);
+					
+					if($input.data("state"))
+						moveToPage = parseInt($input.val());
+					else
+						moveto = false;
+				}
+				if(moveto){
 					var settings = {
 						url: $t.data("url"),
 						data: {
@@ -444,10 +434,10 @@
 						settings["form"] = $t.data("form");
 					//TODO add Loading here				
 					$t.ltRefreshTable(settings);
-				}				
-			});
+				}
+			});			
 			
-			$(".ltPager select", $t).unbind("change").bind("change", function() {
+			$(".ltToolbar select", $t).unbind("change").bind("change", function() {
 				var pageSize = parseInt($(this).val());
 				
 				var settings = {
@@ -473,32 +463,32 @@
 		var imagePath = settings.images || $t.data("images");
 		
 		if (page == 1) {
-			$t.find(".ltPager img[src$='prev.gif']").attr('src', imagePath+'/prev-disabled.gif');
-			$t.find(".ltPager img[src$='first.gif']").attr('src', imagePath+'/first-disabled.gif');
+			$t.find(".ltToolbar img[src$='prev.gif']").attr('src', imagePath+'/prev-disabled.gif');
+			$t.find(".ltToolbar img[src$='first.gif']").attr('src', imagePath+'/first-disabled.gif');
 
-			$t.find('.ltPager').find("img[src$='next-disabled.gif']").attr('src', imagePath+'/next.gif');
-			$t.find('.ltPager').find("img[src$='last-disabled.gif']").attr('src', imagePath+'/last.gif');
+			$t.find('.ltToolbar').find("img[src$='next-disabled.gif']").attr('src', imagePath+'/next.gif');
+			$t.find('.ltToolbar').find("img[src$='last-disabled.gif']").attr('src', imagePath+'/last.gif');
 		}
 
 		if (page >= pages) {
-			$t.find(".ltPager img[src$='next.gif']").attr('src', imagePath+'/next-disabled.gif');
-			$t.find(".ltPager img[src$='last.gif']").attr('src', imagePath+'/last-disabled.gif');
+			$t.find(".ltToolbar img[src$='next.gif']").attr('src', imagePath+'/next-disabled.gif');
+			$t.find(".ltToolbar img[src$='last.gif']").attr('src', imagePath+'/last-disabled.gif');
 
 			if (page != 1) {
-				$t.find(".ltPager img[src$='prev-disabled.gif']").attr('src', imagePath+'/prev.gif');
-				$t.find(".ltPager img[src$='first-disabled.gif']").attr('src', imagePath+'/first.gif');
+				$t.find(".ltToolbar img[src$='prev-disabled.gif']").attr('src', imagePath+'/prev.gif');
+				$t.find(".ltToolbar img[src$='first-disabled.gif']").attr('src', imagePath+'/first.gif');
 			}
 		}
 
 		if (page != 1 && page != pages) {
-			$t.find('.ltPager').find("img[src$='next-disabled.gif']").attr('src', imagePath+'/next.gif');
-			$t.find('.ltPager').find("img[src$='last-disabled.gif']").attr('src', imagePath+'/last.gif');
+			$t.find('.ltToolbar').find("img[src$='next-disabled.gif']").attr('src', imagePath+'/next.gif');
+			$t.find('.ltToolbar').find("img[src$='last-disabled.gif']").attr('src', imagePath+'/last.gif');
 
-			$t.find(".ltPager img[src$='prev-disabled.gif']").attr('src', imagePath+'/prev.gif');
-			$t.find(".ltPager img[src$='first-disabled.gif']").attr('src', imagePath+'/first.gif');
+			$t.find(".ltToolbar img[src$='prev-disabled.gif']").attr('src', imagePath+'/prev.gif');
+			$t.find(".ltToolbar img[src$='first-disabled.gif']").attr('src', imagePath+'/first.gif');
 		}
 		
-		$t.find('.ltPager .load img').attr('src', imagePath+'/load.png');
+		$t.find('.ltToolbar .load img').attr('src', imagePath+'/load.png');
 	};
 })(jQuery);
 
@@ -514,7 +504,15 @@
 		this.each(function(){
 			$(this).addClass("loxiatable editable");
 			$(this).ltDynInit(settings);
+			
+			$(this).bind("rowChangedEvent", function(event, data){
+				var $row = data[0];
+				if($row)
+					$(this).ltCalculateRow($row);
+				$(this).ltCalculateFoot(settings);
+			});
 		});
+				
 		return this;
 	};
 	
@@ -523,11 +521,15 @@
 		if($("tbody", $t).length != 2)
 			throw new exception("Current table need at least and only 2 tbodies.");
 		
+		var formulas = [];
 		$t.find("thead tr:last th").each(function(i){
 			$(this).addClass("nosort col-" + i);
 			$(this).html("<div class='th-col-" + i + "'>" + $(this).html() + "</div>");
 			$t.find("tbody tr").find("td:eq(" + i + ")").addClass(" col-" + i);
 			$t.data("cols", ++i);
+			
+			var formula = $(this).attr("formula") || "";
+			formulas.push(formula);
 			
 			$(this).hover(function(){
 				$(this).toggleClass("hover");
@@ -536,6 +538,17 @@
 			});
 		});
 		
+		$t.find("tfoot tr").each(function(){
+			var index = 0;
+			$(this).find("td").each(function(){
+				var colspan = parseInt($(this).attr("colspan")||"1");
+				$(this).addClass("col-" + index);
+				$(this).data("col", index);
+				index += colspan;
+			});
+		})
+		$t.data("formulas", formulas);
+
 		$t.find("tbody .col-0 input[type='checkbox']").each(function(){
 			$(this).parents("td").addClass("selector");
 		});
@@ -550,7 +563,12 @@
 		for(var i=0; i< settings.append; i++)
 			$t.ltAppendRow(settings);
 		
+		$t.ltCalculateRow();
+		$t.ltCalculateFoot(settings);
+		
 		$t.ltRefreshStyle(settings);
+		
+		$t.ltSetExecBar(settings);
 		
 		$("tbody:first tr", $t).livequery(function(){
 			var $tr = $(this);
@@ -575,15 +593,43 @@
 	
 	$.fn.ltRefreshStyle = function(settings){
 		var $t = $(this);		
-		$t.find('tbody:first tr:odd').addClass("odd");
-		$t.find('tbody:first tr:even').addClass("even");
+		$t.find('tbody:first tr:odd').removeClass("even").addClass("odd");
+		$t.find('tbody:first tr:even').removeClass("odd").addClass("even");
 			
 		return this;
 	};
 	
 	$.fn.ltSetExecBar = function(settings){
 		var $t = $(this);
-		//TODO
+		
+		var disabled = " disabled";
+		var bar =
+			'<div class="ltToolbar">' +
+			'<div class="inner">' +
+			'<div class="manipulation">';
+		//if(settings.canAdd)
+			bar += '<input type="button" class="loxia add" value="Add" title="Add New Row"' + (settings.canAdd?"":disabled) + '/>';
+		//if(settings.canDelete)
+			bar += '<input type="button" class="loxia delete" value="Delete" title="Delete Selected Rows"' + (settings.canDelete?"":disabled) + '/>';
+		
+		bar += '<div class="separator"></div></div></div></div>';
+		
+		var $tbody = $t.find("tbody:last").append('<tr><td colspan="' + $t.data("cols")+ '">'
+				+ bar + "</td></tr>");
+		
+		$(".ltToolbar", $t).livequery(function() {
+			$(".ltToolbar .add", $t).unbind("click").bind("click", function() {
+				$t.ltAppendRow(settings);
+				$t.ltCalculateFoot(settings);
+				$t.ltRefreshStyle(settings);
+			});
+			
+			$(".ltToolbar .delete", $t).unbind("click").bind("click", function() {
+				$t.ltDeleteRows(settings);			
+				$t.ltCalculateFoot(settings);
+				$t.ltRefreshStyle(settings);
+			});
+		});
 		return this;
 	}
 	
@@ -598,8 +644,68 @@
 	};
 	
 	$.fn.ltDeleteRows = function(settings){
-		$t.find("tbody:first").remove("tr:has(.col-0 input:checked)");
-		$t.trigger("RowDeletedEvent");
+		var $t = $(this);
+		if($("tbody:first .col-0 :checked", $t).length > 0){
+			$t.find("tbody:first tr:has(.col-0 input:checked)").remove();
+			$t.trigger("RowDeletedEvent");
+		}
+		return this;
+	}
+	
+	$.fn.ltCalculateRow = function(context){
+		var $t = $(this);
+		context = context || $t.find("tbody:first");
+		var $rows = $(context);
+		if(!$rows.is("tr"))
+			$rows = $rows.find("tr");
+		
+		var calCols = [];
+		var formulas = $t.data("formulas");
+		for(var i=0; i< $t.data("cols"); i++)
+			if(formulas[i]) calCols.push(i);
+		
+		if(calCols.length >0){
+			for(var i=0; i< calCols.length; i++){
+				var formula = formulas[calCols[i]];
+				var decimal = 0;
+				var delim = formula.indexOf(":");
+				if(delim > 0){
+					decimal = parseInt(formula.substring(delim + 1));
+					formula = formula.substring(0, delim);
+				}
+				
+				var params = formula.match(/\$\d+/ig);
+				formula = formula.replace(/\$\d+/ig,"#");
+				
+				$rows.each(function(){
+					var f = "" + formula;
+					for(var j=0; j< params.length; j++){
+						var cellIndex = parseInt(params[j].replace(/\$/,""));
+						var p = $.loxia.val($(this).find("td:eq(" + cellIndex + ")").get(0));
+						p = p == null ? 0 : p;
+						f = f.replace(/\#/,p);
+					}
+					var value = eval(f);
+					value = value? value.toFixed(decimal): "";
+					$(this).find("td:eq(" + calCols[i] + ")").text(value);
+				});
+			}			
+		}
+	}
+	
+	$.fn.ltCalculateFoot = function(settings){
+		var $t = $(this);
+		$t.find("tfoot td[decimal]").each(function(){
+			var decimal = parseInt($(this).attr("decimal"));
+			var result = 0;
+			$t.find("tbody:first tr").find("td:eq(" + $(this).data("col") + ")").each(function(){
+				var value = parseFloat($.loxia.val($(this).get(0)));
+				value = isNaN(value) ? 0 : value;
+				result += value == null ? 0 : value;
+			})
+			$(this).text(result.toFixed(decimal));
+		});
+		$t.trigger("tableCalculatedEvent");
 		return this;
 	}
 })(jQuery);

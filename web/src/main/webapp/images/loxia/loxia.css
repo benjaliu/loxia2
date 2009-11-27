@@ -173,14 +173,17 @@
 .loxiatable tr.selected td { }
 .loxiatable tr.selected td, .loxiatable tr.selected td a {}
 
-.loxiatable .ltPager { color: #555; position: relative; width: auto; margin-left: -1px; font-size: 11px; line-height: 20px; background: url(pager-bg.gif) bottom left repeat-x #666; height: 30px; border: 1px solid #d7d7d7; }
-.loxiatable .ltPager .inner { position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; }
-.loxiatable .ltPager .imgWrap { border: 1px solid transparent; }
-.loxiatable .ltPager .imgWrap img { float: left; padding: 1px; border-width: 1px 0px 0px 1px; border-style: solid; border-color: transparent; cursor: pointer; }
-.loxiatable .ltPager .imgWrapHover { border: 1px solid #bbb; }
-.loxiatable .ltPager .imgWrapHover img { border-color: #fff !important; border-style: solid; border-width: 1px 0px 0px 1px; }
-.loxiatable .ltPager div { float: left; }
-.loxiatable .ltPager .separator { height: 20px; margin: 0px 6px; border-left: 1px solid #aaa; border-right: 1px solid #fff; }
+.loxiatable tfoot tr {color: #555; background: url(pager-bg.gif) bottom left repeat-x #666; height: 30px; border: 1px solid #d7d7d7;}
 
-.loxiatable .ltPager .pageInput { width: 4em; text-align: right; padding-right: 1px}
-.loxiatable .ltPager .perPage { }
+.loxiatable .ltToolbar { color: #555; position: relative; width: auto; margin-left: -1px; font-size: 11px; line-height: 20px; background: url(pager-bg.gif) bottom left repeat-x #666; height: 30px; border: 1px solid #d7d7d7; }
+.loxiatable .ltToolbar .inner { position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; }
+.loxiatable .ltToolbar .imgWrap { border: 1px solid transparent; }
+.loxiatable .ltToolbar .imgWrap img { float: left; padding: 1px; border-width: 1px 0px 0px 1px; border-style: solid; border-color: transparent; cursor: pointer; }
+.loxiatable .ltToolbar .imgWrapHover { border: 1px solid #bbb; }
+.loxiatable .ltToolbar .imgWrapHover img { border-color: #fff !important; border-style: solid; border-width: 1px 0px 0px 1px; }
+.loxiatable .ltToolbar div { float: left; }
+.loxiatable .ltToolbar .separator { height: 20px; margin: 0px 6px; border-left: 1px solid #aaa; border-right: 1px solid #fff; }
+
+.loxiatable .ltToolbar .manipulation input {float: left;}
+.loxiatable .ltToolbar .pageInput { width: 2em; text-align: right; padding-right: 1px}
+.loxiatable .ltToolbar .perPage { }
