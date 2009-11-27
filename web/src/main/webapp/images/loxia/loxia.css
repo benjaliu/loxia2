@@ -151,7 +151,7 @@
 }
 
 .loxiatable { padding: 0px; margin: -1px 0px; border-collapse: collapse; width: 100%; border: 0px solid #dedede; overflow: hidden; }
-.loxiatable td, .compassTable th { line-height: 26px; color: #666; }
+.loxiatable td, .loxiatable th { line-height: 26px; color: #666; text-align: left;}
 .loxiatable th { white-space: nowrap; color: #666; cursor: pointer; text-indent: 5px; border-width: 1px 0px 0px 0px; border-style: solid; border-color: #efefef; border-collapse: collapse; background: url(th-bg.gif) bottom left repeat-x #f9f9f9; }
 	.loxiatable th.sorted { }
 
