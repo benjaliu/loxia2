@@ -34,21 +34,24 @@
 				},
 				
 				getLocaleMsg: function(msg, args){
+					var localeMsg = this.regional[this.region][msg];
+					if(localeMsg == undefined || localeMsg == null)
+						localeMsg = this.regional[this.region][''];
+					if(localeMsg == undefined || localeMsg == null) return msg;
 					if(!args)
-						return this.regional[this.region][msg];
+						return localeMsg;
 					if(!$.isArray(args))
 						args = [args];
 					
-					msg = this.regional[this.region][msg];
-					var params = msg.match(/\{\d+\}/ig);
-					if(!params || params.length == 0) return msg;
-					msg = msg.replace(/\{\d+\}/ig,"#");
+					var params = localeMsg.match(/\{\d+\}/ig);
+					if(!params || params.length == 0) return localeMsg;
+					localeMsg = localeMsg.replace(/\{\d+\}/ig,"#");
 					
 					for(var i=0; i< params.length; i++){
 						var index = parseInt(params[i].replace(/\{/,"").replace(/\}/,""));
-						msg = msg.replace(/\#/,args[index]? args[index] : "");
+						localeMsg = localeMsg.replace(/\#/,args[index]? args[index] : "");
 					}
-					return msg;
+					return localeMsg;
 				},
 				
 				getObject: function(propName, context){
@@ -185,6 +188,44 @@
 					else url["type"] = "POST";
 					return this.syncXhr(url, args);
 				},
+				isLoxiaWidget : function(context){
+					return $(context).hasClass("loxia");
+				},
+				initContext : function(context){
+					if(context == undefined) context = document;
+					if($(context).attr("loxiaType")) this.initLoxiaWidget(context);
+					else{
+						$(context).find("> table[loxiaType]").each(function(){
+							loxia.initLoxiaWidget(this);
+						});
+						$(context).find("[loxiaType]").each(function(){
+							loxia.initLoxiaWidget(this);
+						});
+					}
+				},
+				initLoxiaWidget : function (context){
+					switch($(context).attr("loxiaType")){
+					case "input":
+						$(context).loxiainput();
+						break;
+					case "number":
+						$(context).loxianumber();
+						break;
+					case "date":
+						$(context).loxiadate();
+						break;
+					case "select":
+						break;
+					case "button":
+						break;
+					case "table": //need init innertable first
+						$(context).find("table[loxiaType]").each(function(){loxia.initLoxiaWidget(this)});
+						break;
+					case "edittable":
+						$(context).find("table[loxiaType]").each(function(){loxia.initLoxiaWidget(this)});
+						break;						
+					}
+				},
 				log : function(msg){
 					if(!this.debug) return;
 					if(_global.console){
@@ -195,35 +236,133 @@
 		};
 		
 		loxia.regional = [];
-		logix.regional[''] = {
+		loxia.regional[''] = {
+			INVALID_EMPTY_DATA : "Current Input is a mandatory one",
 			INVALID_NUMBER : "Invalid Number",
-			INVALID_DATE : "Invalid Date"
+			INVALID_DATE : "Invalid Date",
+			DATA_EXCEED_RANGE : "Input data exceeds range"
+		};		
+		
+		loxia.defaults = {
+			baseClass : "",
+			required: false,
+			lastRightValue : "",
+			checkmaster : "",
+			state : null,
+			errorMessage : null
 		};
 		
-		checkNumber = function(value, obj){
-			var value = $.trim(value);
-			if(!value) return loxia.SUCCESS;
-			var prefix = value.charAt(0);
-			if(prefix == "+" || prefix == "-"){
-				value = value.substring(1);
-			}else
-				prefix = "";
-			value = value.replace(/^(0(?=\d))+/,"");
-			
-			var decimal = $(obj).data("decimal");
-			var regex = new RegExp("^\\d+$");
-			if(decimal){
-				regex = new RegExp("^\\d+\\?\\d{0," + decimal + "}$");
-			}else{
-				decimal = 0;				
+		loxia.loxiaWidget = {			
+			_setValue : function(value){return this.element.val(value)}, //can be overridden
+			_getValue : function(){return this.element.val()},
+			val : function(value){
+				if(value != undefined){
+					var result = this.check(value);					
+					return this.element;
+				}else
+					return this._getData("lastRightValue");
+			},
+			clearState : function(){
+				this._setData("state", null);
+				this._setData("errorMessage", null);
+				this.element.removeClass("ui-state-error");
+			},
+			setState : function(st, msg){				
+				this.clearState();
+				this._setData("state", (st == true));
+				if(!this._getData("state")){
+					this.element.addClass("ui-state-error");
+					this._setData("errorMessage", msg);
+				}
+			},
+			check : function(){
+				this.clearState();
+				var value = this._getValue();
+				
+				if(this._getData("required") && value == ""){
+					this.setState(false, loxia.getLocaleMsg("INVALID_EMPTY_DATA"));
+					return false;
+				}
+				
+				if(value == this.val()){
+					this.setState(true);
+					return true;
+				}
+				
+				if(this._getData("checkmaster")){					
+					var cms = this._getData("checkmaster").split(",");
+					var executed = {};
+					for(var cm,i=0; cm=cms[i]; i++){
+						if(cm in executed) continue;
+						executed[cm] = cm;
+						var result = loxia.hitch(cm)(value,this);
+						if(result.indexOf(loxia.SUCCESS) != 0){
+							this.setState(false, result);
+							return false;
+						}
+						if(result.length > 8){
+							//set the formatted value
+							value = result.substring(8);						
+						}
+					}
+				}
+				this.setState(true);
+				this._setData("lastRightValue", value);
+				this.element.trigger("valuechanged", [value]);
+				this._setValue(value);
+				return true;
 			}
-			
-			if(!regex.test(value))
-				return loxia.ERROR + "^" + loxia.getLocaleMsg("INVALID_NUMBER");
-			
-			value = value.replace(/^\./,"0.");
-			value = value.replace(/\.$/,".0");
-			value = prefix + value;
 		}
+		
+		loxia.loxiaGetter = "val check";
+	}	
+	
+	checkNumber = function(value, obj){
+		var value = $.trim(value);
+		if(!value) return loxia.SUCCESS;
+		var prefix = value.charAt(0);
+		if(prefix == "+" || prefix == "-"){
+			value = value.substring(1);
+		}else
+			prefix = "";
+		value = value.replace(/^(0(?=\d))+/,"");
+		
+		var decimal = obj._getData("decimal");
+		var regex = new RegExp("^\\d+$");
+		if(decimal){
+			regex = new RegExp("^\\d+\\.?\\d{0," + decimal + "}$");
+		}else{
+			decimal = 0;				
+		}
+		if(!regex.test(value))
+			return loxia.getLocaleMsg("INVALID_NUMBER");
+		
+		value = value.replace(/^\./,"0.");
+		value = value.replace(/\.$/,".0");
+		value = prefix + value;
+		
+		var v = parseFloat(value);
+		var min = obj._getData("min");
+		var max = obj._getData("max");
+		if((min && v < min) || (max && v > max))
+			return loxia.getLocaleMsg("DATA_EXCEED_RANGE");
+		
+		return loxia.SUCCESS + "^" + v.toFixed(decimal);
 	}
+	
+	checkDate = function(value,obj){
+		var config = $.datepicker._getFormatConfig($.datepicker._getInst(obj.element.get(0)));
+		try{
+			var currDate = $.datepicker.parseDate(loxia.dateFormat,value,config);
+			var minDate = obj._getData("min");
+			var maxDate = obj._getData("max");
+			if((minDate && currDate < minDate) ||
+					(maxDate && currDate > maxDate))
+				return loxia.getLocaleMsg("DATA_EXCEED_RANGE");
+		}catch(e){
+			return loxia.getLocaleMsg("INVALID_DATE");
+		}				
+		return loxia.SUCCESS;
+	}
+		
 })(jQuery);

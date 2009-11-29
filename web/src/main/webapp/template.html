@@ -106,5 +106,7 @@ function checkAny(value){
 </table>
 </form>
 <div id="error" style="display: none;">This is one <B>Error</B><br/>Please check it.</div>
+<div id="test"><table id="it1"><tr><td><table id="it2"><tr><td>&nbsp;</td></tr></table></td></tr></table></div>
+<button onclick="$j('#test').find('> table').each(function(){alert($j(this).attr('id'));})">kkk</button>
 </body>
 </html>
