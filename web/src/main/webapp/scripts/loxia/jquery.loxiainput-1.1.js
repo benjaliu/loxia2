@@ -116,6 +116,7 @@
 				checkmaster += ("," + this.element.attr("checkmaster"));
 			this._setData("checkmaster",checkmaster);		
 			
+			this.element.data("dropdown",true);
 			this.element.datepicker({changeYear: true, changeMonth: true, dateFormat: loxia.dateFormat,
 				onSelect: function(dateText, inst) {
 					var _t = $(this).data("loxiadate");
