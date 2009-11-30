@@ -22,7 +22,7 @@
 					else { // older versions of IE		
 					      w = document.getElementsByTagName('body')[0].clientWidth, h = document.getElementsByTagName('body')[0].clientHeight;
 					}
-					return [w,h];
+					return {width : w, height : h};
 				},
 		
 				isString: function(obj){
