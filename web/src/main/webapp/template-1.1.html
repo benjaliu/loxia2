@@ -21,6 +21,7 @@
 <script type="text/javascript" src="scripts/loxia/jquery.loxiainput-1.1.js"></script>
 <script type="text/javascript" src="scripts/loxia/jquery.loxiaselect-1.1.js"></script>
 <script type="text/javascript" src="scripts/loxia/jquery.loxiatooltip-1.1.js"></script>
+<script type="text/javascript" src="scripts/loxia/jquery.loxiatable-1.1.js"></script>
 <script type="text/javascript">
 var $j = jQuery.noConflict();
 
@@ -39,6 +40,8 @@ function checkA(value, obj){
 		return "Too Long";
 	return loxia.SUCCESS;
 }
+
+var t1defaults = {data:[{str:"str1",num:1,boo:true},{str:"str2",num:2,boo:false}]};
 </script>
 </head>
 <body>
@@ -61,6 +64,17 @@ Datebox(mandatory field)<input name="date" loxiaType="date" required="true" min=
 <p>
 Select(mandatory field)<select name="select" loxiaType = "select" required="true"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
 </p>
+<p>Table</p>
+<table loxiaType="table" settings="t1defaults" style="width: 100%" cellpadding="0" cellspacing="0">
+<thead>
+<tr><th colspan="4">Head</th></tr>
+<tr><th property="num">Number</th><th property="str">String</th><th property="num">Num Again</th><th property="boo">Boolean</th></tr>
+</thead>
+<tbody>	
+</tbody>
+<tbody>
+</tbody>
+</table>
 <div class="loxia ui-widget"><div class="tooltip-left-arrow"></div>
 <div class="ui-state-highlight ui-corner-all"  style="padding: .3em .7em; width: auto;"><span>abcd</span></div>
 <div class="tooltip-right-arrow"></div></div>

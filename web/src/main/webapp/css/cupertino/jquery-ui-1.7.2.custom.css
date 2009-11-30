@@ -404,4 +404,16 @@
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
 .ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
 .ui-tabs .ui-tabs-panel { padding: 1em 1.4em; display: block; border-width: 0; background: none; }
-.ui-tabs .ui-tabs-hide { display: none !important; }
+.ui-tabs .ui-tabs-hide { display: none !important; }/* Loxia Tables
+----------------------------------*/
+.ui-loxia-table td, .loxiatable th { line-height: 26px; text-align: left;}
+.ui-loxia-table th { white-space: nowrap; cursor: pointer;}
+
+.ui-loxia-table .sort div{background-image: url(images/ui-icons_ffffff_256x240.png); background-position: -128px -16px;}
+.ui-loxia-table .sort-nosort div {background: transparent; cursor: default;}
+.ui-loxia-table .sort-asc div {background-image: url(images/ui-icons_ffffff_256x240.png); background-position: 0 -16px;}
+.ui-loxia-table .sort-desc div {background-image: url(images/ui-icons_ffffff_256x240.png); background-position: -64px -16px;}
+.ui-loxia-table .ui-loxia-table-row {border-collapse: collapse; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #ebebeb;}
+.ui-loxia-table .ui-loxia-table-cell {border-right: 0px solid #dedede; padding: 0px 5px;}
+.ui-loxia-table .even { background-color: #eef2ff; /*eef2ff*/ }
+.ui-loxia-table .odd { background-color: #fff; }

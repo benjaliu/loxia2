@@ -221,6 +221,9 @@
 						break;
 					case "table": //need init innertable first
 						$(context).find("table[loxiaType]").each(function(){loxia.initLoxiaWidget(this)});
+						var settings = $(context).attr("settings");
+						settings = settings ? _global[settings] : {};
+						$(context).loxiatable($.extend({},settings));
 						break;
 					case "edittable":
 						$(context).find("table[loxiaType]").each(function(){loxia.initLoxiaWidget(this)});
