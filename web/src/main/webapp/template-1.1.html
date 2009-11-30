@@ -19,6 +19,7 @@
 <script type="text/javascript" src="scripts/jquery.livequery.js"></script>
 <script type="text/javascript" src="scripts/loxia/jquery.loxiacore-1.1.js"></script>
 <script type="text/javascript" src="scripts/loxia/jquery.loxiainput-1.1.js"></script>
+<script type="text/javascript" src="scripts/loxia/jquery.loxiaselect-1.1.js"></script>
 <script type="text/javascript" src="scripts/loxia/jquery.loxiatooltip-1.1.js"></script>
 <script type="text/javascript">
 var $j = jQuery.noConflict();
@@ -56,6 +57,9 @@ Textarea(optional field)<textarea name="input" loxiaType="input"></textarea>
 </p>
 <p>
 Datebox(mandatory field)<input name="date" loxiaType="date" required="true" min="2009-11-05"/>
+</p>
+<p>
+Select(mandatory field)<select name="select" loxiaType = "select" required="true"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
 </p>
 <div class="loxia ui-widget"><div class="tooltip-left-arrow"></div>
 <div class="ui-state-highlight ui-corner-all"  style="padding: .3em .7em; width: auto;"><span>abcd</span></div>

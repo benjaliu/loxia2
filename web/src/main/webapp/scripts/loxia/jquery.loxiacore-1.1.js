@@ -215,6 +215,7 @@
 						$(context).loxiadate();
 						break;
 					case "select":
+						$(context).loxiaselect();
 						break;
 					case "button":
 						break;

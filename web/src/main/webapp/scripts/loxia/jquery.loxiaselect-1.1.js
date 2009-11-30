@@ -1,0 +1,59 @@
+(function($) {
+	
+	var loxiaSelect = $.extend({}, loxia.loxiaWidget, {
+		_initSelect : function(){
+			this._setData("checkmaster",this.element.attr("checkmaster") || "");
+			
+			this.element.focus(function(){	
+				var _t = $(this).data("loxiaselect");
+				var tooltip = $(this).data("loxiatooltip");
+				$(this).addClass("ui-state-active");
+				
+				if(_t._getData("errorMessage")){
+					tooltip.show(_t._getData("errorMessage"));
+				}
+			});
+			
+			this.element.blur(function(){
+				var tooltip = $(this).data("loxiatooltip");
+				$(this).removeClass("ui-state-active");
+				tooltip.hide();
+			});
+			
+			this.element.change(function(){
+				var _t = $(this).data("loxiaselect");
+				var tooltip = $(this).data("loxiatooltip");
+				$(this).removeClass("ui-state-active");
+				tooltip.hide();
+			
+				var value = $(this).val();
+				_t.val(value);
+			});
+		},
+		_init : function(){
+			if(this.element.is("select")){
+				this.element.removeAttr("loxiaType");
+				var baseClass = "loxia-select";
+				this._setData("baseClass", baseClass);
+				this.element.addClass("loxia " + baseClass + " ui-state-default ui-corner-all");
+				
+				if(this.element.attr("required") == "true"){
+					this._setData("required", true);
+					this.element.addClass("ui-state-mandatory");
+				}
+								
+				if(this.element.val())
+					this._setData("lastRightValue", this.element.val());
+				
+				this.element.loxiatooltip();
+				
+				this._initSelect();
+			}else
+				throw new exception("Wrong Dom Type for Input");
+		}
+	});
+	
+	$.widget("ui.loxiaselect", loxiaSelect); 
+	$.ui.loxiaselect.getter = loxia.loxiaGetter; 
+	$.ui.loxiaselect.defaults = loxia.defaults;
+})(jQuery);
