@@ -244,7 +244,17 @@
 			INVALID_EMPTY_DATA : "Current Input is a mandatory one",
 			INVALID_NUMBER : "Invalid Number",
 			INVALID_DATE : "Invalid Date",
-			DATA_EXCEED_RANGE : "Input data exceeds range"
+			DATA_EXCEED_RANGE : "Input data exceeds range",
+			
+			TABLE_PER_PAGE : "Per Page",
+			TABLE_PAGER_FIRST : "First Page",
+			TABLE_PAGER_PREVIOUS : "Previous Page",
+			TABLE_PAGER_NEXT : "Next Page",
+			TABLE_PAGER_LAST : "Last Page",
+			TABLE_PAGER_GOTO : "Goto Page",
+			TABLE_PAGER_RELOAD : "Reload",
+			TABLE_PAGE : "Page",
+			TABLE_PAGE_INFO : "{0} item(s)"
 		};		
 		
 		loxia.defaults = {
@@ -270,6 +280,9 @@
 				this._setData("state", null);
 				this._setData("errorMessage", null);
 				this.element.removeClass("ui-state-error");
+			},
+			getState : function(){
+				return this.options.state;
 			},
 			setState : function(st, msg){				
 				this.clearState();
@@ -318,7 +331,7 @@
 			}
 		}
 		
-		loxia.loxiaGetter = "val check";
+		loxia.loxiaGetter = "val check getState";
 	}	
 	
 	checkNumber = function(value, obj){
