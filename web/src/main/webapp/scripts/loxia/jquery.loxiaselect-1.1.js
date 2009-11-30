@@ -35,7 +35,7 @@
 				this.element.removeAttr("loxiaType");
 				var baseClass = "loxia-select";
 				this._setData("baseClass", baseClass);
-				this.element.addClass("loxia " + baseClass + " ui-state-default ui-corner-all");
+				this.element.addClass("loxia " + "ui-" + baseClass + " ui-state-default ui-corner-all");
 				
 				if(this.element.attr("required") == "true"){
 					this._setData("required", true);
