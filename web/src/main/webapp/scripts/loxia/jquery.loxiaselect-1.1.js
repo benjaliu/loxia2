@@ -1,6 +1,9 @@
 (function($) {
 	
 	var loxiaSelect = $.extend({}, loxia.loxiaWidget, {
+		getBaseClass : function(){
+			return "loxiaselect";
+		},
 		_initSelect : function(){
 			this._setData("checkmaster",this.element.attr("checkmaster") || "");
 			
@@ -33,7 +36,8 @@
 		_init : function(){
 			if(this.element.is("select")){
 				this.element.removeAttr("loxiaType");
-				var baseClass = "loxia-select";
+				var baseClass = this.getBaseClass();
+				this.element.data("baseClass", baseClass);
 				this._setData("baseClass", baseClass);
 				this.element.addClass("loxia " + "ui-" + baseClass + " ui-state-default ui-corner-all");
 				

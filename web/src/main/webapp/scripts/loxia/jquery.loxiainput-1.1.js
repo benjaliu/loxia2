@@ -1,6 +1,9 @@
 (function($) {
 	
 	var loxiaInput = $.extend({}, loxia.loxiaWidget, {
+		getBaseClass : function(){
+			return "loxiainput";
+		},
 		_initInput : function(){
 			this._setData("checkmaster",this.element.attr("checkmaster") || "");
 			
@@ -33,8 +36,9 @@
 		_init : function(){
 			if(this.element.is("input") || this.element.is("textarea")){
 				this.element.removeAttr("loxiaType");
-				var baseClass = "loxia-input";
+				var baseClass = this.getBaseClass();
 				this._setData("baseClass", baseClass);
+				this.element.data("baseClass",baseClass);
 				this.element.addClass("loxia " + "ui-" + baseClass + " ui-state-default ui-corner-all");
 				
 				if(this.element.attr("required") == "true"){
@@ -62,6 +66,9 @@
 	$.ui.loxiainput.defaults = loxia.defaults;
 	
 	var loxiaNumber = $.extend({}, loxiaInput, {
+		getBaseClass : function(){
+			return "loxianumber";
+		},
 		_initInput : function(){
 			var checkmaster = "checkNumber";
 			if(this.element.attr("checkmaster")) 
@@ -110,6 +117,9 @@
 	$.ui.loxianumber.defaults = loxia.defaults;
 	
 	var loxiaDate = $.extend({}, loxiaInput, {
+		getBaseClass : function(){
+			return "loxiadate";
+		},
 		_initInput : function(){
 			var checkmaster = "checkDate";
 			if(this.element.attr("checkmaster")) 
@@ -129,16 +139,24 @@
 				var minDate,maxDate;
 				if(this.element.attr("min")){
 					try{
-						minDate = $.datepicker.parseDate(loxia.dateFormat,this.element.attr("min"),dpInstConfig);
+						if(this.element.attr("min") == "today"){
+							minDate = new Date();
+						}else
+							minDate = $.datepicker.parseDate(loxia.dateFormat,this.element.attr("min"),dpInstConfig);
 						this._setData("min",minDate);
-						$.datepicker._optionDatepicker(this.element.get(0),"minDate",minDate);
+						this.element.datepicker("option","minDate",minDate);
+						//$.datepicker._optionDatepicker(this.element.get(0),"minDate",minDate);
 					}catch(e){}				
 				}
 				if(this.element.attr("max")){
 					try{
-						maxDate = $.datepicker.parseDate(loxia.dateFormat,this.element.attr("max"),dpInstConfig);
+						if(this.element.attr("max") == "today"){
+							maxDate = new Date();
+						}else
+							maxDate = $.datepicker.parseDate(loxia.dateFormat,this.element.attr("max"),dpInstConfig);
 						this._setData("max",maxDate);
-						$.datepicker._optionDatepicker(this.element.get(0),"maxDate",maxDate);
+						this.element.datepicker("option","maxDate",maxDate);
+						//$.datepicker._optionDatepicker(this.element.get(0),"maxDate",maxDate);
 					}catch(e){}				
 				}
 			}

@@ -46,10 +46,9 @@
 					var params = localeMsg.match(/\{\d+\}/ig);
 					if(!params || params.length == 0) return localeMsg;
 					localeMsg = localeMsg.replace(/\{\d+\}/ig,"#");
-					
 					for(var i=0; i< params.length; i++){
 						var index = parseInt(params[i].replace(/\{/,"").replace(/\}/,""));
-						localeMsg = localeMsg.replace(/\#/,args[index]? args[index] : "");
+						localeMsg = localeMsg.replace(/\#/,(args[index] != undefined && args[index] != null)? "" + args[index] : "");
 					}
 					return localeMsg;
 				},
@@ -230,6 +229,29 @@
 						break;						
 					}
 				},
+				val : function(obj){
+					if(obj == undefined) return null;
+					if(this.isLoxiaWidget(context)){
+						var baseClass = $(context).data("baseClass");
+						if(baseClass){
+							return $(context).data(baseClass).val();
+						}else
+							return null;
+					}
+					if($(obj).is("input,select,textarea")) return $(obj).val();
+					var firstInputItem = $(obj).find("input,select,textarea").get(0);
+					if(firstInputItem){
+						if(this.isLoxiaWidget(firstInputItem)){
+							var baseClass = $(firstInputItem).data("baseClass");
+							if(baseClass){
+								return $(firstInputItem).data(baseClass).val();
+							}else
+								return null;
+						}						
+						else return $(firstInputItem).val();
+					}else
+						return $(obj).text();
+				},
 				log : function(msg){
 					if(!this.debug) return;
 					if(_global.console){
@@ -254,7 +276,9 @@
 			TABLE_PAGER_GOTO : "Goto Page",
 			TABLE_PAGER_RELOAD : "Reload",
 			TABLE_PAGE : "Page",
-			TABLE_PAGE_INFO : "{0} item(s)"
+			TABLE_PAGE_INFO : "{0} item(s)",
+			TABLE_PAGE_ERROR_OCCURS : "Error occurs at reloading.",
+			TABLE_PAGE_RELOAD : "Table is refreshed."
 		};		
 		
 		loxia.defaults = {
@@ -331,7 +355,7 @@
 			}
 		}
 		
-		loxia.loxiaGetter = "val check getState";
+		loxia.loxiaGetter = "val check getState getBaseClass";
 	}	
 	
 	checkNumber = function(value, obj){

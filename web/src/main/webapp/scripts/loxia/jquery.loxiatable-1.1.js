@@ -1,11 +1,12 @@
 (function($) {
+	var loxiaRowIndex = 0;
 	var loxiaBaseTable = {
-			
-	};
-	var loxiaBaseTableDefaults = {
 		_formatName : function(str){
 			return str.replace(/\./ig,"_");
 		}
+	};
+	var loxiaBaseTableDefaults = {
+		
 	};
 	
 	var loxiaTable = $.extend({}, loxiaBaseTable, {
@@ -101,25 +102,29 @@
 			$t.find("tbody").addClass("ui-widget-content");
 			var cols = $t.find("thead tr:last th").each(function(i){
 				var sortClass = "";
-				if(currentSort){
-					var sort = $(this).attr("sort");					
-					if(!sort) sortClass = "sort-nosort";
-					else if(sort == sortStatus[0]){
+
+				var sort = $(this).attr("sort");	
+				if(sort){
+					sortClass = "sort-nosort";
+					if(sort == sortStatus[0]){
 						if(sortStatus[1].toLowerCase() == "asc") sortClass = "sort-asc";
 						else if(sortStatus[1].toLowerCase() == "desc") sortClass = "sort-desc";
 					}
 				}
-				var className = $(this).hasClass("selector") ? "selector ui-loxia-table-cell" : "ui-loxia-table-cell";
+
+				var className = $(this).hasClass("selector") ? "selector" : "";
 				$(this).addClass(sortClass).addClass("col-" + i);
-				$(this).html("<div class='th-col-" + i + "'>" + $(this).html() + "</div>");
+				$(this).html("<div class='th-col-" + i + "'>" + $(this).html() + "<div class='ui-sort'></div></div>");
 				$t.find("tbody:first tr").find("td:eq(" + i + ")").addClass(className + " col-" + i);
 			}).length;
 			this._setData("cols",cols);
-			$t.find('tbody:first tr:odd').addClass("ui-loxia-table-row odd");
-			$t.find('tbody:first tr:even').addClass("ui-loxia-table-row even");
+			$t.find('tbody:first tr:odd').addClass("odd");
+			$t.find('tbody:first tr:even').addClass("even");
+			
+			$t.find("tbody").find("tr:last").addClass("last");
 
 			if(this._getData("selectCols") == 1)
-				$t.find("tbody:first input:checked").parents("tr").addClass("ui-loxia-table-row-select");
+				$t.find("tbody:first input:checked").parents("tr").addClass("selected");
 			return this;
 		},
 		_initHeadAction : function(){
@@ -134,9 +139,9 @@
 				
 				$(this).click(function(){
 					var $th = $(this);
-					if($th.hasClass("sort-nosort")) return;
 					var sort = $th.attr("sort");
-
+					if(!sort) return;
+					
 					var sortStr = "" + sort + ",";
 					var sortOrder = "";
 					if($th.hasClass("sort-asc")){
@@ -157,6 +162,81 @@
 			});
 		},
 		_refresh : function(args){
+			var _this = this;
+			var $t = this.element;
+			var $reload = $t.find('.ui-pager-block[block="refresh"]');
+			$reload.find(".ui-state-default").addClass("loading");
+			
+			if(!this.options.cacheSelect){
+				var selected = this.options.selected;
+				for(key in selected){
+					selected[key] = {};
+				}
+			}
+			args = $.extend({
+				error : function(XMLHttpRequest, textStatus, errorThrown){
+					var exception = {};
+					exception["message"] = "Error occurs when fetching data from url:" + this.url;
+					exception["cause"] = textStatus? textStatus : errorThrown;
+					$t.find(".ui-pager-status > div").addClass("ui-state-highlight")
+						.text(loxia.getLocaleMsg("TABLE_PAGE_ERROR_OCCURS")).show()
+						.animate({opacity: 1},"fast");
+					
+					$reload.find(".loading").removeClass("loading");
+					//console.dir(exception);
+				}
+			},args);
+			//console.dir(settings);
+			var url = args.url || this.options.url;
+			loxia.asyncXhr(url, args, function(data, textStatus){
+				//console.dir(data);
+				if(data.exception){
+					$t.find(".ui-pager-status > div").addClass("ui-state-highlight")
+					.text(data.exception.message).show()
+					.animate({opacity: 1},"fast");
+				}else{
+					_this.options.data = data;					
+					_this.refresh(true);
+
+					if(data.sort){						
+						var sortStatus = [];
+
+						var sortlist = data.sort.split(",");
+						sortStatus.push(sortlist[0]);
+						sortStatus.push(sortlist[1]||"asc");
+
+						$t.find("thead tr:last th").each(function(i){
+							if(data.sort){
+								$(this).removeClass("sort-asc sort-desc sort-nosort");
+								var sort = $(this).attr("sort");
+								if(sort){
+									if(sort == sortStatus[0]){
+										$(this).addClass("sort-" + sortStatus[1]);
+									}else
+										$(this).addClass("sort-nosort");
+								}
+							}
+
+							var className = $(this).hasClass("selector") ? "selector" : "";
+							$t.find("tbody:first tr").find("td:eq(" + i + ")").addClass(className + " col-" + i);
+						});
+					}
+
+					$t.find('tbody:first tr:odd').addClass("odd");
+					$t.find('tbody:first tr:even').addClass("even");
+					$t.find('tbody:first tr:last').addClass("last");
+
+					if(_this.options.selectCols == 1)
+						$t.find("tbody:first input:checked").parents("tr").addClass("selected");
+
+					if(_this.options.page)
+						_this._setPager();	
+					$t.find(".ui-pager-status > div").removeClass("ui-state-highlight")
+					.text(loxia.getLocaleMsg("TABLE_PAGE_RELOAD")).show()
+					.animate({opacity: 1},"fast");
+				}
+				$reload.find(".loading").removeClass("loading");
+			});
 		},
 		_initPager : function(){
 			var _this = this;
@@ -196,18 +276,22 @@
 				'<div class="separator"></div>' +
 				'<div class="page-info"><span></span></div>' +
 				'</div>';
-
+			pager += '<div class="ui-pager-status"><div class="ui-state-default ui-corner-all"></div></div>';
 			pager += '</div>';
 			
-			var $tbody = $t.find("tbody:last").append('<tr><td colspan="' + this.options.cols + '">'
+			var $tbody = $t.find("tbody:last").append('<tr class="last"><td colspan="' + this.options.cols + '">'
 					+ pager + "</td></tr>");
 			
 			$('.ui-pager .ui-state-default',$t).hover(
 					function() {
-						$(this).toggleClass('ui-state-active');
+						if(!$(this).hasClass("ui-state-disabled") &&
+								!$(this).hasClass("loading"))
+							$(this).addClass('ui-state-hover');
 					},
 					function() {
-						$(this).toggleClass('ui-state-active');
+						if(!$(this).hasClass("ui-state-disabled") &&
+								!$(this).hasClass("loading"))
+							$(this).removeClass('ui-state-hover');
 					}
 				);
 			
@@ -216,10 +300,15 @@
 			this._setPager();
 			
 			$(".ui-pager", $t).livequery(function() {
-				$(".ui-pager .ui-icon", $t).unbind("click").bind("click", function() {					
-					if ($(this).hasClass("disabled")) {
+				$(".ui-pager .ui-icon", $t).unbind("click").bind("click", function() {	
+					var $p = $(this).parent();
+					if ($p.hasClass("ui-state-disabled") ||
+							$p.hasClass("loading")) {
 						return false;
 					}
+					if ($p.hasClass("ui-state-hover"))
+						$p.removeClass("ui-state-hover");
+					
 					var action = $(this).attr("action");
 					
 					var moveto = true;
@@ -243,7 +332,6 @@
 						
 					case 'Goto':
 						var $input = $(".ui-pager-block[block='pagegoto'] input", $t);
-						console.log($input.loxianumber("getState"));
 						if($input.loxianumber("getState") == null){
 							$input.loxianumber("check");								
 						}
@@ -288,6 +376,25 @@
 			});
 		},
 		_setPager : function(){
+			var $t = this.element;
+			$(".ui-pager-block[block='pagesize'] select",$t).val("" + this.options.pageSize);
+			$(".ui-pager-block[block='pagegoto'] input").val(this.options.currentPage);
+			$(".ui-pager-block[block='pagegoto'] span").text(this.options.pageCount);
+			$(".ui-pager-block .page-info span").text(loxia.getLocaleMsg("TABLE_PAGE_INFO",[this.options.itemCount]));
+			
+			var currentPage = this.options.currentPage;
+			var pageCount = this.options.pageCount;
+			$t.find(".ui-pager .ui-state-disabled").removeClass("ui-state-disabled");
+			if (currentPage == 1) {								
+				$t.find(".ui-pager .ui-icon-seek-first").parent().addClass("ui-state-disabled");
+				$t.find(".ui-pager .ui-icon-seek-prev").parent().addClass("ui-state-disabled");				
+			}
+
+			if (currentPage >= pageCount) {
+				$t.find(".ui-pager .ui-icon-seek-next").parent().addClass("ui-state-disabled");
+				$t.find(".ui-pager .ui-icon-seek-end").parent().addClass("ui-state-disabled");				
+			}
+			$t.find(".ui-pager-status > div").hide().css({opacity:0});
 		},
 		_init: function(){
 			this.element.removeAttr("loxiaType");
@@ -297,6 +404,61 @@
 			this._initStyle();
 			this._initHeadAction();
 			this._initPager();
+			
+			var _this = this;
+			$("tbody:first .selector input", this.element).livequery(function(){
+				$(this).click(function(){
+					if(_this.options.selectCols == 1)
+						$(this).parents("tr").toggleClass("selected");
+					var selected = _this.options.selected["col_" + $(this).parents("td").get(0).cellIndex];
+					var value = _this._formatName($(this).val());
+					if($(this).is(":checked")){
+						if($(this).is("input[type='radio']")){
+							if(value in selected){
+								delete selected[value];
+								$(this).attr("checked",false);
+							}else{
+								for(key in selected)
+									delete selected[key];
+								selected[value] = value;
+							}
+						}else{
+							selected[value] = value;
+						}
+					}else{
+						delete selected[value];
+					}
+					//console.dir($t.data("selected"));
+					_this.element.trigger("selectchanged",[[$(this),selected]]);
+				});
+			});
+
+			$("thead .selector input",this.element).click(function(){
+				var i = $(this).parents("th").get(0).cellIndex;
+				var needStyle = (_this.options.selectCols == 1);
+				var selected = _this.options.selected["col_" + i];
+				var checked = $(this).is(":checked");
+
+				var changed = false;
+				_this.element.find("tbody:first tr").find("td:eq(" + i + ") input").each(function(){
+					var value = _this._formatName($(this).val());
+					if($(this).is(":checked") != checked){
+						changed = true;
+						$(this).attr("checked", checked);
+
+						if(checked)
+							selected[value] = value;
+						else
+							delete selected[value];
+
+						if(needStyle)
+							$(this).parents("tr").toggleClass("selected");
+					}
+				});
+
+				if(changed)
+					_this.element.trigger("selectchanged",[[$(this),selected]]);
+			});
 		}
 	});
 	$.widget("ui.loxiatable", loxiaTable); 
@@ -315,5 +477,172 @@
 		url: "",
 		cacheSelect: false,
 		selected: {}
+	});
+	
+	var loxiaEditTable = $.extend({}, loxiaBaseTable, {
+		_initExecBar : function(){
+			var $t = this.element;
+	
+		},
+		_init: function(){
+			this.element.removeAttr("loxiaType");
+			this.element.addClass("loxia ui-loxia-table");
+			
+			var _this = this;
+			var $t = this.element;
+			if($("tbody", $t).length != 2)
+				throw new exception("Current table need at least and only 2 tbodies.");
+
+			$t.find("thead tr").each(function(i){					
+				$(this).addClass("ui-widget-header");
+				$(this).find("th").addClass("ui-state-default");
+			});
+			$t.find("tbody").addClass("ui-widget-content");
+			
+			var formulas = [];
+			var cols = $t.find("thead tr:last th").each(function(i){
+				$(this).html("<div class='th-col-" + i + "'>" + $(this).html() + "</div>");
+				$t.find("tbody tr").find("td:eq(" + i + ")").addClass(" col-" + i);				
+
+				var formula = $(this).attr("formula") || "";
+				formulas.push(formula);
+
+				$(this).hover(function(){
+					$(this).toggleClass("ui-state-hover");
+				},function(){
+					$(this).toggleClass("ui-state-hover");
+				});
+			}).length;
+			
+			this.options.cols = cols;
+
+			$t.find("tfoot tr").each(function(){
+				var index = 0;
+				$(this).find("td").each(function(){
+					var colspan = parseInt($(this).attr("colspan")||"1");
+					$(this).addClass("col-" + index);
+					$(this).data("col", index);
+					index += colspan;
+				});
+			})
+			this.options.formulas = formulas;
+
+			$t.find("tbody .col-0 input[type='checkbox']").each(function(){
+				$(this).parents("td").addClass("selector");
+			});
+
+			var $tptTbody = $("tbody:last", $t);
+			var templateStr = $tptTbody.html();
+			this.options.template = templateStr;
+			$("tr",$tptTbody).remove();
+
+			loxia.initContext($t.find("tbody:first"));
+
+			for(var i=0; i< this.options.append; i++)
+				this.appendRow();
+
+			this._calculateRow();
+			this._calculateFoot();
+
+			$t.find('tbody:first tr:odd').removeClass("even").addClass("odd");
+			$t.find('tbody:first tr:even').removeClass("odd").addClass("even");
+
+			this._initExecBar();
+
+			$("tbody:first tr", $t).livequery(function(){
+				var $tr = $(this);
+				$("input,select,textarea", $tr).each(function(){
+					if($(this).parents("td").is(".selector")) return;
+					if(loxia.isLoxiaWidget(this))
+						$(this).unbind("valuechanged").bind("valuechanged", function(event, data){
+							$t.trigger("rowchanged",[[$tr.get(0),this]]);
+						});
+					else if($(this).is("select"))
+						$(this).unbind("change").bind("change", function(event, data){
+							$t.trigger("rowchanged",[[$tr.get(0),this]]);
+						});
+					else
+						$(this).unbind("blur").bind("blur", function(event, data){
+							$t.trigger("rowchanged",[[$tr.get(0),this]]);
+						});
+				});
+			});
+		},		
+		appendRow : function(){
+			var $t = this.element;
+			var rowIndex = "" + (--ltRowIndex);
+			var row = this.options.template.replace(/\(#\)/ig, "(" + rowIndex + ")");
+			$t.find("tbody:first").append(row);
+			loxia.initContext($t.find("tbody:first tr:last"));
+			$t.trigger("rowappended", [$t.find("tbody:first tr:last")]);
+		},
+		deleteRow : function(){
+			var $t = $(this);
+			if($("tbody:first .col-0 :checked", $t).length > 0){
+				$t.find("tbody:first tr:has(.col-0 input:checked)").remove();
+				$t.trigger("rowdeleted");
+			}
+		},
+		_calculateRow : function(context){
+			var $t = $(this);
+			context = context || $t.find("tbody:first");
+			var $rows = $(context);
+			if(!$rows.is("tr"))
+				$rows = $rows.find("tr");
+
+			var calCols = [];
+			var formulas = this.options.formulas;
+			for(var i=0; i< this.options.cols; i++)
+				if(formulas[i]) calCols.push(i);
+
+			if(calCols.length >0){
+				for(var i=0; i< calCols.length; i++){
+					var formula = formulas[calCols[i]];
+					var decimal = 0;
+					var delim = formula.indexOf(":");
+					if(delim > 0){
+						decimal = parseInt(formula.substring(delim + 1));
+						formula = formula.substring(0, delim);
+					}
+
+					var params = formula.match(/\$\d+/ig);
+					formula = formula.replace(/\$\d+/ig,"#");
+
+					$rows.each(function(){
+						var f = "" + formula;
+						for(var j=0; j< params.length; j++){
+							var cellIndex = parseInt(params[j].replace(/\$/,""));
+							var p = loxia.val($(this).find("td:eq(" + cellIndex + ")").get(0));
+							p = p == null ? 0 : p;
+							f = f.replace(/\#/,p);
+						}
+						var value = eval(f);
+						value = value? value.toFixed(decimal): "";
+						$(this).find("td:eq(" + calCols[i] + ")").text(value);
+					});
+				}
+			}
+		},
+		_calculateFoot : function(){
+			var $t = this.element;
+			$t.find("tfoot td[decimal]").each(function(){
+				var decimal = parseInt($(this).attr("decimal"));
+				var result = 0;
+				$t.find("tbody:first tr").find("td:eq(" + $(this).data("col") + ")").each(function(){
+					var value = parseFloat(loxia.val($(this).get(0)));
+					value = isNaN(value) ? 0 : value;
+					result += value == null ? 0 : value;
+				})
+				$(this).text(result.toFixed(decimal));
+			});
+			$t.trigger("calculated");
+		}
+	});
+	$.widget("ui.loxiaedittable", loxiaEditTable); 
+	$.ui.loxiaedittable.getter = ""; 
+	$.ui.loxiaedittable.defaults = $.extend({},loxiaBaseTableDefaults,{
+		canAdd: true,
+		canDelete: true,
+		append: 0
 	});
 })(jQuery);

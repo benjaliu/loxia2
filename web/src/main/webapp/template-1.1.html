@@ -7,12 +7,8 @@
 <link rel="stylesheet" type="text/css" href="css/cupertino/jquery-ui-1.7.2.custom.css"/>
 <link rel="stylesheet" type="text/css" href="css/cupertino/loxia-ui-1.1.css"/>
 <style>
-	body{ font: 80% "Trebuchet MS", sans-serif; margin: 50px;}
-	
-	.loxia-tooltip {position: relative; width: auto;}
-	.loxia-tooltip .tooltip-left-arrow {position:absolute; width: 6px; height: 16px; 
-	background-image: url(css/cupertino/images/ui-icons_72a7cf_256x240.png); background-position: -102px 0;
-	left: -3px; top: 2px;}
+	body{ font: 80% "Trebuchet MS", sans-serif; margin: 50px;}	
+	div.ui-datepicker{ font-size: 11px;}
 </style>
 <script type="text/javascript" src="scripts/jquery-1.3.2.min.js"></script>
 <script type="text/javascript" src="scripts/jquery-ui-1.7.2.custom.min.js"></script>
@@ -40,8 +36,12 @@ function checkA(value, obj){
 		return "Too Long";
 	return loxia.SUCCESS;
 }
-
-var t1defaults = {page:true,data:[{str:"str1",num:1,boo:true},{str:"str2",num:2,boo:false}]};
+var t1defaults = {page:true,data:[{str:"str1",num:1,boo:true},{str:"str2",num:2,boo:false},
+                                  {str:"str3",num:3,boo:true},{str:"str4",num:4,boo:false},
+                                  {str:"str5",num:5,boo:true},{str:"str6",num:6,boo:false}],
+                  itemCount : 6, paeItemCount : 6, 
+                  url : "abc",
+                  sort : "str,asc"};
 </script>
 </head>
 <body>
@@ -59,7 +59,7 @@ Number(decimal =2, max=20, mandatory field)<input name="input" loxiaType="number
 Textarea(optional field)<textarea name="input" loxiaType="input"></textarea>
 </p>
 <p>
-Datebox(mandatory field)<input name="date" loxiaType="date" required="true" min="2009-11-05"/>
+Datebox(mandatory field)<input name="date" loxiaType="date" required="true" min="2009-11-05" max="today"/>
 </p>
 <p>
 Select(mandatory field)<select name="select" loxiaType = "select" required="true"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
@@ -68,13 +68,14 @@ Select(mandatory field)<select name="select" loxiaType = "select" required="true
 <table loxiaType="table" settings="t1defaults" style="width: 100%" cellpadding="0" cellspacing="0">
 <thead>
 <tr><th colspan="4">Head</th></tr>
-<tr><th property="num">Number</th><th property="str">String</th><th property="num">Num Again</th><th property="boo">Boolean</th></tr>
+<tr><th property="num"><input type="checkbox"/></th><th property="str" sort="str">String</th><th property="num" sort="num">Num Again</th><th property="boo" sort="boo">Boolean</th></tr>
 </thead>
 <tbody>	
 </tbody>
 <tbody>
 </tbody>
 </table>
+<p></p>
 <div class="loxia ui-widget"><div class="tooltip-left-arrow"></div>
 <div class="ui-state-highlight ui-corner-all"  style="padding: .3em .7em; width: auto;"><span>abcd</span></div>
 <div class="tooltip-right-arrow"></div></div>
