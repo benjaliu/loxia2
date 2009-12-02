@@ -232,12 +232,11 @@
 				},
 				val : function(obj){
 					if(obj == undefined) return null;
-					if(this.isLoxiaWidget(context)){
-						var baseClass = $(context).data("baseClass");
+					if(this.isLoxiaWidget(obj)){
+						var baseClass = $(obj).data("baseClass");
 						if(baseClass){
-							return $(context).data(baseClass).val();
-						}else
-							return null;
+							return $(obj).data(baseClass).val();
+						}
 					}
 					if($(obj).is("input,select,textarea")) return $(obj).val();
 					var firstInputItem = $(obj).find("input,select,textarea").get(0);
@@ -252,6 +251,54 @@
 						else return $(firstInputItem).val();
 					}else
 						return $(obj).text();
+				},
+				validateForm : function(form){
+					form = this.isString(form) ? $("#" + form).get(0) : form;
+					var errorMsg = [];
+					var fieldErrorNums = 0;
+					$("input.loxia,select.loxia,textarea.loxia").
+						each(function(){
+							if($(this).data("baseClass")){
+								if($(this).data(baseClass,"getState") == null)
+									$(this).data(baseClass,"check");
+								if(!$(this).data(baseClass,"getState"))
+									fieldErrorNums ++;
+							}							
+						});
+					
+					if(fieldErrorNums > 0){
+						errorMsg.push(this.getLocaleMsg("VALIDATE_FIELD_ERROR",[fieldErrorNums]));
+						return errorMsg;
+					}
+					
+					var formValidateMethod = $(form).attr("validate");
+					if(!formValidateMethod){
+						formValidateMethod = $(form).attr("name") + "Validate";
+					}
+					if(_global[formValidateMethod] && $.isFunction(_global[formValidateMethod])){
+						var ret = this.hitch(_global[formValidateMethod])(form);
+						if(ret != this.SUCCESS){
+							errorMsg.push(this.getLocaleMsg("VALIDATE_FORM_ERROR"));
+							if($.loxia.isString(ret))
+								errorMsg.push(ret);
+							else{
+								for(var i=0; i< ret.length; i++)
+									errorMsg.push(ret[i]);
+							}					
+						}
+					}
+					return errorMsg;
+				},
+				submitForm : function(form){
+					form = this.isString(form) ? $("#" + form).get(0) : form;
+					var errorMsg = this.validateForm(form);
+					if(errorMsg.length == 0){
+						//success				
+						form.submit();
+					}else{
+						//show errors	
+						$(form).trigger("formvalidatefailed", [errorMsg]);
+					}
 				},
 				log : function(msg){
 					if(!this.debug) return;
@@ -268,6 +315,9 @@
 			INVALID_NUMBER : "Invalid Number",
 			INVALID_DATE : "Invalid Date",
 			DATA_EXCEED_RANGE : "Input data exceeds range",
+			
+			VALIDATE_FIELD_ERROR : "{0} field error(s) found.",
+			VALIDATE_FORM_ERROR : "Form validation failed:",
 			
 			TABLE_PER_PAGE : "Per Page",
 			TABLE_PAGER_FIRST : "First Page",

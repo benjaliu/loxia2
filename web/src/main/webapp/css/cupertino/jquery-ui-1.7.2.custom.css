@@ -407,7 +407,7 @@
 .ui-tabs .ui-tabs-hide { display: none !important; }/* Loxia Tables
 ----------------------------------*/
 .ui-loxia-table {padding: 0px; margin: -1px 0px; border-collapse: collapse; width: 100%; border: 0px solid #dedede; overflow: hidden;}
-.ui-loxia-table tr {border-collapse: collapse; border: 1px solid; border-color: #f0f0f0 #aed0ea #ebebeb;}
+.ui-loxia-table tr {border-collapse: collapse; border: 1px solid; border-color: #f0f0f0 #aed0ea #ebebeb; height: 24px;}
 .ui-loxia-table tr.last {border-bottom: 1px solid #aed0ea;}
 .ui-loxia-table td, .ui-loxia-table th { line-height: 26px; text-align: left; padding: 0 0 0 1em;}
 .ui-loxia-table th { white-space: nowrap; cursor: pointer;}
@@ -422,7 +422,8 @@
 .ui-loxia-table div.ui-pager-status {float: right;}
 .ui-loxia-table .ui-pager .ui-pager-block, .ui-loxia-table .ui-bar .ui-bar-block{margin: 1px;}
 .ui-loxia-table .ui-pager .ui-state-default, 
-.ui-loxia-table .ui-pager-status .ui-state-default {margin: 4px 2px; }
+.ui-loxia-table .ui-pager-status .ui-state-default,
+.ui-loxia-table .ui-bar .ui-state-default {margin: 4px 2px; }
 .ui-loxia-table .ui-pager-status .ui-state-default {height: 20px; font-weight: normal; font-stretch: 70%; padding: 0 4px;}
 .ui-loxia-table .ui-pager .ui-icon, .ui-loxia-table .ui-bar .ui-icon {margin: 0 4px;}
 .ui-loxia-table .ui-sort {position: absolute; top: 4px; right:-4px; width: 16px; height: 16px; margin: 0 4px;}

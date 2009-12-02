@@ -79,13 +79,22 @@ Select(mandatory field)<select name="select" loxiaType = "select" required="true
 </table>
 <table loxiaType="edittable" settings="t2defaults" cellpadding="0" cellspacing="0">
 <thead>
-<tr><th colspan="4">Head</th></tr>
-<tr><th><input type="checkbox"/></th><th>String</th><th>Num Again</th><th>Boolean</th></tr>
+<tr><th colspan="5">Head</th></tr>
+<tr><th><input type="checkbox"/></th><th>String</th><th>Num Again</th><th>Boolean</th><th formula="($2+4)*$2:2">Total</th></tr>
 </thead>
 <tbody>	
 </tbody>
 <tbody>
+<tr>
+<td><input type="checkbox"/></td><td><input loxiaType="input" name="a(#).str" id="a(#).str" required="true"/></td>
+<td><input loxiaType="number" name="a(#).num"/></td>
+<td><select loxiaType="select" name="a(#).sel" required="true"><option value="">------</option><option value="true">True</option><option value="false">False</option></select></td>
+<td>&nbsp;</td>
+</tr>
 </tbody>
+<tfoot>
+<tr><td colspan="4">Total:</td><td decimal="2">&nbsp;</td></tr>
+</tfoot>
 </table>
 <p></p>
 <div class="loxia ui-widget"><div class="tooltip-left-arrow"></div>

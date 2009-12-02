@@ -529,7 +529,7 @@
 					if ($p.hasClass("ui-state-disabled")) {
 						return false;
 					}
-					switch($p.attr("action")){
+					switch($(this).attr("action")){
 					case "Add" :
 						_this.appendRow();										
 						break;
@@ -584,7 +584,8 @@
 					$(this).data("col", index);
 					index += colspan;
 				});
-			})
+			});
+			$t.find("tfoot tr:last").addClass("last");
 			this.options.formulas = formulas;
 
 			$t.find("tbody .col-0 input[type='checkbox']").each(function(){
@@ -616,7 +617,7 @@
 						$(this).unbind("click").bind("click", function(){
 							$tr.removeClass("select");
 							if($(this).is(":checked"))
-								$tr.addClass("select");
+								$tr.addClass("selected");
 						});
 					}else if(loxia.isLoxiaWidget(this))
 						$(this).unbind("valuechanged").bind("valuechanged", function(event, data){
@@ -632,17 +633,24 @@
 						});
 				});
 			});
+			
+			$t.bind("rowchanged", function(event, data){
+				var row = data[0];
+				if(row)
+					_this._calculateRow(row);
+				_this._calculateFoot();
+			});
 		},		
 		appendRow : function(){
 			var $t = this.element;
-			var rowIndex = "" + (--ltRowIndex);
+			var rowIndex = "" + (--loxiaRowIndex);
 			var row = this.options.template.replace(/\(#\)/ig, "(" + rowIndex + ")");
 			$t.find("tbody:first").append(row);
 			loxia.initContext($t.find("tbody:first tr:last"));
 			$t.trigger("rowappended", [$t.find("tbody:first tr:last")]);
 		},
 		deleteRow : function(){
-			var $t = $(this);
+			var $t = this.element;			
 			if($("tbody:first .col-0 :checked", $t).length > 0){
 				$t.find("tbody:first tr:has(.col-0 input:checked)").remove();
 				$t.trigger("rowdeleted");
