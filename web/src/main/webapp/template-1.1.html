@@ -36,12 +36,14 @@ function checkA(value, obj){
 		return "Too Long";
 	return loxia.SUCCESS;
 }
-var t1defaults = {page:true,data:[{str:"str1",num:1,boo:true},{str:"str2",num:2,boo:false},
+var t1defaults = {page:true, alwaysShowPage : true,
+				  data:[{str:"str1",num:1,boo:true},{str:"str2",num:2,boo:false},
                                   {str:"str3",num:3,boo:true},{str:"str4",num:4,boo:false},
                                   {str:"str5",num:5,boo:true},{str:"str6",num:6,boo:false}],
                   itemCount : 6, paeItemCount : 6, 
                   url : "abc",
                   sort : "str,asc"};
+var t2defaults = {append:1};
 </script>
 </head>
 <body>
@@ -65,10 +67,20 @@ Datebox(mandatory field)<input name="date" loxiaType="date" required="true" min=
 Select(mandatory field)<select name="select" loxiaType = "select" required="true"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
 </p>
 <p>Table</p>
-<table loxiaType="table" settings="t1defaults" style="width: 100%" cellpadding="0" cellspacing="0">
+<table loxiaType="table" settings="t1defaults" cellpadding="0" cellspacing="0">
 <thead>
 <tr><th colspan="4">Head</th></tr>
 <tr><th property="num"><input type="checkbox"/></th><th property="str" sort="str">String</th><th property="num" sort="num">Num Again</th><th property="boo" sort="boo">Boolean</th></tr>
+</thead>
+<tbody>	
+</tbody>
+<tbody>
+</tbody>
+</table>
+<table loxiaType="edittable" settings="t2defaults" cellpadding="0" cellspacing="0">
+<thead>
+<tr><th colspan="4">Head</th></tr>
+<tr><th><input type="checkbox"/></th><th>String</th><th>Num Again</th><th>Boolean</th></tr>
 </thead>
 <tbody>	
 </tbody>

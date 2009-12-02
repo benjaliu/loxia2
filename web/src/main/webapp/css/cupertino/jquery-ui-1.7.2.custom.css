@@ -417,14 +417,14 @@
 .ui-loxia-table .even { background-color: #f0f0f0; /*eef2ff*/ }
 .ui-loxia-table .odd { background-color: #fff; }
 .ui-loxia-table .selected { background-color: #eef2ff; border-bottom-color: #fff; font-weight: bold;}
-.ui-loxia-table .ui-pager {}
-.ui-loxia-table .ui-pager div{float:left;}
+.ui-loxia-table .ui-pager, .ui-loxia-table .ui-bar {}
+.ui-loxia-table .ui-pager div, .ui-loxia-table .ui-bar div{float:left;}
 .ui-loxia-table div.ui-pager-status {float: right;}
-.ui-loxia-table .ui-pager .ui-pager-block{margin: 1px;}
+.ui-loxia-table .ui-pager .ui-pager-block, .ui-loxia-table .ui-bar .ui-bar-block{margin: 1px;}
 .ui-loxia-table .ui-pager .ui-state-default, 
 .ui-loxia-table .ui-pager-status .ui-state-default {margin: 4px 2px; }
 .ui-loxia-table .ui-pager-status .ui-state-default {height: 20px; font-weight: normal; font-stretch: 70%; padding: 0 4px;}
-.ui-loxia-table .ui-pager .ui-icon {margin: 0 4px;}
+.ui-loxia-table .ui-pager .ui-icon, .ui-loxia-table .ui-bar .ui-icon {margin: 0 4px;}
 .ui-loxia-table .ui-sort {position: absolute; top: 4px; right:-4px; width: 16px; height: 16px; margin: 0 4px;}
 .ui-loxia-table .sort-nosort .ui-sort {background-image: url(images/ui-icons_72a7cf_256x240.png); background-position: -128px -16px;}
 .ui-loxia-table .sort-asc .ui-sort {background-image: url(images/ui-icons_72a7cf_256x240.png); background-position: 0 -16px;}

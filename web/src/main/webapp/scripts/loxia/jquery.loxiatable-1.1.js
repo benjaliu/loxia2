@@ -241,7 +241,8 @@
 		_initPager : function(){
 			var _this = this;
 			var $t = this.element;
-			if(!this._getData("page")) return this;
+			if(!this._getData("page") || 
+					((!this.options.alwaysShowPage) && this.options.pageCount <=1)) return;
 
 			var pageSizeOptions = this._getData("pageSizeOptions");
 			var pager =
@@ -466,6 +467,7 @@
 	$.ui.loxiatable.defaults = $.extend({},loxiaBaseTableDefaults,{
 		sort: "",
 		page: false,
+		alwaysShowPage: false,
 		pageSize: 20,
 		pageSizeOptions: ["10", "15", "20", "25", "30", "40", "50", "100"],
 		currentPage: 1,
@@ -480,9 +482,67 @@
 	});
 	
 	var loxiaEditTable = $.extend({}, loxiaBaseTable, {
+		setAddable : function(flag){
+			this.options.addable = flag;
+			var $btn = this.element.find(".ui-bar .ui-icon[action='Add']").parent();
+			$btn.removeClass("ui-state-disabled");
+			if(!flag)
+				$btn.addClass("ui-state-disabled");
+		},
+		setDeletable : function(flag){
+			this.options.deletable = flag;
+			var $btn = this.element.find(".ui-bar .ui-icon[action='Delete']").parent();
+			$btn.removeClass("ui-state-disabled");
+			if(!flag)
+				$btn.addClass("ui-state-disabled");
+		},
 		_initExecBar : function(){
 			var $t = this.element;
-	
+			
+			var bar =
+				'<div class="ui-bar">';
+			bar += '<div class="ui-bar-block" block="operator">' +
+			'<div class="separator"></div>' +
+			'<div class="ui-state-default ui-corner-all' + (this.options.addable?'':' ui-state-disabled') + '"><span action="Add" title="' + loxia.getLocaleMsg("TABLE_BARBTN_ADD") + '" class="ui-icon ui-icon-seek-first"></span></div> ' +
+			'<div class="ui-state-default ui-corner-all' + (this.options.deletable?'':' ui-state-disabled') + '"><span action="Delete" title="' + loxia.getLocaleMsg("TABLE_BARBTN_DELETE") + '" class="ui-icon ui-icon-seek-prev"></span></div> ' +
+			'<div class="separator"></div></div>';
+			
+			bar += '</div>';
+			var $tbody = $t.find("tbody:last").append('<tr class="last"><td colspan="' + this.options.cols + '">'
+					+ bar + "</td></tr>");
+
+			var _this = this;
+			
+			$('.ui-bar .ui-state-default',$t).hover(
+					function() {
+						if(!$(this).hasClass("ui-state-disabled"))
+							$(this).addClass('ui-state-hover');
+					},
+					function() {
+						if(!$(this).hasClass("ui-state-disabled"))
+							$(this).removeClass('ui-state-hover');
+					}
+				);
+			$(".ui-bar", $t).livequery(function() {
+				$(".ui-bar .ui-icon", $t).unbind("click").bind("click", function() {
+					var $p = $(this).parent();
+					if ($p.hasClass("ui-state-disabled")) {
+						return false;
+					}
+					switch($p.attr("action")){
+					case "Add" :
+						_this.appendRow();										
+						break;
+					case "Delete":
+						_this.deleteRow();
+						break;
+					}
+					_this._calculateFoot();	
+					
+					$t.find('tbody:first tr:odd').removeClass("even").addClass("odd");
+					$t.find('tbody:first tr:even').removeClass("odd").addClass("even");
+				});
+			});
 		},
 		_init: function(){
 			this.element.removeAttr("loxiaType");
@@ -552,8 +612,13 @@
 			$("tbody:first tr", $t).livequery(function(){
 				var $tr = $(this);
 				$("input,select,textarea", $tr).each(function(){
-					if($(this).parents("td").is(".selector")) return;
-					if(loxia.isLoxiaWidget(this))
+					if($(this).parents("td").is(".selector")){
+						$(this).unbind("click").bind("click", function(){
+							$tr.removeClass("select");
+							if($(this).is(":checked"))
+								$tr.addClass("select");
+						});
+					}else if(loxia.isLoxiaWidget(this))
 						$(this).unbind("valuechanged").bind("valuechanged", function(event, data){
 							$t.trigger("rowchanged",[[$tr.get(0),this]]);
 						});
@@ -641,8 +706,8 @@
 	$.widget("ui.loxiaedittable", loxiaEditTable); 
 	$.ui.loxiaedittable.getter = ""; 
 	$.ui.loxiaedittable.defaults = $.extend({},loxiaBaseTableDefaults,{
-		canAdd: true,
-		canDelete: true,
+		addable: true,
+		deletable: true,
 		append: 0
 	});
 })(jQuery);

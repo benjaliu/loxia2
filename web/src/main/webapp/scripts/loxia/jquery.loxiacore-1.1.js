@@ -218,14 +218,15 @@
 						break;
 					case "button":
 						break;
-					case "table": //need init innertable first
-						$(context).find("table[loxiaType]").each(function(){loxia.initLoxiaWidget(this)});
+					case "table": 						
 						var settings = $(context).attr("settings");
 						settings = settings ? _global[settings] : {};
 						$(context).loxiatable($.extend({},settings));
 						break;
 					case "edittable":
-						$(context).find("table[loxiaType]").each(function(){loxia.initLoxiaWidget(this)});
+						var settings = $(context).attr("settings");
+						settings = settings ? _global[settings] : {};
+						$(context).loxiaedittable($.extend({},settings));
 						break;						
 					}
 				},
@@ -274,11 +275,13 @@
 			TABLE_PAGER_NEXT : "Next Page",
 			TABLE_PAGER_LAST : "Last Page",
 			TABLE_PAGER_GOTO : "Goto Page",
-			TABLE_PAGER_RELOAD : "Reload",
+			TABLE_PAGER_RELOAD : "Reload",			
 			TABLE_PAGE : "Page",
 			TABLE_PAGE_INFO : "{0} item(s)",
 			TABLE_PAGE_ERROR_OCCURS : "Error occurs at reloading.",
-			TABLE_PAGE_RELOAD : "Table is refreshed."
+			TABLE_PAGE_RELOAD : "Table is refreshed.",
+			TABLE_BARBTN_ADD : "Add New Line",
+			TABLE_BARBTN_DELETE : "Delete Selected Lines"
 		};		
 		
 		loxia.defaults = {
