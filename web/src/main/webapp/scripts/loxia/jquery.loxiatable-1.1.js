@@ -686,7 +686,7 @@
 						for(var j=0; j< params.length; j++){
 							var cellIndex = parseInt(params[j].replace(/\$/,""));
 							var p = loxia.val($(this).find("td:eq(" + cellIndex + ")").get(0));
-							p = p == null ? 0 : p;
+							p = (p == null || $.trim(p) == "") ? 0 : p;
 							f = f.replace(/\#/,p);
 						}
 						var value = eval(f);

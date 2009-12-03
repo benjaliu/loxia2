@@ -337,7 +337,7 @@
 		loxia.defaults = {
 			baseClass : "",
 			required: false,
-			lastRightValue : "",
+			lastRightValue : undefined,
 			checkmaster : "",
 			state : null,
 			errorMessage : null

@@ -46,7 +46,7 @@
 					this.element.addClass("ui-state-mandatory");
 				}
 								
-				if(this.element.val())
+				if(this.element.val() != null)
 					this._setData("lastRightValue", this.element.val());
 				
 				this.element.loxiatooltip();

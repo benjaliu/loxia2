@@ -50,7 +50,7 @@
 					this._setData("select", true);
 				}
 								
-				if(this.element.val())
+				if(this.element.val() != null)
 					this._setData("lastRightValue", this.element.val());
 				
 				this.element.loxiatooltip();
