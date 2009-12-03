@@ -407,7 +407,7 @@
 .ui-tabs .ui-tabs-hide { display: none !important; }/* Loxia Tables
 ----------------------------------*/
 .ui-loxia-table {padding: 0px; margin: -1px 0px; border-collapse: collapse; width: 100%; border: 0px solid #dedede; overflow: hidden;}
-.ui-loxia-table tr {border-collapse: collapse; border: 1px solid; border-color: #f0f0f0 #aed0ea #ebebeb; height: 24px;}
+.ui-loxia-table tr {border-collapse: collapse; border: 1px solid; border-color: #f0f0f0 #aed0ea #ebebeb; height: 28px;}
 .ui-loxia-table tr.last {border-bottom: 1px solid #aed0ea;}
 .ui-loxia-table td, .ui-loxia-table th { line-height: 26px; text-align: left; padding: 0 0 0 1em;}
 .ui-loxia-table th { white-space: nowrap; cursor: pointer;}

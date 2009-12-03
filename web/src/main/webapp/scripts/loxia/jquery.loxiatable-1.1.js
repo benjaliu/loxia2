@@ -503,8 +503,8 @@
 				'<div class="ui-bar">';
 			bar += '<div class="ui-bar-block" block="operator">' +
 			'<div class="separator"></div>' +
-			'<div class="ui-state-default ui-corner-all' + (this.options.addable?'':' ui-state-disabled') + '"><span action="Add" title="' + loxia.getLocaleMsg("TABLE_BARBTN_ADD") + '" class="ui-icon ui-icon-seek-first"></span></div> ' +
-			'<div class="ui-state-default ui-corner-all' + (this.options.deletable?'':' ui-state-disabled') + '"><span action="Delete" title="' + loxia.getLocaleMsg("TABLE_BARBTN_DELETE") + '" class="ui-icon ui-icon-seek-prev"></span></div> ' +
+			'<div class="ui-state-default ui-corner-all' + (this.options.addable?'':' ui-state-disabled') + '"><span action="Add" title="' + loxia.getLocaleMsg("TABLE_BARBTN_ADD") + '" class="ui-icon ui-icon-plusthick"></span></div> ' +
+			'<div class="ui-state-default ui-corner-all' + (this.options.deletable?'':' ui-state-disabled') + '"><span action="Delete" title="' + loxia.getLocaleMsg("TABLE_BARBTN_DELETE") + '" class="ui-icon ui-icon-minusthick"></span></div> ' +
 			'<div class="separator"></div></div>';
 			
 			bar += '</div>';
@@ -610,6 +610,21 @@
 
 			this._initExecBar();
 
+			$("thead tr:last", $t).find(".th-col-0 input[type='checkbox']").bind("click", function(){
+				console.log(this);
+				if($(this).is(":checked")){
+					$("tbody:first .col-0 input[checked='false']", $t).each(function(){
+						$(this).attr("checked", true);
+						$(this).parents("tr").addClass("selected");
+					});
+				}else{
+					$("tbody:first .col-0 input:checked", $t).each(function(){
+						$(this).attr("checked", false);
+						$(this).parents("tr").removeClass("selected");
+					});
+				}
+			});
+			
 			$("tbody:first tr", $t).livequery(function(){
 				var $tr = $(this);
 				$("input,select,textarea", $tr).each(function(){
@@ -618,6 +633,8 @@
 							$tr.removeClass("select");
 							if($(this).is(":checked"))
 								$tr.addClass("selected");
+							else
+								$tr.removeClass("selected");
 						});
 					}else if(loxia.isLoxiaWidget(this))
 						$(this).unbind("valuechanged").bind("valuechanged", function(event, data){
