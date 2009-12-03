@@ -18,7 +18,7 @@
 			//init tooltip
 			if(!this.defaultConfig.tooltipContainers ||
 					this.defaultConfig.tooltipContainers.length != 4)
-				throw new Exception("Error configuration for tooltips");
+				throw new Error("Error configuration for tooltips");
 			for(var c,i=0;c=this.defaultConfig.tooltipContainers[i];i++){
 				$(c).appendTo("body");
 			}

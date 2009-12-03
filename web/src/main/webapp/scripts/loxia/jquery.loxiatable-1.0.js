@@ -82,7 +82,7 @@
 						}else if(selectors[j].charAt(0) == '-'){
 							row += "<td><input type='radio'" + strSelected + " name='" + name + "' value='" + value + "'/></td>";
 						}else
-							throw new exception("Load Data for Selector Error.");
+							throw new Error("Load Data for Selector Error.");
 					}else{
 						value = (value == undefined || value == null ||
 								($.loxia.isString(value) && !value)) ? "&nbsp;" : value;
@@ -518,7 +518,7 @@
 	$.fn.ltDynInit = function(settings){
 		var $t = $(this);
 		if($("tbody", $t).length != 2)
-			throw new exception("Current table need at least and only 2 tbodies.");
+			throw new Error("Current table need at least and only 2 tbodies.");
 		
 		var formulas = [];
 		$t.find("thead tr:last th").each(function(i){

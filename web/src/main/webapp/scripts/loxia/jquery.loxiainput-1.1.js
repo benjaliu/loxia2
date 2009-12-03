@@ -57,7 +57,7 @@
 				
 				this._initInput();
 			}else
-				throw new exception("Wrong Dom Type for Input");
+				throw new Error("Wrong Dom Type for Input");
 		}
 	});
 	

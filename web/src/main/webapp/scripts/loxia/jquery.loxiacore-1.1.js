@@ -204,6 +204,9 @@
 				},
 				initLoxiaWidget : function (context){
 					switch($(context).attr("loxiaType")){
+					case "button":
+						$(context).loxiabutton();
+						break;
 					case "input":
 						$(context).loxiainput();
 						break;
