@@ -262,9 +262,10 @@
 					$("input.loxia,select.loxia,textarea.loxia").
 						each(function(){
 							if($(this).data("baseClass")){
-								if($(this).data(baseClass,"getState") == null)
-									$(this).data(baseClass,"check");
-								if(!$(this).data(baseClass,"getState"))
+								var baseClass = $(this).data("baseClass");
+								if($(this).data(baseClass).getState() == null)
+									$(this).data(baseClass).check();
+								if(!$(this).data(baseClass).getState())
 									fieldErrorNums ++;
 							}							
 						});
@@ -296,7 +297,7 @@
 					form = this.isString(form) ? $("#" + form).get(0) : form;
 					var errorMsg = this.validateForm(form);
 					if(errorMsg.length == 0){
-						//success				
+						//success
 						form.submit();
 					}else{
 						//show errors	
@@ -351,7 +352,8 @@
 			_getValue : function(){return this.element.val()},
 			val : function(value){
 				if(value != undefined){
-					var result = this.check(value);					
+					this._setValue(value);
+					var result = this.check();					
 					return this.element;
 				}else
 					return this._getData("lastRightValue");
@@ -375,7 +377,6 @@
 			check : function(){
 				this.clearState();
 				var value = this._getValue();
-				
 				if(this._getData("required") && value == ""){
 					this.setState(false, loxia.getLocaleMsg("INVALID_EMPTY_DATA"));
 					return false;
@@ -406,10 +407,9 @@
 				this.setState(true);
 				this._setData("lastRightValue", value);
 				this.element.trigger("valuechanged", [value]);
-				this._setValue(value);
 				return true;
 			}
-		}
+		};
 		
 		loxia.loxiaGetter = "val check getState getBaseClass";
 	}	

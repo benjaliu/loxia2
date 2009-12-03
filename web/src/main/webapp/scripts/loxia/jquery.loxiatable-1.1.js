@@ -360,7 +360,6 @@
 				
 				$(".ui-pager-block[block='pagesize'] select", $t).unbind("valuechanged").bind("valuechanged", function() {
 					var pageSize = parseInt($(this).loxiaselect("val"));
-					console.log(pageSize);
 					var settings = {
 						url: _this.options.url,
 						data: {
@@ -378,7 +377,8 @@
 		},
 		_setPager : function(){
 			var $t = this.element;
-			$(".ui-pager-block[block='pagesize'] select",$t).val("" + this.options.pageSize);
+			$(".ui-pager-block[block='pagesize'] select",$t)
+				.data("loxiaselect").val("" + this.options.pageSize);
 			$(".ui-pager-block[block='pagegoto'] input").val(this.options.currentPage);
 			$(".ui-pager-block[block='pagegoto'] span").text(this.options.pageCount);
 			$(".ui-pager-block .page-info span").text(loxia.getLocaleMsg("TABLE_PAGE_INFO",[this.options.itemCount]));
@@ -611,7 +611,6 @@
 			this._initExecBar();
 
 			$("thead tr:last", $t).find(".th-col-0 input[type='checkbox']").bind("click", function(){
-				console.log(this);
 				if($(this).is(":checked")){
 					$("tbody:first .col-0 input[checked='false']", $t).each(function(){
 						$(this).attr("checked", true);
