@@ -248,7 +248,7 @@
 			var pager =
 				'<div class="ui-pager">' +
 				'<div class="ui-pager-block" block="pagesize">' + loxia.getLocaleMsg("TABLE_PER_PAGE") +
-				'<select loxiaType="select">';
+				'<select loxiaType="select" formCheck="false">';
 				for (var i=0; i<pageSizeOptions.length; i++) {				
 					pager += '<option value="'+pageSizeOptions[i]+'">'+pageSizeOptions[i]+'</option>';
 				}
@@ -266,7 +266,7 @@
 				'<div class="separator"></div></div>';
 				
 			pager += '<div class="ui-pager-block" block="pagegoto"><div>' + loxia.getLocaleMsg("TABLE_PAGE") + 
-				' <input loxiaType="number" min="1" max="' + this.options.pageCount + '" value="" style="width: 3em;"/>' +
+				' <input loxiaType="number" formCheck="false" min="1" max="' + this.options.pageCount + '" value="" style="width: 3em;"/>' +
 				'/<span"></span></div>' + 
 				'<div class="ui-state-default ui-corner-all"><span action="Goto" title="' + loxia.getLocaleMsg("TABLE_PAGER_GOTO") + '" class="ui-icon ui-icon-arrowreturnthick-1-w"></span></div></div>';
 			
@@ -379,7 +379,8 @@
 			var $t = this.element;
 			$(".ui-pager-block[block='pagesize'] select",$t)
 				.data("loxiaselect").val("" + this.options.pageSize);
-			$(".ui-pager-block[block='pagegoto'] input").val(this.options.currentPage);
+			$(".ui-pager-block[block='pagegoto'] input",$t)
+			.data("loxianumber").val("" + this.options.currentPage);
 			$(".ui-pager-block[block='pagegoto'] span").text(this.options.pageCount);
 			$(".ui-pager-block .page-info span").text(loxia.getLocaleMsg("TABLE_PAGE_INFO",[this.options.itemCount]));
 			

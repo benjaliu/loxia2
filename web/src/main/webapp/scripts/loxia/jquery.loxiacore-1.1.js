@@ -6,7 +6,9 @@
 				ERROR : "error",				
 				debug : false, //debug mode switch
 				region : '', //default region info
-				dateFormat: "yy-mm-dd", //default date format
+				dateFormat: "yy-mm-dd", //default date format,
+				pageLock : true, //default page locking after submitting
+				onionPage : undefined,
 				
 				getViewport : function(){
 					var w, h;					 
@@ -190,6 +192,15 @@
 				isLoxiaWidget : function(context){
 					return $(context).hasClass("loxia");
 				},
+				init : function(settings){
+					$.extend(this, settings);
+					if(this.pageLock)
+						if(this.onionPage)
+							$(document).find("body").loxiaonionpage({layer : this.onionPage});
+						else
+							$(document).find("body").loxiaonionpage();
+					this.initContext();
+				},
 				initContext : function(context){
 					if(context == undefined) context = document;
 					if($(context).attr("loxiaType")) this.initLoxiaWidget(context);
@@ -233,6 +244,18 @@
 						break;						
 					}
 				},
+				lockPage : function(){
+					if(this.pageLock){
+						var onion = $(document).find("body").data("loxiaonionpage");
+						onion.show();
+					}
+				},
+				unlockPage : function(){
+					if(this.pageLock){
+						var onion = $(document).find("body").data("loxiaonionpage");
+						onion.hide();
+					}
+				},
 				val : function(obj){
 					if(obj == undefined) return null;
 					if(this.isLoxiaWidget(obj)){
@@ -261,6 +284,8 @@
 					var fieldErrorNums = 0;
 					$("input.loxia,select.loxia,textarea.loxia").
 						each(function(){
+							if($(this).attr("formCheck") == "false")
+								return;
 							if($(this).data("baseClass")){
 								var baseClass = $(this).data("baseClass");
 								if($(this).data(baseClass).getState() == null)
@@ -462,4 +487,34 @@
 		return loxia.SUCCESS;
 	}
 		
+	var loxiaOnionPage = {
+		_init : function(){
+			if(this.options.layer){
+				if(loxia.isString(this.options.layer))
+					this.options.layer = $("#" + this.options.layer).get(0);
+			}else{
+				$(document).find("body").append($.loxiaonionpage.onDiv);
+				this.options.layer = $(".loxia-onion-container").get(0);
+			}
+			
+			$(this.options.layer).hide();
+		},
+		
+		show : function(){
+			$(this.options.layer).show();
+		},
+		
+		hide : function(){
+			$(this.options.layer).hide();
+		}
+	};
+	
+	$.widget("ui.loxiaonionpage", loxiaOnionPage); 
+	$.ui.loxiaonionpage.getter = ""; 
+	$.ui.loxiaonionpage.defaults = {
+		layer : undefined
+	};
+	$.loxiaonionpage = {
+		onDiv : '<div class="loxia loxia-onion-container"><div class="loxia-onion"></div></div>'
+	};
 })(jQuery);

@@ -23,11 +23,11 @@
 var $j = jQuery.noConflict();
 
 $j(document).ready(function(){
-	loxia.debug = true;		
-	//$j("input[loxiaType]").loxiainput();
-    loxia.initContext();    	
+	loxia.init({debug: true});		
+	//$j("input[loxiaType]").loxiainput();	
 
-    $j("input,textarea").bind("valuechanged",function(event,data){
+    $j("input,select,textarea").bind("valuechanged",function(event,data){
+    	loxia.log($j(this).get(0));
         loxia.log(data);
         });
 });
