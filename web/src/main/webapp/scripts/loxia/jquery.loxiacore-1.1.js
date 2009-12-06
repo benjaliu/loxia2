@@ -291,9 +291,9 @@
 						onion.hide();
 					}
 				},
-				val : function(obj){
+				val : function(obj, value){
 					if(obj == undefined) return null;
-					if(this.isLoxiaWidget(obj, value)){
+					if(this.isLoxiaWidget(obj)){
 						var baseClass = $(obj).data("baseClass");
 						if(baseClass){
 							if(value)
