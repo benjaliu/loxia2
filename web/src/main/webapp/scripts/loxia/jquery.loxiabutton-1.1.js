@@ -18,10 +18,30 @@
 						var href = $(this).attr("href");
 						var target = $(this).attr("target");
 						if(target == "_blank"){
+							loxia.openPage(loxia.getTimeUrl(loxia.encodeUrl(href)));
 						}else{
 							loxia.lockPage();
+							window.location = loxia.getTimeUrl(loxia.encodeUrl(href));
 						}
+						break;
 					case "pop" :
+						var href = $(this).attr("href");
+						var param = "";
+						for(k in this.options.data){
+							param += '&' + k + '=' + this.options.data[k];							
+						}
+						href += (/\?/.test(href) ? '&':'?') + param.substring(1);
+						
+						var oTarget = null;
+						if($(this).attr("popfor"))
+							oTarget = $(this).prev($(this).attr("popfor"));
+						else
+							oTarget = $(this).prev();
+						
+						var oWin = loxia.openPage(href);
+						if(!oWin.opener) oWin.opener = self;
+						oWin.dialogTarget = oTarget;
+						break;
 					case "close" :
 						if($.browser.msie){
 							window.top.close();
@@ -44,6 +64,7 @@
 	$.widget("ui.loxiabutton", loxiaButton); 
 	$.ui.loxiabutton.getter = ""; 
 	$.ui.loxiabutton.defaults = {
-		type : "button"
+		type : "button",
+		data : {}
 	};	
 })(jQuery);

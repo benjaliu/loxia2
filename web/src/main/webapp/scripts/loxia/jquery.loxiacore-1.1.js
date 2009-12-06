@@ -8,6 +8,7 @@
 				region : '', //default region info
 				dateFormat: "yy-mm-dd", //default date format,
 				pageLock : true, //default page locking after submitting
+				windowFeatures : "toolbar=no, menubar=no,scrollbars=yes, resizable=no,location=no, status=no",
 				onionPage : undefined,
 				
 				getViewport : function(){
@@ -30,7 +31,30 @@
 				isString: function(obj){
 					return typeof obj == "string" || obj instanceof String;
 				},
-				
+				getTimeUrl: function(url){
+					var iTime=(new Date()).getTime();
+					if (url.indexOf("loxiaflag=") >= 0 ){
+						url = url.replace(/loxiaflag=\d{13}/, "loxiaflag="+iTime.toString());
+						return url ;
+					}
+
+					sUrl+=(/\?/.test(sUrl)) ? "&" : "?";
+					return (sUrl+"loxiaflag="+iTime.toString());
+				},
+				encodeUrl: function(url){
+				    var index = url.indexOf("?");
+				    if (index == -1) return url;
+
+				    var result = url.substring(0, index + 1);
+				    var params = url.substring(index + 1).split("&");
+
+				    for (var i=0; i < params.length; i++){
+				        if (i > 0) result += "&";
+				        var param = params[i].split("=");
+				        result += param[0] + "=" + encodeURIComponent(param[1]);
+				    }
+				    return result;
+				},
 				upperFirstLetter: function(str){
 					return str.substring(0,1).toUpperCase() + str.substring(1);
 				},
@@ -244,6 +268,17 @@
 						break;						
 					}
 				},
+				openPage : function(url, target, features, size){
+					target = target || "_blank";
+					features = features || this.windowFeatures;
+					var features = "toolbar=no, menubar=no,scrollbars=yes, resizable=no,location=no, status=no";
+					var defaultTarget = "_blank";
+					
+					if(size && size.length && size.length == 2){
+						features = 'width=' + size[0] + ',height=' + size[1] + ',' + features;
+					}
+					return window.open(url,target,features);
+				},
 				lockPage : function(){
 					if(this.pageLock){
 						var onion = $(document).find("body").data("loxiaonionpage");
@@ -258,25 +293,42 @@
 				},
 				val : function(obj){
 					if(obj == undefined) return null;
-					if(this.isLoxiaWidget(obj)){
+					if(this.isLoxiaWidget(obj, value)){
 						var baseClass = $(obj).data("baseClass");
 						if(baseClass){
-							return $(obj).data(baseClass).val();
+							if(value)
+								$(obj).data(baseClass).val(value);
+							else
+								return $(obj).data(baseClass).val();
 						}
 					}
-					if($(obj).is("input,select,textarea")) return $(obj).val();
+					if($(obj).is("input,select,textarea"))
+						if(value)
+							$(obj).val(value);
+						else
+							return $(obj).val();
 					var firstInputItem = $(obj).find("input,select,textarea").get(0);
 					if(firstInputItem){
 						if(this.isLoxiaWidget(firstInputItem)){
 							var baseClass = $(firstInputItem).data("baseClass");
 							if(baseClass){
-								return $(firstInputItem).data(baseClass).val();
+								if(value)
+									$(firstInputItem).data(baseClass).val(value);
+								else
+									return $(firstInputItem).data(baseClass).val();
 							}else
 								return null;
 						}						
-						else return $(firstInputItem).val();
+						else 
+							if(value)
+								$(firstInputItem).val(value);
+							else
+								return $(firstInputItem).val();
 					}else
-						return $(obj).text();
+						if(value)
+							$(obj).text(value);
+						else
+							return $(obj).text();
 				},
 				validateForm : function(form){
 					form = this.isString(form) ? $("#" + form).get(0) : form;
