@@ -254,6 +254,11 @@
 					case "select":
 						$(context).loxiaselect();
 						break;
+					case "dropdown":
+						var data = $(context).attr("data");
+						data = data ? _global[data] : {};
+						$(context).loxiadropdown($.extend({},data));
+						break;
 					case "button":
 						break;
 					case "table": 						
@@ -336,7 +341,7 @@
 					var fieldErrorNums = 0;
 					$("input.loxia,select.loxia,textarea.loxia").
 						each(function(){
-							if($(this).attr("formCheck") == "false")
+							if($(this).attr("formCheck") == "false" || $(this).attr("formCheck") == false)
 								return;
 							if($(this).data("baseClass")){
 								var baseClass = $(this).data("baseClass");

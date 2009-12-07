@@ -41,7 +41,7 @@
 				this._setData("baseClass", baseClass);
 				this.element.addClass("loxia " + "ui-" + baseClass + " ui-state-default ui-corner-all");
 				
-				if(this.element.attr("required") == "true"){
+				if(this.element.attr("required") == "true" || this.element.attr("required") == true){
 					this._setData("required", true);
 					this.element.addClass("ui-state-mandatory");
 				}

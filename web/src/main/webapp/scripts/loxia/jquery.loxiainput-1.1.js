@@ -41,12 +41,13 @@
 				this.element.data("baseClass",baseClass);
 				this.element.addClass("loxia " + "ui-" + baseClass + " ui-state-default ui-corner-all");
 				
-				if(this.element.attr("required") == "true"){
+				if(this.element.attr("required") == "true" || this.element.attr("required") == true){
+					console.log('---');
 					this._setData("required", true);
 					this.element.addClass("ui-state-mandatory");
 				}
 				
-				if(this.element.attr("selectonfocus") == "true"){
+				if(this.element.attr("selectonfocus") == "true" || this.element.attr("selectonfocus") == true){
 					this._setData("select", true);
 				}
 								
