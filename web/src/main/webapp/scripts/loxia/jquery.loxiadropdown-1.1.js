@@ -23,9 +23,13 @@
 			this.valueNode = $(this.element.next());
 			this.options.lastRightValue = value;
 			this._setValue(this.element.val());
-			var arrowDiv = '<div style="position: absolute;"/>';
+			var width = this.element.width();
+			var arrowDiv = '<div class="ui-state-default ui-corner-all" style="border: 0 solid; position: absolute; top: 2px; left:'+ (width - 16) +'px"><span class="ui-icon ui-icon-triangle-1-s"/></div>';
 			this.container.append(arrowDiv);
-			arrowNode = this.container.find("div");			
+			this.arrowNode = this.container.find("div");			
+			
+			this.arrowNode.hover(function(){$(this).addClass("ui-state-active");},
+					function(){$(this).removeClass("ui-state-active");});
 		},	
 		_setValue : function(value){
 			this.valueNode.val(value);
