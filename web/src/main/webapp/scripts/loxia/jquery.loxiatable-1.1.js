@@ -99,7 +99,7 @@
 				$(this).addClass("ui-widget-header");
 				$(this).find("th").addClass("ui-state-default");
 			});
-			$t.find("tbody").addClass("ui-widget-content");
+			$t.find("tbody:gt(0)").addClass("ui-widget-content");
 			var cols = $t.find("thead tr:last th").each(function(i){
 				var sortClass = "";
 
@@ -558,7 +558,7 @@
 				$(this).addClass("ui-widget-header");
 				$(this).find("th").addClass("ui-state-default");
 			});
-			$t.find("tbody").addClass("ui-widget-content");
+			$t.find("tbody:gt(0)").addClass("ui-widget-content");
 			
 			var formulas = [];
 			var cols = $t.find("thead tr:last th").each(function(i){
