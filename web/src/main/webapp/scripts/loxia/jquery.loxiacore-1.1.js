@@ -254,10 +254,22 @@
 					case "select":
 						$(context).loxiaselect();
 						break;
-					case "dropdown":
+					case "dropdown":						
 						var data = $(context).attr("data");
-						data = data ? _global[data] : {};
-						$(context).loxiadropdown($.extend({},data));
+						var choice = $(context).attr("choice");
+						var editable = $(context).attr("editable");
+						var findMode = $(context).attr("findMode");
+						
+						var settings = {};
+						if(data)
+							settings.data = data;						
+						if(editable == "true" || editable == true)
+							settings.editable = editable;
+						if(choice)
+							settings.choice = choice;
+						if(findMode)
+							settings.findMode = findMode;
+						$(context).loxiadropdown(settings);
 						break;
 					case "button":
 						break;
@@ -398,6 +410,7 @@
 		loxia.regional = [];
 		loxia.regional[''] = {
 			INVALID_EMPTY_DATA : "Current Input is a mandatory one",
+			INVALID_DATA : "Current Input is invalid",
 			INVALID_NUMBER : "Invalid Number",
 			INVALID_DATE : "Invalid Date",
 			DATA_EXCEED_RANGE : "Input data exceeds range",

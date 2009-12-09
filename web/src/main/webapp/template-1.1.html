@@ -24,6 +24,8 @@
 var $j = jQuery.noConflict();
 
 $j(document).ready(function(){
+	this.loxiaChoice1 = new LoxiaChoice({data: {"":"hi","0":"ok","1":"tear","2":"oops"}});
+	
 	loxia.init({debug: true});		
 	//$j("input[loxiaType]").loxiainput();	
 
@@ -31,6 +33,7 @@ $j(document).ready(function(){
     	loxia.log($j(this).get(0));
         loxia.log(data);
         });
+    
 });
 
 function checkA(value, obj){
@@ -69,7 +72,7 @@ Datebox(mandatory field)<input name="date" loxiaType="date" required="true" min=
 Select(mandatory field)<select name="select" loxiaType = "select" required="true"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
 </p>
 <p style="background-color: #efefef;">
-Dropdown list<input name="dropdown" loxiaType="dropdown" style="width: 200px;"/>
+Dropdown list<input name="dropdown" choice="loxiaChoice1" loxiaType="dropdown" style="width: 200px;" value="1"/>
 </p>
 <p>
 <input type="button" loxiaType="button" buttonType="anchor" value="Hi" onclick="loxia.log('hi');"/>
