@@ -57,22 +57,28 @@ var t2defaults = {append:1};
 Auto Trim Textbox(with auto select text when focus, maxsize = 10, optional field)<input name="input" loxiaType="input" value="abc" trim="true" checkmaster="checkA" selectonfocus="true"/>
 </p>
 <p>
-Textbox(maxsize = 10, mandatory field)<input name="input" loxiaType="input" value="abc" required="true" checkmaster="checkA"/>
+Textbox(maxsize = 10, mandatory field)<input name="input" loxiaType="input" value="abc" required="true" checkmaster="checkA"/><input name="input" loxiaType="input" value="abc" disabled="disabled" required="true" checkmaster="checkA"/><input name="input" loxiaType="input" value="abc" readonly="readonly" required="true" checkmaster="checkA"/>
 </p>
 <p>
 Number(decimal =2, max=20, mandatory field)<input name="input" loxiaType="number" value="" decimal="2" max="20" required="true" checkmaster="checkA"/>
 </p>
 <p>
-Textarea(optional field)<textarea name="input" loxiaType="input"></textarea>
+Textarea(optional field)<textarea name="input" loxiaType="input"></textarea><textarea name="input" disabled="disabled" loxiaType="input"></textarea>
 </p>
 <p>
 Datebox(mandatory field)<input name="date" loxiaType="date" required="true" min="2009-11-05" max="today"/>
+<input name="date" loxiaType="date" disabled="disabled" min="2009-11-05" max="today"/>
+<input name="date" loxiaType="date" readonly="readonly" min="2009-11-05" max="today"/>
 </p>
 <p>
 Select(mandatory field)<select name="select" loxiaType = "select" required="true"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+<select name="select" loxiaType = "select" required="true" disabled="disabled"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+<select name="select" loxiaType = "select" required="true" readonly="readonly"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
 </p>
 <p style="background-color: #efefef;">
 Dropdown list<input name="dropdown" choice="loxiaChoice1" loxiaType="dropdown" style="width: 200px;" value="1"/>
+<input name="dropdown" choice="loxiaChoice1" loxiaType="dropdown" disabled="disabled" style="width: 200px;" value="1"/>
+<input name="dropdown" choice="loxiaChoice1" loxiaType="dropdown" readonly="readonly" style="width: 200px;" value="1"/>
 </p>
 <p>
 <input type="button" loxiaType="button" buttonType="anchor" value="Hi" onclick="loxia.log('hi');"/>

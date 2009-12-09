@@ -8,6 +8,7 @@
 			this._setData("checkmaster",this.element.attr("checkmaster") || "");
 			
 			this.element.focus(function(){	
+				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
 				var _t = $(this).data("loxiainput");
 				var tooltip = $(this).data("loxiatooltip");
 				$(this).addClass("ui-state-active");
@@ -20,6 +21,7 @@
 			});
 			
 			this.element.blur(function(){
+				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
 				var _t = $(this).data("loxiainput");
 				var tooltip = $(this).data("loxiatooltip");
 				$(this).removeClass("ui-state-active");
@@ -45,6 +47,8 @@
 					this._setData("required", true);
 					this.element.addClass("ui-state-mandatory");
 				}
+				if(this.element.attr("disabled"))
+					this.setEnable(false);				
 				
 				if(this.element.attr("selectonfocus") == "true" || this.element.attr("selectonfocus") == true){
 					this._setData("select", true);
@@ -56,6 +60,9 @@
 				this.element.loxiatooltip();
 				
 				this._initInput();
+				
+				if(this.element.attr("readonly"))
+					this.setReadonly(true);
 			}else
 				throw new Error("Wrong Dom Type for Input");
 		}
@@ -85,6 +92,7 @@
 			}
 			
 			this.element.focus(function(){	
+				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
 				var _t = $(this).data("loxianumber");
 				var tooltip = $(this).data("loxiatooltip");
 				$(this).addClass("ui-state-active");
@@ -96,6 +104,7 @@
 			});
 			
 			this.element.blur(function(){
+				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
 				var _t = $(this).data("loxianumber");
 				var tooltip = $(this).data("loxiatooltip");
 				$(this).removeClass("ui-state-active");
@@ -119,6 +128,15 @@
 	var loxiaDate = $.extend({}, loxiaInput, {
 		getBaseClass : function(){
 			return "loxiadate";
+		},
+		setReadonly : function(state){
+			if(state){
+				this.element.attr("readonly","readonly");		
+				this.element.datepicker("disable");
+			}else{
+				this.element.removeAttr("readonly");
+				this.element.datepicker("enable");
+			}
 		},
 		_initInput : function(){
 			var checkmaster = "checkDate";
@@ -162,6 +180,7 @@
 			}
 			
 			this.element.focus(function(){	
+				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
 				var _t = $(this).data("loxiadate");
 				var tooltip = $(this).data("loxiatooltip");
 				$(this).addClass("ui-state-active");
@@ -174,6 +193,7 @@
 			});
 			
 			this.element.blur(function(){
+				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
 				var _t = $(this).data("loxiadate");
 				var tooltip = $(this).data("loxiatooltip");
 				$(this).removeClass("ui-state-active");

@@ -8,6 +8,7 @@
 			this._setData("checkmaster",this.element.attr("checkmaster") || "");
 			
 			this.element.focus(function(){	
+				if($(this).is(".ui-state-disabled")) return;
 				var _t = $(this).data("loxiaselect");
 				var tooltip = $(this).data("loxiatooltip");
 				$(this).addClass("ui-state-active");
@@ -18,12 +19,13 @@
 			});
 			
 			this.element.blur(function(){
+				if($(this).is(".ui-state-disabled")) return;
 				var tooltip = $(this).data("loxiatooltip");
 				$(this).removeClass("ui-state-active");
 				tooltip.hide();
 			});
 			
-			this.element.change(function(){
+			this.element.change(function(){				
 				var _t = $(this).data("loxiaselect");
 				var tooltip = $(this).data("loxiatooltip");
 				$(this).removeClass("ui-state-active");
@@ -44,6 +46,13 @@
 				if(this.element.attr("required") == "true" || this.element.attr("required") == true){
 					this._setData("required", true);
 					this.element.addClass("ui-state-mandatory");
+				}
+				
+				if(this.element.attr("disabled"))
+					this.setEnable(false);
+				
+				if(this.element.attr("readonly")){
+					this.setReadonly(true);
 				}
 								
 				if(this.element.val() != null)

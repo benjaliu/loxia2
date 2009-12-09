@@ -46,7 +46,10 @@
 			
 			$(this).click(function(){
 				_this.hide();
-				_this.choiceContainer.trigger("itemselected",[[$(this).attr("key"),$(this).text()]]);
+				if(_this.parentNode)
+					_this.parentNode.trigger("itemselected",[[$(this).attr("key"),$(this).text()]]);
+				else
+					_this.choiceContainer.trigger("itemselected",[[$(this).attr("key"),$(this).text()]]);
 			});
 		});		
 	};
@@ -149,12 +152,20 @@
 			this.container.append(arrowDiv);
 			this.arrowNode = this.container.find("div");			
 			
-			this.arrowNode.hover(function(){$(this).addClass("ui-state-active");},
-					function(){$(this).removeClass("ui-state-active");});
+			var _this = this;
+			this.arrowNode.hover(function(){
+					if(_this.element.is(".ui-state-disabled") || _this.element.attr("readonly")) return;
+					$(this).addClass("ui-state-active");
+				},
+				function(){
+					if(_this.element.is(".ui-state-disabled") || _this.element.attr("readonly")) return;
+					$(this).removeClass("ui-state-active");
+				});
 		},	
 		_initEvent : function(){
 			var _this = this;
 			this.arrowNode.click(function(){
+				if(_this.element.is(".ui-state-disabled") || _this.element.attr("readonly")) return;
 				var choice = _this.loxiaChoice;
 				choice.parentNode = _this.element;	
 				if(choice.isShown())
@@ -167,10 +178,11 @@
 				}
 			});
 			
-			this.loxiaChoice.choiceContainer.bind("itemselected", function(event, data){
+			this.element.bind("itemselected", function(event, data){
 				_this.val(data[0]);
 			});
 			this.element.focus(function(){	
+				if($(this).is(".ui-state-disabled") || _this.element.attr("readonly")) return;
 				var tooltip = $(this).data("loxiatooltip");
 				$(this).addClass("ui-state-active");
 				
@@ -182,6 +194,7 @@
 			});
 			
 			this.element.blur(function(){
+				if($(this).is(".ui-state-disabled") || _this.element.attr("readonly")) return;
 				_this.loxiaChoice.hide();
 				
 				var tooltip = $(this).data("loxiatooltip");
@@ -205,6 +218,7 @@
 				}				
 			});
 			this.element.keyup(function(event){
+				if($(this).is(".ui-state-disabled") || _this.element.attr("readonly")) return;
 				var item = $("li.ui-state-active",_this.loxiaChoice.choiceContainer);				
 				if(event.keyCode == 40){ //down					
 					if(item.get(0)){ 
@@ -225,12 +239,23 @@
 					}else
 						_this.loxiaChoice.moveTo(_this.loxiaChoice.currentList.length -1);
 				}else if(event.keyCode == 13){ //enter
-					_this.loxiaChoice.choiceContainer.trigger("itemselected",
+					_this.element.trigger("itemselected",
 							[[item.attr("key"),item.text()]]);
 					_this.loxiaChoice.hide();					
 				}else{
 					_this.loxiaChoice.parentNode = _this.element;
 					_this.loxiaChoice.show($(this).val());
+				}
+			});
+			
+			$(document).mousedown(function(event){
+				if(_this.loxiaChoice.isShown()){
+					var target = event.srcElement? event.srcElement : event.target;
+					var inputs = $(target).is(".ui-loxiadropdown") ? $(target) : $(target).parents(".ui-loxiadropdown");
+					var choices = $(target).is(".ui-loxiachoice") ? $(target) : $(target).parents(".ui-loxiachoice");
+					
+					if(inputs.length ==0 && choices.length ==0)
+						_this.loxiaChoice.hide();
 				}
 			});
 		},
@@ -279,6 +304,12 @@
 				this.element.addClass("ui-state-mandatory");
 			}
 			
+			if(this.element.attr("disabled"))
+				this.setEnable(false);
+			
+			if(this.element.attr("readonly"))
+				this.setReadonly(true);
+			
 			if(this.element.attr("selectonfocus") == "true"){
 				this._setData("select", true);
 			}								
@@ -294,7 +325,18 @@
 				this.valueNode.val("");
 			displayValue = displayValue || value;
 			return this.element.val(displayValue);
-		}
+		},
+		setEnable : function(state){
+			if(state){
+				this.element.removeClass("ui-state-disabled");
+				this.element.removeAttr("disabled");
+				this.arrowNode.removeClass("ui-state-disabled");
+			}else{
+				this.element.addClass("ui-state-disabled");
+				this.element.attr("disabled","disabled");
+				this.arrowNode.addClass("ui-state-disabled");
+			}
+		},
 	});
 	
 	$.widget("ui.loxiadropdown", loxiaDropdown); 
@@ -303,4 +345,5 @@
 		editable : false,
 		findMode : "like" //"like","leftlike","rightlike"
 	});	
+	
 })(jQuery);

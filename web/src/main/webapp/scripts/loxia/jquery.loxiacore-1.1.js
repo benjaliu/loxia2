@@ -453,6 +453,22 @@
 				}else
 					return this._getData("lastRightValue");
 			},
+			setReadonly : function(state){
+				if(state){
+					this.element.attr("readonly","readonly");					
+				}else{
+					this.element.removeAttr("readonly");
+				}
+			},
+			setEnable : function(state){
+				if(state){
+					this.element.removeClass("ui-state-disabled");
+					this.element.removeAttr("disabled");
+				}else{
+					this.element.addClass("ui-state-disabled");
+					this.element.attr("disabled","disabled");
+				}
+			},
 			clearState : function(){
 				this._setData("state", null);
 				this._setData("errorMessage", null);
