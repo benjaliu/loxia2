@@ -2,6 +2,7 @@ package cn.benjamin.loxia.dao;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,4 +27,13 @@ public interface GenericEntityDao<T extends BaseModel, PK extends Serializable> 
 
 	@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 	T getByPrimaryKey(PK id);
+	
+	@Transactional
+	int updateByNamedQuery(String queryName, Map<String,Object> params);
+	
+	@Transactional
+	int updateByQuery(String query, Map<String,Object> params);
+	
+	@Transactional
+	void executeDDL(String ddl);
 }

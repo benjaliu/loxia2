@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -101,6 +102,18 @@ public class GenericEntityDaoImpl<T extends BaseModel, PK extends Serializable> 
 
 	public void setModelClass(Class<T> modelClass) {
 		this.modelClass = modelClass;
+	}
+
+	public int updateByNamedQuery(String queryName, Map<String, Object> params) {
+		return daoService.batchUpdateByNamedQuery(queryName, params);
+	}
+
+	public int updateByQuery(String query, Map<String, Object> params) {
+		return daoService.batchUpdateByQuery(query, params);
+	}
+
+	public void executeDDL(String ddl) {
+		daoService.executeDDL(ddl);
 	}
 	
 }

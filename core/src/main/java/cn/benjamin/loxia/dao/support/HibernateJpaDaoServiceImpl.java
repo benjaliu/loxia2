@@ -294,4 +294,8 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 		return list.get(0);
 	}
 
+	public void executeDDL(String queryString) {
+		entityManager.createNativeQuery(queryString).executeUpdate();
+	}
+
 }

@@ -13,40 +13,65 @@ public class LoxiaUserDetails implements UserDetails {
 	 */
 	private static final long serialVersionUID = -7151706265719401726L;
 	
+	private String username;
+	private String password;
+	private boolean accountNonExpired;
+	private boolean accountNonLocked;
+	private boolean credentialsNonExpired;
+	private boolean enabled;
+	
 	private List<LoxiaGrantedAuthority> loxiaAuthorities = new ArrayList<LoxiaGrantedAuthority>();	
 
 	public GrantedAuthority[] getAuthorities() {
 		return (GrantedAuthority[])loxiaAuthorities.toArray();
 	}
 
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getUsername() {
+		return username;
 	}
 
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
+		return accountNonExpired;
+	}
+
+	public void setAccountNonExpired(boolean accountNonExpired) {
+		this.accountNonExpired = accountNonExpired;
 	}
 
 	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
+		return accountNonLocked;
+	}
+
+	public void setAccountNonLocked(boolean accountNonLocked) {
+		this.accountNonLocked = accountNonLocked;
 	}
 
 	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
+		return credentialsNonExpired;
+	}
+
+	public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+		this.credentialsNonExpired = credentialsNonExpired;
 	}
 
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public List<LoxiaGrantedAuthority> getLoxiaAuthorities() {

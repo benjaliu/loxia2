@@ -56,4 +56,6 @@ public interface DaoService {
 	
 	int batchUpdateByNamedQuery(String queryName, Map<String,Object> params);
 	int batchUpdateByQuery(String queryString, Map<String,Object> params);
+	
+	void executeDDL(String queryString);
 }

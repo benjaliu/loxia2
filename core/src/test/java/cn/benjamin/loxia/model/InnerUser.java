@@ -1,19 +1,23 @@
 package cn.benjamin.loxia.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 @Entity
 @Table(name = "users")
-public class User extends BaseModel {
+public class InnerUser extends BaseModel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8767300648227610669L;
 
-	@Id
+	@Id @GeneratedValue(generator="tablegen", strategy=GenerationType.TABLE)
+	@TableGenerator(name="tablegen", allocationSize=1, table="seqtable")
 	private Long id;
 	private String loginName;
 	private String userName;
