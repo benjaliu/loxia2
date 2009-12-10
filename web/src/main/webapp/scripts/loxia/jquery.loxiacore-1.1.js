@@ -38,8 +38,8 @@
 						return url ;
 					}
 
-					sUrl+=(/\?/.test(sUrl)) ? "&" : "?";
-					return (sUrl+"loxiaflag="+iTime.toString());
+					url+=(/\?/.test(url)) ? "&" : "?";
+					return (url+"loxiaflag="+iTime.toString());
 				},
 				encodeUrl: function(url){
 				    var index = url.indexOf("?");
@@ -282,7 +282,11 @@
 						var settings = $(context).attr("settings");
 						settings = settings ? _global[settings] : {};
 						$(context).loxiaedittable($.extend({},settings));
-						break;						
+						break;
+					case "dialog":
+						var settings = $(context).attr("settings");
+						settings = settings ? _global[settings] : {};
+						$(context).loxiadialog($.extend({},settings));
 					}
 				},
 				openPage : function(url, target, features, size){

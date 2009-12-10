@@ -6,6 +6,9 @@
 				this.options.type = this.element.attr("buttonType") || this.options.type;
 				this.element.addClass("loxia loxia-button ui-state-default ui-corner-all");
 				
+				if(this.element.attr("disabled"))
+					this.setEnable(false);	
+				
 				this.element.bind("click", function(e){
 					e.stopPropagation();
 					var _t = $(this).data("loxiabutton");
@@ -53,12 +56,28 @@
 				});
 				
 				this.element.hover(function(){
+					if($(this).is(".ui-state-disabled")) return;
 					$(this).toggleClass("ui-state-hover");
 				},function(){
+					if($(this).is(".ui-state-disabled")) return;
 					$(this).toggleClass("ui-state-hover");
+				}).focus(function() {
+					$(this).addClass('ui-state-focus');
+				})
+				.blur(function() {
+					$(this).removeClass('ui-state-focus');
 				});
 			}else
 				throw new exception("Wrong DOM Type for Button.");
+		},
+		setEnable : function(state){
+			if(state){
+				this.element.removeClass("ui-state-disabled");
+				this.element.removeAttr("disabled");
+			}else{
+				this.element.addClass("ui-state-disabled");
+				this.element.attr("disabled","disabled");
+			}
 		}
 	};	
 	$.widget("ui.loxiabutton", loxiaButton); 
