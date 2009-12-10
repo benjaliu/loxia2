@@ -336,7 +336,7 @@
 				this.element.attr("disabled","disabled");
 				this.arrowNode.addClass("ui-state-disabled");
 			}
-		},
+		}
 	});
 	
 	$.widget("ui.loxiadropdown", loxiaDropdown); 

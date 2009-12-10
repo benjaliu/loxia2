@@ -351,7 +351,7 @@
 					form = this.isString(form) ? $("#" + form).get(0) : form;
 					var errorMsg = [];
 					var fieldErrorNums = 0;
-					$("input.loxia,select.loxia,textarea.loxia").
+					$("input.loxia:enabled,select.loxia:enabled,textarea.loxia:enabled").
 						each(function(){
 							if($(this).attr("formCheck") == "false" || $(this).attr("formCheck") == false)
 								return;
@@ -395,7 +395,7 @@
 						form.submit();
 					}else{
 						//show errors	
-						$(form).trigger("formvalidatefailed", [errorMsg]);
+						$("body").trigger("formvalidatefailed", [[errorMsg,form]]);
 					}
 				},
 				log : function(msg){
@@ -511,7 +511,8 @@
 						}
 						if(result.length > 8){
 							//set the formatted value
-							value = result.substring(8);						
+							value = result.substring(8);
+							this._setValue(value);
 						}
 					}
 				}
@@ -587,6 +588,8 @@
 		},
 		
 		show : function(){
+			var onionLayer = $(".loxia-onion", this.options.layer);
+			onionLayer.css({width: $(window).width() + "px", height: $(document).height() + "px"});
 			$(this.options.layer).show();
 		},
 		
@@ -601,6 +604,6 @@
 		layer : undefined
 	};
 	$.loxiaonionpage = {
-		onDiv : '<div class="loxia loxia-onion-container"><div class="loxia-onion"></div></div>'
+		onDiv : '<div class="loxia loxia-onion-container"><div class="loxia-onion ui-widget-overlay position:absolute;"></div></div>'
 	};
 })(jQuery);

@@ -33,7 +33,10 @@ $j(document).ready(function(){
     	loxia.log($j(this).get(0));
         loxia.log(data);
         });
-    
+    $j("body").bind("formvalidatefailed",function(event,data){
+    	alert('hi');
+        loxia.unlockPage();
+    });
 });
 
 function checkA(value, obj){
@@ -82,7 +85,7 @@ Dropdown list<input name="dropdown" choice="loxiaChoice1" loxiaType="dropdown" s
 </p>
 <p>
 <input type="button" loxiaType="button" buttonType="anchor" value="Hi" onclick="loxia.log('hi');"/>
-<input type="button" loxiaType="button" buttonType="submit" value="Hi Submit" onclick="loxia.log('hi');"/>
+<input type="button" loxiaType="button" buttonType="submit" value="Hi Submit"/>
 </p>
 <p>Table</p>
 <table loxiaType="table" settings="t1defaults" cellpadding="0" cellspacing="0">
@@ -115,9 +118,15 @@ Dropdown list<input name="dropdown" choice="loxiaChoice1" loxiaType="dropdown" s
 </tfoot>
 </table>
 <p></p>
-<div class="loxia ui-widget"><div class="tooltip-left-arrow"></div>
-<div class="ui-state-highlight ui-corner-all"  style="padding: .3em .7em; width: auto;"><span>abcd</span></div>
-<div class="tooltip-right-arrow"></div></div>
+<div class="ui-widget">
+<div class="ui-state-highlight ui-corner-all"  style="padding: .3em .7em; width: auto;">
+<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em; margin-top: 2px;"></span>
+<ul style="min-height:1%; list-style:none; margin: 0; padding-left: 0;">
+<li>abcd</li>
+<li>abcd</li>
+</ul>
+</p></div>
+</div>
 
 
 

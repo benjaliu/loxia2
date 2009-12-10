@@ -77,6 +77,7 @@
 			return "loxianumber";
 		},
 		_initInput : function(){
+			this.element.css({"text-align":"right"});
 			var checkmaster = "checkNumber";
 			if(this.element.attr("checkmaster")) 
 				checkmaster += ("," + this.element.attr("checkmaster"));
