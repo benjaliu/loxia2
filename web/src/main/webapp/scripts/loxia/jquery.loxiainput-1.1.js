@@ -146,39 +146,35 @@
 			this._setData("checkmaster",checkmaster);		
 			
 			this.element.data("dropdown",true);
-			this.element.datepicker({changeYear: true, changeMonth: true, dateFormat: loxia.dateFormat,
-				onSelect: function(dateText, inst) {
-					var _t = $(this).data("loxiadate");
-					_t.val(dateText);
-				}
-			});
 			
-			var dpInstConfig = $.datepicker._getFormatConfig($.datepicker._getInst(this.element.get(0)));
-			if(dpInstConfig){
-				var minDate,maxDate;
+			var minDate,maxDate;
+			try{
 				if(this.element.attr("min")){
-					try{
-						if(this.element.attr("min") == "today"){
-							minDate = new Date();
-						}else
-							minDate = $.datepicker.parseDate(loxia.dateFormat,this.element.attr("min"),dpInstConfig);
-						this._setData("min",minDate);
-						this.element.datepicker("option","minDate",minDate);
-						//$.datepicker._optionDatepicker(this.element.get(0),"minDate",minDate);
-					}catch(e){}				
-				}
+					if(this.element.attr("min") == "today"){
+						minDate = new Date();
+					}else
+						minDate = $.datepicker.parseDate(loxia.dateFormat,this.element.attr("min"));
+					this._setData("min",minDate);
+				}				
+			}catch(e){}		
+			try{
 				if(this.element.attr("max")){
-					try{
-						if(this.element.attr("max") == "today"){
-							maxDate = new Date();
-						}else
-							maxDate = $.datepicker.parseDate(loxia.dateFormat,this.element.attr("max"),dpInstConfig);
-						this._setData("max",maxDate);
-						this.element.datepicker("option","maxDate",maxDate);
-						//$.datepicker._optionDatepicker(this.element.get(0),"maxDate",maxDate);
-					}catch(e){}				
-				}
-			}
+					if(this.element.attr("max") == "today"){
+						maxDate = new Date();
+					}else
+						maxDate = $.datepicker.parseDate(loxia.dateFormat,this.element.attr("max"));
+					this._setData("max",maxDate);
+				}				
+			}catch(e){}		
+			var dpSettings = {changeYear: true, changeMonth: true, dateFormat: loxia.dateFormat,
+				onSelect: function(dateText, inst) {
+						var _t = $(this).data("loxiadate");
+						_t.val(dateText);
+					}
+			};
+			if(minDate) dpSettings["minDate"] = minDate;
+			if(maxDate) dpSettings["maxDate"] = maxDate;
+			this.element.datepicker(dpSettings);
 			
 			this.element.focus(function(){	
 				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
