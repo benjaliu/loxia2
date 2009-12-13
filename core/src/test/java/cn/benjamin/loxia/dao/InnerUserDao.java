@@ -13,7 +13,7 @@ import cn.benjamin.loxia.annotation.QueryParam;
 import cn.benjamin.loxia.model.InnerUser;
 
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public interface UserDao extends GenericEntityDao<InnerUser ,Long> {
+public interface InnerUserDao extends GenericEntityDao<InnerUser ,Long> {
 	
 	@NamedQuery
 	List<InnerUser> findUsers(Sort[] sorts);
@@ -21,7 +21,7 @@ public interface UserDao extends GenericEntityDao<InnerUser ,Long> {
 	@NamedQuery
 	InnerUser findUserByLoginName(@QueryParam("loginName") String loginName);
 	
-	@Query(value="select u from User u where u.userName like '%' + :userName + '%'", pagable=true)
+	@Query(value="select u from InnerUser u where u.userName like '%' + :userName + '%'", pagable=true)
 	List<InnerUser> findUserByName(int start, int pageSize, @QueryParam("userName") String userName, Sort[] sorts);
 	
 	@DynamicQuery(pagable = true)

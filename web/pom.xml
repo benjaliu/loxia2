@@ -15,5 +15,35 @@
 	<name>Loxia2 Platform Web Module</name>
 	
 	<dependencies>
+		<dependency>
+			<groupId>cn.benjamin.loxia2</groupId>
+			<artifactId>loxia2-security</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.benjamin.loxia2</groupId>
+			<artifactId>loxia2-support</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-spring-plugin</artifactId>
+		</dependency>
+		<dependency>
+	        <groupId>javax.servlet</groupId>
+	        <artifactId>servlet-api</artifactId>
+	        <scope>provided</scope>
+	        <version>2.4</version>
+	    </dependency>
+	    <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
 	</dependencies>
 </project>

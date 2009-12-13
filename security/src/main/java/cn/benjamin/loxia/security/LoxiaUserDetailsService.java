@@ -13,27 +13,40 @@ import org.springframework.security.userdetails.UserDetailsService;
 import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.benjamin.loxia.dao.LoxiaUserDao;
+import cn.benjamin.loxia.dao.UserDao;
+import cn.benjamin.loxia.model.OperatingUnit;
+import cn.benjamin.loxia.model.OperatingUnitType;
 import cn.benjamin.loxia.model.Privilege;
 import cn.benjamin.loxia.model.User;
 import cn.benjamin.loxia.model.UserRole;
+import cn.benjamin.loxia.utils.PropListCopyable;
+import cn.benjamin.loxia.utils.PropertyUtil;
 
 @Transactional
 public class LoxiaUserDetailsService implements UserDetailsService {
 
-	private LoxiaUserDao userDao;	
+	private UserDao userDao;	
 
 	public UserDetails loadUserByUsername(String userName)
 			throws UsernameNotFoundException, DataAccessException {
 		User user = userDao.findByLoginName(userName);
 		if(user == null) return null;
 		LoxiaUserDetails result = new LoxiaUserDetails();
-		result.setUsername(user.getLoginName());
-		result.setPassword(user.getPassword());
-		result.setAccountNonExpired(user.getIsAccNonExpired());
-		result.setAccountNonLocked(user.getIsAccNonLocked());
-		result.setCredentialsNonExpired(user.getIsPwdNonExpired());
-		result.setEnabled(user.getIsAvailable());
+		User u = new User();
+		OperatingUnit ou = new OperatingUnit();
+		OperatingUnitType ouType = new OperatingUnitType();
+		try {
+			PropertyUtil.copyProperties(user.getOu().getType(), ouType);
+			PropertyUtil.copyProperties(user.getOu(), ou, new PropListCopyable("id","code","name","isAvailable"));
+			PropertyUtil.copyProperties(user, u, new PropListCopyable("id","loginName","userName","password",
+					"isAccNonExpired","isAccNonLocked","isPwdNonExpired","isAvailable"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Copy bean values error.");
+		} 
+		ou.setType(ouType);
+		u.setOu(ou);
+		result.setUser(u);
 		
 		List<LoxiaGrantedAuthority> authorities = new ArrayList<LoxiaGrantedAuthority>();
 		Map<String,Set<Long>> map = new HashMap<String, Set<Long>>(); 
@@ -54,11 +67,11 @@ public class LoxiaUserDetailsService implements UserDetailsService {
 		return result;
 	}
 	
-	public LoxiaUserDao getUserDao() {
+	public UserDao getUserDao() {
 		return userDao;
 	}
 
-	public void setUserDao(LoxiaUserDao userDao) {
+	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
 

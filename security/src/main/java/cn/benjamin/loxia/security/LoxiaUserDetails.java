@@ -1,10 +1,16 @@
 package cn.benjamin.loxia.security;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
+
+import cn.benjamin.loxia.model.OperatingUnit;
+import cn.benjamin.loxia.model.User;
 
 public class LoxiaUserDetails implements UserDetails {
 
@@ -13,65 +19,59 @@ public class LoxiaUserDetails implements UserDetails {
 	 */
 	private static final long serialVersionUID = -7151706265719401726L;
 	
-	private String username;
-	private String password;
-	private boolean accountNonExpired;
-	private boolean accountNonLocked;
-	private boolean credentialsNonExpired;
-	private boolean enabled;
+	private User user;
+	private OperatingUnit currentOu;
 	
 	private List<LoxiaGrantedAuthority> loxiaAuthorities = new ArrayList<LoxiaGrantedAuthority>();	
 
 	public GrantedAuthority[] getAuthorities() {
 		return (GrantedAuthority[])loxiaAuthorities.toArray();
 	}
-
-	public String getUsername() {
-		return username;
+	
+	public User getUser() {
+		return user;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public OperatingUnit getCurrentOu() {
+		return currentOu;
+	}
+
+	public void setCurrentOu(OperatingUnit currentOu) {
+		this.currentOu = currentOu;
+	}
+
+	public String getUsername() {
+		if(getUser()== null) return null;
+		return getUser().getLoginName();
 	}
 
 	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+		if(getUser()== null) return null;
+		return getUser().getPassword();
 	}
 
 	public boolean isAccountNonExpired() {
-		return accountNonExpired;
-	}
-
-	public void setAccountNonExpired(boolean accountNonExpired) {
-		this.accountNonExpired = accountNonExpired;
+		if(getUser()== null) return false;
+		return getUser().getIsAccNonExpired();
 	}
 
 	public boolean isAccountNonLocked() {
-		return accountNonLocked;
-	}
-
-	public void setAccountNonLocked(boolean accountNonLocked) {
-		this.accountNonLocked = accountNonLocked;
+		if(getUser()== null) return false;
+		return getUser().getIsAccNonLocked();
 	}
 
 	public boolean isCredentialsNonExpired() {
-		return credentialsNonExpired;
-	}
-
-	public void setCredentialsNonExpired(boolean credentialsNonExpired) {
-		this.credentialsNonExpired = credentialsNonExpired;
+		if(getUser()== null) return false;
+		return getUser().getIsPwdNonExpired();
 	}
 
 	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+		if(getUser()== null) return false;
+		return getUser().getIsAvailable();
 	}
 
 	public List<LoxiaGrantedAuthority> getLoxiaAuthorities() {
@@ -79,5 +79,16 @@ public class LoxiaUserDetails implements UserDetails {
 	}
 	public void setLoxiaAuthorities(List<LoxiaGrantedAuthority> loxiaAuthorities) {
 		this.loxiaAuthorities = loxiaAuthorities;
+	}
+	
+	public boolean checkAuthority(String[] acls){
+		if(acls == null || getCurrentOu() == null) return false;
+		Set<Long> ouIds = new HashSet<Long>();
+		List<String> aclList = Arrays.asList(acls);
+		for(LoxiaGrantedAuthority auth: getLoxiaAuthorities()){
+			if(aclList.contains(auth.getAuthority()))
+				ouIds.addAll(auth.getOuIds());
+		}
+		return ouIds.contains(getCurrentOu().getId());
 	}
 }

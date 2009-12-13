@@ -13,7 +13,7 @@ import cn.benjamin.loxia.model.InnerUser;
 public class GenericEntityDaoTests extends AbstractTestNGSpringContextTests {
 	
 	@Autowired
-	private UserDao userDao;
+	private InnerUserDao userDao;
 	
 	@Test
 	public void testUserDaoAdd(){
@@ -23,24 +23,24 @@ public class GenericEntityDaoTests extends AbstractTestNGSpringContextTests {
 		user.setPassword("loxia");
 		user.setUserName("Loxia User");
 		userDao.save(user);
-		System.out.println("==============================");
+		System.out.println("==============================0");
 		InnerUser u = userDao.getByPrimaryKey(1l);
 		assert u != null : "user is null";
 		assert u.getLoginName().equals("user") : "wrong user";
-		System.out.println("==============================");
+		System.out.println("==============================1");
 		u.setUserName("Dragon");
 		userDao.save(u);
-		System.out.println("==============================");
+		System.out.println("==============================2");
 		u = userDao.getByPrimaryKey(1l);
 		assert u.getUserName().equals("Dragon") : "wrong user name";
-		System.out.println("==============================");
+		System.out.println("==============================3");
 		user = new InnerUser();
 		user.setId(1l);
 		user.setLoginName("user");
 		user.setPassword("loxia");
 		user.setUserName("Loxia User");
 		userDao.save(user);
-		System.out.println("==============================");
+		System.out.println("==============================4");
 		List<InnerUser> users = userDao.findUsers(new Sort[]{new Sort("u.userName")});		
 		u = userDao.findUserByLoginName("user");
 		System.out.println(users.size());
@@ -50,7 +50,7 @@ public class GenericEntityDaoTests extends AbstractTestNGSpringContextTests {
 		System.out.println(userDao.findByLoginName(0, 20, null).size());
 		System.out.println(userDao.findByLoginName(0, 20, "a").size());
 		userDao.findByLoginNameSql(0, 20, "u", null, null);
-		userDao.findByLoginNameSql(0, 20, "u", null, "w");
+		userDao.findByLoginNameSql(0, 20, "u", null, "w");	
 		userDao.executeDDL("shutdown");
 	}
 }
