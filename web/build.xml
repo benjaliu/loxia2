@@ -1,0 +1,88 @@
+<project name="loxia-web" basedir="." default="merge">
+
+	<property name="classes.dir" value="${basedir}/target/classes"/>
+	<property name="resources.dir" value="${basedir}/src/main/resources"/>
+	
+	<property name="deploy.home" value="${appserver.home}/webapps/basicwebapp"/>
+	
+	<target name="merge" depends="min">
+		<exec executable="cmd">
+			<arg value="/c merge.bat"/>
+		</exec>
+	</target>
+	<target name="min">
+		<mkdir dir="${basedir}/target/scripts"/>
+		<java jar="${basedir}/lib/yuicompressor/yuicompressor-2.4.2.jar" 
+			dir="${basedir}/src/main/webapp/scripts/loxia" fork="true">
+			<arg value="-v"/>			
+			<arg value="jquery.loxiacore-1.1.js"/>
+			<arg value="-o"/>
+			<arg value="${basedir}/target/scripts/jquery.loxiacore-1.1.min.js"/>
+			<arg value="--charset"/>
+			<arg value="UTF-8"/>
+		</java>
+		<java jar="${basedir}/lib/yuicompressor/yuicompressor-2.4.2.jar" 
+			dir="${basedir}/src/main/webapp/scripts/loxia" fork="true">
+			<arg value="-v"/>			
+			<arg value="jquery.loxiatooltip-1.1.js"/>
+			<arg value="-o"/>
+			<arg value="${basedir}/target/scripts/jquery.loxiatooltip-1.1.min.js"/>
+			<arg value="--charset"/>
+			<arg value="UTF-8"/>
+		</java>
+		<java jar="${basedir}/lib/yuicompressor/yuicompressor-2.4.2.jar" 
+			dir="${basedir}/src/main/webapp/scripts/loxia" fork="true">
+			<arg value="-v"/>			
+			<arg value="jquery.loxiabutton-1.1.js"/>
+			<arg value="-o"/>
+			<arg value="${basedir}/target/scripts/jquery.loxiabutton-1.1.min.js"/>
+			<arg value="--charset"/>
+			<arg value="UTF-8"/>
+		</java>
+		<java jar="${basedir}/lib/yuicompressor/yuicompressor-2.4.2.jar" 
+			dir="${basedir}/src/main/webapp/scripts/loxia" fork="true">
+			<arg value="-v"/>			
+			<arg value="jquery.loxiainput-1.1.js"/>
+			<arg value="-o"/>
+			<arg value="${basedir}/target/scripts/jquery.loxiainput-1.1.min.js"/>
+			<arg value="--charset"/>
+			<arg value="UTF-8"/>
+		</java>
+		<java jar="${basedir}/lib/yuicompressor/yuicompressor-2.4.2.jar" 
+			dir="${basedir}/src/main/webapp/scripts/loxia" fork="true">
+			<arg value="-v"/>			
+			<arg value="jquery.loxiaselect-1.1.js"/>
+			<arg value="-o"/>
+			<arg value="${basedir}/target/scripts/jquery.loxiaselect-1.1.min.js"/>
+			<arg value="--charset"/>
+			<arg value="UTF-8"/>
+		</java>
+		<java jar="${basedir}/lib/yuicompressor/yuicompressor-2.4.2.jar" 
+			dir="${basedir}/src/main/webapp/scripts/loxia" fork="true">
+			<arg value="-v"/>			
+			<arg value="jquery.loxiadropdown-1.1.js"/>
+			<arg value="-o"/>
+			<arg value="${basedir}/target/scripts/jquery.loxiadropdown-1.1.min.js"/>
+			<arg value="--charset"/>
+			<arg value="UTF-8"/>
+		</java>
+		<java jar="${basedir}/lib/yuicompressor/yuicompressor-2.4.2.jar" 
+			dir="${basedir}/src/main/webapp/scripts/loxia" fork="true">
+			<arg value="-v"/>			
+			<arg value="jquery.loxiadialog-1.1.js"/>
+			<arg value="-o"/>
+			<arg value="${basedir}/target/scripts/jquery.loxiadialog-1.1.min.js"/>
+			<arg value="--charset"/>
+			<arg value="UTF-8"/>
+		</java>
+		<java jar="${basedir}/lib/yuicompressor/yuicompressor-2.4.2.jar" 
+			dir="${basedir}/src/main/webapp/scripts/loxia" fork="true">
+			<arg value="-v"/>			
+			<arg value="jquery.loxiatable-1.1.js"/>
+			<arg value="-o"/>
+			<arg value="${basedir}/target/scripts/jquery.loxiatable-1.1.min.js"/>
+			<arg value="--charset"/>
+			<arg value="UTF-8"/>
+		</java>
+	</target>
+</project>
