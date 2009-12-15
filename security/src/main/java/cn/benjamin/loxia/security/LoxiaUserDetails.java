@@ -25,7 +25,7 @@ public class LoxiaUserDetails implements UserDetails {
 	private List<LoxiaGrantedAuthority> loxiaAuthorities = new ArrayList<LoxiaGrantedAuthority>();	
 
 	public GrantedAuthority[] getAuthorities() {
-		return (GrantedAuthority[])loxiaAuthorities.toArray();
+		return loxiaAuthorities.toArray(new GrantedAuthority[]{});
 	}
 	
 	public User getUser() {
