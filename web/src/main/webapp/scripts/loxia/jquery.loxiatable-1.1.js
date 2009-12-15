@@ -11,16 +11,16 @@
 	
 	var loxiaTable = $.extend({}, loxiaBaseTable, {
 		_initSelector: function(){
-			var $t = this.element;
-			var selectors = [];
-			var selected = this._getData("selected");
+			var $t = this.element,
+				selectors = [],
+				selected = this._getData("selected");
 			
 			var sels = 0;
 			$t.find("thead tr:last th").each(function(){
-				var s = "";
-				var chkbox = $(this).find("input[type='checkbox']");
-				var radbox = $(this).find("input[type='radio']");
-				var name = $(this).attr("name") || $(this).attr("property");
+				var s = "",
+					chkbox = $(this).find("input[type='checkbox']"),
+					radbox = $(this).find("input[type='radio']"),
+					name = $(this).attr("name") || $(this).attr("property");
 				if(chkbox.get(0)) s = "+" + name;
 				else if(radbox.get(0)) {
 					radbox.replaceWith("&nbsp;");
@@ -41,15 +41,15 @@
 		
 		_loadData: function(reloadAll){
 			var $t = this.element;
-			var $tbody = $t.find("tbody:first");
-			var propList = [];
+			var $tbody = $t.find("tbody:first"),
+				propList = [];
 
 			$t.find("thead tr:last th").each(function(){
 				propList.push($(this).attr("property"));
 			});
 
-			var selectors = this._getData("selectors");
-			var selectCache = this._getData("selected");
+			var selectors = this._getData("selectors"),
+				selectCache = this._getData("selected");
 			var data = this._getData("data");
 			if(data && data.length && data.length >0){
 				var rowlist = "";
@@ -87,9 +87,9 @@
 			$t.trigger("dataloaded",[data]);
 		},
 		_initStyle : function(){
-			var $t = this.element;
-			var sortStatus = [];
-			var currentSort = this._getData("sort");
+			var $t = this.element,
+				sortStatus = [],
+				currentSort = this._getData("sort");
 			if(currentSort){
 				var sortlist = currentSort.split(",");
 				sortStatus.push(sortlist[0]);
@@ -101,9 +101,7 @@
 			});
 			$t.find("tbody:gt(0)").addClass("ui-widget-content");
 			var cols = $t.find("thead tr:last th").each(function(i){
-				var sortClass = "";
-
-				var sort = $(this).attr("sort");	
+				var sortClass = "", sort = $(this).attr("sort");	
 				if(sort){
 					sortClass = "sort-nosort";
 					if(sort == sortStatus[0]){
@@ -142,8 +140,7 @@
 					var sort = $th.attr("sort");
 					if(!sort) return;
 					
-					var sortStr = "" + sort + ",";
-					var sortOrder = "";
+					var sortStr = "" + sort + "," , sortOrder = "";
 					if($th.hasClass("sort-asc")){
 						sortOrder = "desc";
 					}else
@@ -199,9 +196,7 @@
 					_this.refresh(true);
 
 					if(data.sort){						
-						var sortStatus = [];
-
-						var sortlist = data.sort.split(",");
+						var sortStatus = [], sortlist = data.sort.split(",");
 						sortStatus.push(sortlist[0]);
 						sortStatus.push(sortlist[1]||"asc");
 
@@ -437,9 +432,9 @@
 
 			$("thead .selector input",this.element).click(function(){
 				var i = $(this).parents("th").get(0).cellIndex;
-				var needStyle = (_this.options.selectCols == 1);
-				var selected = _this.options.selected["col_" + i];
-				var checked = $(this).is(":checked");
+				var needStyle = (_this.options.selectCols == 1),
+					selected = _this.options.selected["col_" + i],
+					checked = $(this).is(":checked");
 
 				var changed = false;
 				_this.element.find("tbody:first tr").find("td:eq(" + i + ") input").each(function(){
@@ -659,9 +654,9 @@
 			});
 		},		
 		appendRow : function(){
-			var $t = this.element;
-			var rowIndex = "" + (--loxiaRowIndex);
-			var row = this.options.template.replace(/\(#\)/ig, "(" + rowIndex + ")");
+			var $t = this.element,
+				rowIndex = "" + (--loxiaRowIndex),
+				row = this.options.template.replace(/\(#\)/ig, "(" + rowIndex + ")");
 			$t.find("tbody:first").append(row);
 			loxia.initContext($t.find("tbody:first tr:last"));
 			$t.trigger("rowappended", [$t.find("tbody:first tr:last")]);
@@ -680,15 +675,13 @@
 			if(!$rows.is("tr"))
 				$rows = $rows.find("tr");
 
-			var calCols = [];
-			var formulas = this.options.formulas;
+			var calCols = [], formulas = this.options.formulas;
 			for(var i=0; i< this.options.cols; i++)
 				if(formulas[i]) calCols.push(i);
 
 			if(calCols.length >0){
 				for(var i=0; i< calCols.length; i++){
-					var formula = formulas[calCols[i]];
-					var decimal = 0;
+					var formula = formulas[calCols[i]], decimal = 0;
 					var delim = formula.indexOf(":");
 					if(delim > 0){
 						decimal = parseInt(formula.substring(delim + 1));
@@ -716,8 +709,7 @@
 		_calculateFoot : function(){
 			var $t = this.element;
 			$t.find("tfoot td[decimal]").each(function(){
-				var decimal = parseInt($(this).attr("decimal"));
-				var result = 0;
+				var decimal = parseInt($(this).attr("decimal")), result = 0;
 				$t.find("tbody:first tr").find("td:eq(" + $(this).data("col") + ")").each(function(){
 					var value = parseFloat(loxia.val($(this).get(0)));
 					value = isNaN(value) ? 0 : value;

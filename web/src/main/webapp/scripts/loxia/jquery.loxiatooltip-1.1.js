@@ -11,12 +11,12 @@
 		_prepare : function(message){
 			this._tipSide = "right";			
 			$.loxiatooltip.setMessage(message, $(".loxia-tooltip").get(0));
-			var viewport = loxia.getViewport();
-			var offset = this.element.offset();
-			var left = offset.left + this.element.width();
-			var top = offset.top;
-			var width = $(".loxia-tooltip").width();
-			var height = $(".loxia-tooltip").height();
+			var viewport = loxia.getViewport(),
+				offset = this.element.offset();
+			var left = offset.left + this.element.width(),
+				top = offset.top,
+				width = $(".loxia-tooltip").width(),
+				height = $(".loxia-tooltip").height();
 			if(this.options.onShow){
 				loxia.hitch(this,this.options.onShow)({target:this.element[0]});
 			}
@@ -56,8 +56,8 @@
 			this._prepare(message);
 			$(".loxia-tooltip").show();
 			var offset = $(".loxia-tooltip").offset();
-			var left = offset.left;
-			var top = offset.top;
+			var left = offset.left,
+				top = offset.top;
 			if(this._tipSide == "right"){
 				left += 8;
 			}else if(this._tipSide == "left"){

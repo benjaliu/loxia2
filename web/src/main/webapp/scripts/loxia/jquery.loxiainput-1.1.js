@@ -9,8 +9,8 @@
 			
 			this.element.focus(function(){	
 				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
-				var _t = $(this).data("loxiainput");
-				var tooltip = $(this).data("loxiatooltip");
+				var _t = $(this).data("loxiainput"),
+					tooltip = $(this).data("loxiatooltip");
 				$(this).addClass("ui-state-active");
 				
 				if(_t._getData("errorMessage")){
@@ -22,8 +22,8 @@
 			
 			this.element.blur(function(){
 				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
-				var _t = $(this).data("loxiainput");
-				var tooltip = $(this).data("loxiatooltip");
+				var _t = $(this).data("loxiainput"),
+					tooltip = $(this).data("loxiatooltip");
 				$(this).removeClass("ui-state-active");
 				tooltip.hide();
 			
@@ -94,8 +94,8 @@
 			
 			this.element.focus(function(){	
 				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
-				var _t = $(this).data("loxianumber");
-				var tooltip = $(this).data("loxiatooltip");
+				var _t = $(this).data("loxianumber"),
+					tooltip = $(this).data("loxiatooltip");
 				$(this).addClass("ui-state-active");
 				if(_t._getData("errorMessage")){
 					tooltip.show(_t._getData("errorMessage"));
@@ -106,8 +106,8 @@
 			
 			this.element.blur(function(){
 				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
-				var _t = $(this).data("loxianumber");
-				var tooltip = $(this).data("loxiatooltip");
+				var _t = $(this).data("loxianumber"),
+					tooltip = $(this).data("loxiatooltip");
 				$(this).removeClass("ui-state-active");
 				tooltip.hide();
 			
@@ -178,8 +178,8 @@
 			
 			this.element.focus(function(){	
 				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
-				var _t = $(this).data("loxiadate");
-				var tooltip = $(this).data("loxiatooltip");
+				var _t = $(this).data("loxiadate"),
+					tooltip = $(this).data("loxiatooltip");
 				$(this).addClass("ui-state-active");
 				
 				if(_t._getData("errorMessage")){
@@ -191,8 +191,8 @@
 			
 			this.element.blur(function(){
 				if($(this).is(".ui-state-disabled") || $(this).attr("readonly")) return;
-				var _t = $(this).data("loxiadate");
-				var tooltip = $(this).data("loxiatooltip");
+				var _t = $(this).data("loxiadate"),
+					tooltip = $(this).data("loxiatooltip");
 				$(this).removeClass("ui-state-active");
 				tooltip.hide();
 			

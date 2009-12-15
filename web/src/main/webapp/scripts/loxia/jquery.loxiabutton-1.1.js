@@ -18,8 +18,8 @@
 						loxia.submitForm($(this).parents("form").get(0));
 						break;
 					case "anchor" :
-						var href = $(this).attr("href");
-						var target = $(this).attr("target");
+						var href = $(this).attr("href"),
+							target = $(this).attr("target");
 						if(target == "_blank"){
 							loxia.openPage(loxia.getTimeUrl(loxia.encodeUrl(href)));
 						}else{
@@ -28,8 +28,8 @@
 						}
 						break;
 					case "pop" :
-						var href = $(this).attr("href");
-						var param = "";
+						var href = $(this).attr("href"),
+							param = "";
 						for(k in this.options.data){
 							param += '&' + k + '=' + this.options.data[k];							
 						}

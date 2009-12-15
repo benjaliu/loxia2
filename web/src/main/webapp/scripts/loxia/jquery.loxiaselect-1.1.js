@@ -9,8 +9,8 @@
 			
 			this.element.focus(function(){	
 				if($(this).is(".ui-state-disabled")) return;
-				var _t = $(this).data("loxiaselect");
-				var tooltip = $(this).data("loxiatooltip");
+				var _t = $(this).data("loxiaselect"),
+					tooltip = $(this).data("loxiatooltip");
 				$(this).addClass("ui-state-active");
 				
 				if(_t._getData("errorMessage")){
@@ -26,8 +26,8 @@
 			});
 			
 			this.element.change(function(){				
-				var _t = $(this).data("loxiaselect");
-				var tooltip = $(this).data("loxiatooltip");
+				var _t = $(this).data("loxiaselect"),
+					tooltip = $(this).data("loxiatooltip");
 				$(this).removeClass("ui-state-active");
 				tooltip.hide();
 			

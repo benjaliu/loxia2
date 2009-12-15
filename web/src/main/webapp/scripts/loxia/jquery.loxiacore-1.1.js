@@ -120,8 +120,8 @@
 					}
 				},
 				_fieldValue : function(domNode){
-					var ret = null;
-					var type = (domNode.type||"").toLowerCase();
+					var ret = null,
+						type = (domNode.type||"").toLowerCase();
 					if(domNode.name && type && !domNode.disabled){
 						if(type == "radio" || type == "checkbox"){
 								if(domNode.checked){ ret = domNode.value }
@@ -140,9 +140,9 @@
 				_formToObj : function (form){
 					if(!form) return {};
 					form = this.isString(form) ? $("#" + form).get(0) : form;
-					var ret = {};
-					var exclude = "file|submit|image|reset|button|";
-					var _this = this;
+					var ret = {},
+						exclude = "file|submit|image|reset|button|",
+						_this = this;
 					$(form.elements).each(function(){
 						var name = this.name;
 						var type = (this.type||"").toLowerCase();
@@ -238,6 +238,7 @@
 					}
 				},
 				initLoxiaWidget : function (context){
+					var settings;
 					switch($(context).attr("loxiaType")){
 					case "button":
 						$(context).loxiabutton();
@@ -255,12 +256,11 @@
 						$(context).loxiaselect();
 						break;
 					case "dropdown":						
-						var data = $(context).attr("data");
-						var choice = $(context).attr("choice");
-						var editable = $(context).attr("editable");
-						var findMode = $(context).attr("findMode");
-						
-						var settings = {};
+						var data = $(context).attr("data"),
+							choice = $(context).attr("choice"),
+							editable = $(context).attr("editable"),
+							findMode = $(context).attr("findMode"),					
+							settings = {};
 						if(data)
 							settings.data = data;						
 						if(editable == "true" || editable == true)
@@ -271,29 +271,25 @@
 							settings.findMode = findMode;
 						$(context).loxiadropdown(settings);
 						break;
-					case "button":
-						break;
 					case "table": 						
-						var settings = $(context).attr("settings");
+						settings = $(context).attr("settings");
 						settings = settings ? _global[settings] : {};
 						$(context).loxiatable($.extend({},settings));
 						break;
 					case "edittable":
-						var settings = $(context).attr("settings");
+						settings = $(context).attr("settings");
 						settings = settings ? _global[settings] : {};
 						$(context).loxiaedittable($.extend({},settings));
 						break;
 					case "dialog":
-						var settings = $(context).attr("settings");
+						settings = $(context).attr("settings");
 						settings = settings ? _global[settings] : {};
 						$(context).loxiadialog($.extend({},settings));
 					}
 				},
 				openPage : function(url, target, features, size){
 					target = target || "_blank";
-					features = features || this.windowFeatures;
-					var features = "toolbar=no, menubar=no,scrollbars=yes, resizable=no,location=no, status=no";
-					var defaultTarget = "_blank";
+					features = features || this.windowFeatures;					
 					
 					if(size && size.length && size.length == 2){
 						features = 'width=' + size[0] + ',height=' + size[1] + ',' + features;
@@ -353,8 +349,7 @@
 				},
 				validateForm : function(form){
 					form = this.isString(form) ? $("#" + form).get(0) : form;
-					var errorMsg = [];
-					var fieldErrorNums = 0;
+					var errorMsg = [],fieldErrorNums = 0;
 					$("input.loxia:enabled,select.loxia:enabled,textarea.loxia:enabled").
 						each(function(){
 							if($(this).attr("formCheck") == "false" || $(this).attr("formCheck") == false)
@@ -554,21 +549,20 @@
 		value = value.replace(/\.$/,".0");
 		value = prefix + value;
 		
-		var v = parseFloat(value);
-		var min = obj._getData("min");
-		var max = obj._getData("max");
+		var v = parseFloat(value),
+			min = obj._getData("min"),
+			max = obj._getData("max");
 		if((min && v < min) || (max && v > max))
 			return loxia.getLocaleMsg("DATA_EXCEED_RANGE");
 		
 		return loxia.SUCCESS + "^" + v.toFixed(decimal);
 	}
 	
-	checkDate = function(value,obj){
-		var config = $.datepicker._getFormatConfig($.datepicker._getInst(obj.element.get(0)));
+	checkDate = function(value,obj){		
 		try{
-			var currDate = $.datepicker.parseDate(loxia.dateFormat,value,config);
-			var minDate = obj._getData("min");
-			var maxDate = obj._getData("max");
+			var currDate = $.datepicker.parseDate(loxia.dateFormat,value),
+				minDate = obj._getData("min"),
+				maxDate = obj._getData("max");
 			if((minDate && currDate < minDate) ||
 					(maxDate && currDate > maxDate))
 				return loxia.getLocaleMsg("DATA_EXCEED_RANGE");

@@ -14,8 +14,7 @@
 			// if we already have a button pane, remove it
 			this.uiDialog.find('.ui-dialog-buttonpane').remove();
 	
-			var buttonList = "";
-			var funcs = {};
+			var buttonList = "", funcs = {};
 			for(var i=0,b; b=buttons[i];i++){
 				if(loxia.isString(b)) buttonList += b;
 				else{

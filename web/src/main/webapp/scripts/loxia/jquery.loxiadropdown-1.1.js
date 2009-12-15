@@ -91,16 +91,16 @@
 		}
 		var listNode = '<ul class="ui-widget-content ui-corner-all" style="list-style:none; margin: 0; padding-left: 0;">';
 		for(var i=0; i< this.currentList.length; i++){
-			var v = this.cachedValues[this.currentList[i]];
-			var k = this.cachedKeys == null ? v : this.cachedKeys[this.currentList[i]];
+			var v = this.cachedValues[this.currentList[i]],
+				k = this.cachedKeys == null ? v : this.cachedKeys[this.currentList[i]];
 			listNode += '<li style="cursor: default; margin: 0; height: 20px; border 1px solid transparent; padding-left: 0;" key="' + k + '">'+ v +'</li>';
 		}
 		listNode +='</ul>';
 		this.choiceContainer.html(listNode);
 		if(!this._isShown){
 			this._isShown = true;
-			var left = 0,top = 0;
-			var width = this.choiceContainer.width();
+			var left = 0,top = 0,
+				width = this.choiceContainer.width();
 			if(this.parentNode){
 				var offset = this.parentNode.offset();
 				left = offset.left;
@@ -128,10 +128,13 @@
 		valueNode : undefined,
 		loxiaChoice : undefined,
 		_initDomNode : function(){
-			var name = this.element.attr("name");
-			var value = this.element.val();
-			var style = this.element.attr("style");
-			var containerDiv = '<div style="overflow: hidden; -moz-box-sizing: content-box; display: inline-block; vertical-align: bottom; #display: inline; position: relative;';
+			var name = this.element.attr("name"),
+				value = this.element.val(),
+				style = this.element.attr("style"),
+				width = this.element.width(),
+				hiddenText = '<input type="hidden" name="' + name + '"/>',
+				containerDiv = '<div style="overflow: hidden; -moz-box-sizing: content-box; display: inline-block; vertical-align: bottom; #display: inline; position: relative;',
+				arrowDiv = '<div class="ui-state-default ui-corner-all" style="border: 0 solid; position: absolute; top: 2px; left:'+ (width - 16) +'px"><span class="ui-icon ui-icon-triangle-1-s"/></div>';
 			if(!$.browser.msie){
 				containerDiv += style;
 				this.element.attr("style","width: 99%;");
@@ -140,15 +143,12 @@
 			this.element.before(containerDiv);
 			this.container = $(this.element.prev());
 			this.container.css(style);
-			this.container.prepend(this.element.get(0));			
-			var hiddenText = '<input type="hidden" name="' + name + '"/>';
+			this.container.prepend(this.element.get(0));						
 			this.element.attr("name", name + "_mapped");
 			this.element.after(hiddenText);
 			this.valueNode = $(this.element.next());
 			this.options.lastRightValue = value;
-			this._setValue(this.element.val());
-			var width = this.element.width();
-			var arrowDiv = '<div class="ui-state-default ui-corner-all" style="border: 0 solid; position: absolute; top: 2px; left:'+ (width - 16) +'px"><span class="ui-icon ui-icon-triangle-1-s"/></div>';
+			this._setValue(this.element.val());					
 			this.container.append(arrowDiv);
 			this.arrowNode = this.container.find("div");			
 			
@@ -201,8 +201,7 @@
 				$(this).removeClass("ui-state-active");
 				tooltip.hide();
 			
-				var value = $(this).val();
-				var index = 0;
+				var value = $(this).val(), index = 0;
 				for(;index < _this.loxiaChoice.cachedValues.length; index++){
 					if(_this.loxiaChoice.cachedValues[index] == value) break;
 				}
@@ -251,8 +250,8 @@
 			$(document).mousedown(function(event){
 				if(_this.loxiaChoice.isShown()){
 					var target = event.srcElement? event.srcElement : event.target;
-					var inputs = $(target).is(".ui-loxiadropdown") ? $(target) : $(target).parents(".ui-loxiadropdown");
-					var choices = $(target).is(".ui-loxiachoice") ? $(target) : $(target).parents(".ui-loxiachoice");
+					var inputs = $(target).is(".ui-loxiadropdown") ? $(target) : $(target).parents(".ui-loxiadropdown"),
+						choices = $(target).is(".ui-loxiachoice") ? $(target) : $(target).parents(".ui-loxiachoice");
 					
 					if(inputs.length ==0 && choices.length ==0)
 						_this.loxiaChoice.hide();
