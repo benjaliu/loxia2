@@ -41,7 +41,7 @@ public class UserRole extends BaseModel {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="USER_ID")
 	@Index(name="IDX_UR_USER")
-	private InnerUser user;
+	private User user;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="ROLE_ID")
