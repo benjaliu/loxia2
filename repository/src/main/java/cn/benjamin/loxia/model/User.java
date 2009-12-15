@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
@@ -87,6 +88,7 @@ public class User extends BaseModel {
 	private OperatingUnit ou;
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="user")
+	@OrderBy(value="id")
 	private List<UserRole> userRoles = new ArrayList<UserRole>();
 	public Long getId() {
 		return id;

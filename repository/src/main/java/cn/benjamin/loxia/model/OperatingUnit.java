@@ -65,7 +65,7 @@ public class OperatingUnit extends BaseModel {
 	private OperatingUnit parentUnit;
 	
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="parentUnit")
-	@OrderBy(value="ID")
+	@OrderBy(value="id")
 	private List<OperatingUnit> childrenUnit = new ArrayList<OperatingUnit>();
 	public Long getId() {
 		return id;
