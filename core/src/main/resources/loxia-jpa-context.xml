@@ -9,6 +9,7 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
 
 	<aop:aspectj-autoproxy/>
+	<context:annotation-config/>
 	<bean class="cn.benjamin.loxia.aspect.QueryAspect"/>
 	
 	<tx:annotation-driven order="10"/>
