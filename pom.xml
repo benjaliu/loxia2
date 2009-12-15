@@ -18,6 +18,7 @@
 
    <properties>
    		<loxia2.version>1.0-SNAPSHOT</loxia2.version>
+   		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>2.5.6</spring.version>
         <hibernate.version>3.4.0.GA</hibernate.version>
         <struts2.version>2.1.8</struts2.version>
