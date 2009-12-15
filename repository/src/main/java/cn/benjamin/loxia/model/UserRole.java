@@ -70,10 +70,10 @@ public class UserRole extends BaseModel {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-	public InnerUser getUser() {
+	public User getUser() {
 		return user;
 	}
-	public void setUser(InnerUser user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 	public Role getRole() {
