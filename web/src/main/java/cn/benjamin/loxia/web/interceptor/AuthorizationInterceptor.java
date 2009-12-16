@@ -29,14 +29,14 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
 
-public class AuthenticationInterceptor extends AbstractInterceptor implements StrutsStatics {
+public class AuthorizationInterceptor extends AbstractInterceptor implements StrutsStatics {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6983132502906240133L;
 	
-	static final Logger logger = LoggerFactory.getLogger(AuthenticationInterceptor.class);
+	static final Logger logger = LoggerFactory.getLogger(AuthorizationInterceptor.class);
 
 	@SuppressWarnings("unchecked")
 	@Override
