@@ -48,8 +48,8 @@ public class AuthorizationInterceptor extends AbstractInterceptor implements Str
 			getWebApplicationContext((ServletContext) context.get(SERVLET_CONTEXT));
 		HttpServletRequest request = (HttpServletRequest)context.get(HTTP_REQUEST);
 		
-		UserDao userDao = (UserDao)ctx.getBean("userDao");
-		OperatingUnitDao operatingUnitDao = (OperatingUnitDao)ctx.getBean("OperatingUnitDao");
+		UserDao userDao = (UserDao)ctx.getBean("loxiaUserDao");
+		OperatingUnitDao operatingUnitDao = (OperatingUnitDao)ctx.getBean("loxiaOperatingUnitDao");
 		
 		String strMethod = invocation.getProxy().getMethod();
 		Method m = getActionMethod(action.getClass(), strMethod);
