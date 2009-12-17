@@ -30,7 +30,7 @@ public class LoxiaUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String userName)
 			throws UsernameNotFoundException, DataAccessException {
 		User user = userDao.findByLoginName(userName);
-		if(user == null) return null;
+		if(user == null) throw new UsernameNotFoundException(userName + " is not existed.");
 		LoxiaUserDetails result = new LoxiaUserDetails();
 		User u = new User();
 		OperatingUnit ou = new OperatingUnit();

@@ -23,6 +23,8 @@ public class LoxiaUserDetails implements UserDetails {
 	private OperatingUnit currentOu;
 	
 	private List<LoxiaGrantedAuthority> loxiaAuthorities = new ArrayList<LoxiaGrantedAuthority>();	
+	
+	private LoxiaGrantedAuthority currentAuthority;	
 
 	public GrantedAuthority[] getAuthorities() {
 		return loxiaAuthorities.toArray(new GrantedAuthority[]{});
@@ -79,6 +81,14 @@ public class LoxiaUserDetails implements UserDetails {
 	}
 	public void setLoxiaAuthorities(List<LoxiaGrantedAuthority> loxiaAuthorities) {
 		this.loxiaAuthorities = loxiaAuthorities;
+	}
+	
+	public LoxiaGrantedAuthority getCurrentAuthority() {
+		return currentAuthority;
+	}
+
+	public void setCurrentAuthority(LoxiaGrantedAuthority currentAuthority) {
+		this.currentAuthority = currentAuthority;
 	}
 	
 	public boolean checkAuthority(String[] acls){

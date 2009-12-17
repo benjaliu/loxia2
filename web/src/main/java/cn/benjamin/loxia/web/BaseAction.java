@@ -12,6 +12,8 @@ public class BaseAction extends ActionSupport {
 	 * 
 	 */
 	private static final long serialVersionUID = 4113598733962053745L;
+	
+	public static final String FOLLOWING_URL_AFTER_OPERATING_UNIT_PICKUP = "BaseAction.followingUrl";
 
 	private String acl;
 	private Long selectedOuId;	

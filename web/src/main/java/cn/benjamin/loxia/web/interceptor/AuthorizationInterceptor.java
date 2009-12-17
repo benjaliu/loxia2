@@ -7,19 +7,23 @@ import java.util.Locale;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.StrutsStatics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.Authentication;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import cn.benjamin.loxia.dao.OperatingUnitDao;
-import cn.benjamin.loxia.dao.UserDao;
+import cn.benjamin.loxia.exception.BusinessException;
+import cn.benjamin.loxia.exception.PreserveErrorCode;
 import cn.benjamin.loxia.security.LoxiaGrantedAuthority;
 import cn.benjamin.loxia.security.LoxiaUserDetails;
+import cn.benjamin.loxia.web.BaseAction;
 import cn.benjamin.loxia.web.BaseProfileAction;
 import cn.benjamin.loxia.web.LoxiaUserDetailsAware;
 import cn.benjamin.loxia.web.annotation.Acl;
@@ -47,8 +51,8 @@ public class AuthorizationInterceptor extends AbstractInterceptor implements Str
 		WebApplicationContext ctx = WebApplicationContextUtils.
 			getWebApplicationContext((ServletContext) context.get(SERVLET_CONTEXT));
 		HttpServletRequest request = (HttpServletRequest)context.get(HTTP_REQUEST);
+		HttpServletResponse response = (HttpServletResponse)context.get(HTTP_RESPONSE);
 		
-		UserDao userDao = (UserDao)ctx.getBean("loxiaUserDao");
 		OperatingUnitDao operatingUnitDao = (OperatingUnitDao)ctx.getBean("loxiaOperatingUnitDao");
 		
 		String strMethod = invocation.getProxy().getMethod();
@@ -58,39 +62,52 @@ public class AuthorizationInterceptor extends AbstractInterceptor implements Str
 			acl = action.getClass().getAnnotation(Acl.class);
 				
 		boolean needCheck = true;
-		if(acl == null || acl.value().length == 0
+		boolean needCredential = true;
+		if(acl == null){
+			needCheck = false;
+			needCredential = false;
+		}else if(acl.value().length == 0
 				|| Arrays.asList(acl.value()).contains(""))
 			needCheck = false;
-		logger.debug("Current ACL:{}", needCheck ? acl : "");
-		
-		Object object = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(action instanceof LoxiaUserDetailsAware && object instanceof LoxiaUserDetails){
-			LoxiaUserDetailsAware aware = (LoxiaUserDetailsAware)action;
-			aware.setLoxiaUserDetails((LoxiaUserDetails)object);
+		if(logger.isDebugEnabled()){
+			if(needCredential)
+				logger.debug("Credential is required.");
+			logger.debug("Current ACL:{}", needCheck ? acl : "");
 		}
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		if(needCredential && authentication == null){
+			logger.error("Session timeout.");
+			throw new BusinessException(PreserveErrorCode.SESSION_TIMEOUT);
+		}
+		
 		if(needCheck){
 			BaseProfileAction act = (BaseProfileAction)action;
 									
-			LoxiaUserDetails userDetails = (LoxiaUserDetails)object;
+			LoxiaUserDetails userDetails = (LoxiaUserDetails)authentication.getPrincipal();
 			
 			String entryAcl = act.getAcl();
 			if(entryAcl != null){
 				userDetails.setCurrentOu(null);
 				logger.debug("Function Entrance... Organization need to repick");
 				
-				LoxiaGrantedAuthority lga = null;
 				for(GrantedAuthority auth: userDetails.getAuthorities()){
 					LoxiaGrantedAuthority lauth = (LoxiaGrantedAuthority)auth;
 					if(lauth.getAuthority().equals(entryAcl)){
-						lga = lauth;
+						userDetails.setCurrentAuthority(lauth);
 						break;
 					}
 				}
-				if(lga == null || lga.getOuIds().size() == 0){
-					//TODO no privilege
+				if(userDetails.getCurrentAuthority() == null || 
+						userDetails.getCurrentAuthority().getOuIds().size() == 0){
+					logger.error("No sufficicent privilege.");
+					throw new BusinessException(PreserveErrorCode.NO_SUFFICICENT_PRIVILEGE);
 				}else{
-					if(lga.getOuIds().size() == 1){
-						userDetails.setCurrentOu(operatingUnitDao.getByPrimaryKey(lga.getOuIds().iterator().next()));
+					if(userDetails.getCurrentAuthority().
+							getOuIds().size() == 1){
+						userDetails.setCurrentOu(operatingUnitDao.getByPrimaryKey(
+								userDetails.getCurrentAuthority().getOuIds().iterator().next()));
 					}else{
 						logger.debug("Redirect Invocation");
 						
@@ -107,12 +124,9 @@ public class AuthorizationInterceptor extends AbstractInterceptor implements Str
 							paramsSb.deleteCharAt(paramsSb.length()-1);
 							url = url + "?" + paramsSb.toString();
 						}
-						
-						/*request.setAttribute(BaseAction.ORG_LIST,
-								orgList);
-						request.setAttribute(BaseAction.FOLLOW_URL,
-								url);
-						return BaseAction.CHOOSE_ORG;*/
+						request.getSession().setAttribute(BaseAction.FOLLOWING_URL_AFTER_OPERATING_UNIT_PICKUP, url);
+						response.sendRedirect(request.getContextPath() + "/operatingunitpickup.do");
+						return null;
 					}
 				}
 			}else{
@@ -121,17 +135,20 @@ public class AuthorizationInterceptor extends AbstractInterceptor implements Str
 					userDetails.setCurrentOu(operatingUnitDao.getByPrimaryKey(act.getSelectedOuId()));
 				}else{
 					if(!userDetails.checkAuthority(acl.value())){
-						//TODO no sufficient privilege
+						logger.error("No sufficicent privilege.");
+						throw new BusinessException(PreserveErrorCode.NO_SUFFICICENT_PRIVILEGE);
 					}
 				}					
 			}
 						
-		}else{
-			
 		}
 		
-		if(object instanceof LoxiaUserDetails){		
-			LoxiaUserDetails userDetails = (LoxiaUserDetails)object;
+		if(authentication != null && authentication.getPrincipal()instanceof LoxiaUserDetails){		
+			LoxiaUserDetails userDetails = (LoxiaUserDetails)authentication.getPrincipal();
+			if(action instanceof LoxiaUserDetailsAware){
+				LoxiaUserDetailsAware aware = (LoxiaUserDetailsAware)action;
+				aware.setLoxiaUserDetails(userDetails);
+			}
 			if(userDetails.getCurrentOu() == null){
 				logger.debug("Set CurrentOu for develope purpose. Current Ou:{}",userDetails.getUser().getOu().getName());
 				userDetails.setCurrentOu(userDetails.getUser().getOu());
@@ -139,9 +156,6 @@ public class AuthorizationInterceptor extends AbstractInterceptor implements Str
 		}
 				
 		return invocation.invoke();
-		
-		
-
 		
 	}
 	
