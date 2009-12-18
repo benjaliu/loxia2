@@ -19,7 +19,7 @@
 				if(loxia.isString(b)) buttonList += b;
 				else{
 					var buttonType = b.buttonType || "button";
-					buttonList += '<button loxiaType="button" buttonType="' + buttonType + '"';
+					buttonList += '<button type="button" loxiaType="button" buttonType="' + buttonType + '"';
 					if(b.id)
 						buttonList += ' id = "' + b.id +'"';
 					if(b.target)
