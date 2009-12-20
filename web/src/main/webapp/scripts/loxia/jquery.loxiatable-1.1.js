@@ -10,6 +10,10 @@
 	};
 	
 	var loxiaTable = $.extend({}, loxiaBaseTable, {
+		getPageCount: function(){
+			if(!this.options.page) return 1;
+			return (this.options.itemCount + this.options.pageSize -1)/this.options.pageSize;
+		},
 		_initSelector: function(){
 			var $t = this.element,
 				selectors = [],
@@ -43,7 +47,7 @@
 			var $t = this.element;
 			var $tbody = $t.find("tbody:first"),
 				propList = [];
-
+			
 			$t.find("thead tr:last th").each(function(){
 				propList.push($(this).attr("property"));
 			});
@@ -55,25 +59,43 @@
 				var rowlist = "";
 				for(var dataItem,i=0; (dataItem = data[i]); i++){
 					var row = "<tr>";
-					for(var p,j=0;p=propList[j];j++){
-						var value = loxia.getObject(p,dataItem);
-						if(selectors[j]){
-							var selected = selectCache["col_"+j];
-							value = (value == undefined || value == null ||
-									(loxia.isString(value) && !value)) ? "" : "" + value;
-							value = this._formatName(value);
-							var strSelected = (value in selected)? " checked" : "";
-							var name = selectors[j].substring(1);
-							if(selectors[j].charAt(0) == '+'){
-								row += "<td><input type='checkbox'" + strSelected + " name='" + name + "' value='" + value + "'/></td>";
-							}else if(selectors[j].charAt(0) == '-'){
-								row += "<td><input type='radio'" + strSelected + " name='" + name + "' value='" + value + "'/></td>";
-							}else
-								throw new Error("Load Data for Selector Error.");
+					for(var j=0; j< propList.length; j++){
+						var p=propList[j];
+						if(p!=null){
+							var value = loxia.getObject(p,dataItem);
+							if(selectors[j]){
+								var selected = selectCache["col_"+j];
+								value = (value == undefined || value == null ||
+										(loxia.isString(value) && !value)) ? "" : "" + value;
+								value = this._formatName(value);
+								var strSelected = (value in selected)? " checked" : "";
+								var name = selectors[j].substring(1);
+								if(selectors[j].charAt(0) == '+'){
+									row += "<td><input type='checkbox'" + strSelected + " name='" + name + "' value='" + value + "'/></td>";
+								}else if(selectors[j].charAt(0) == '-'){
+									row += "<td><input type='radio'" + strSelected + " name='" + name + "' value='" + value + "'/></td>";
+								}else
+									throw new Error("Load Data for Selector Error.");
+							}else{
+								value = (value == undefined || value == null ||
+										(loxia.isString(value) && !value)) ? "&nbsp;" : value;
+								row += "<td>" + value + "</td>";
+							}
 						}else{
-							value = (value == undefined || value == null ||
-									(loxia.isString(value) && !value)) ? "&nbsp;" : value;
-							row += "<td>" + value + "</td>";
+							if(this.options.template.length == 0){
+								row += "<td>&nbsp;</td>";
+							}else{
+								var tdcontent = this.options.template[j];
+								var params = tdcontent.match(/\%\{.+\}/ig),
+								newcontent = tdcontent.replace(/\%\{.+\}/ig,"#");
+								if(params){
+									for(var k=0; k< params.length; k++){
+										var prop = params[k].substring(2,params[k].length-1);
+										newcontent = newcontent.replace(/\#/,"" + loxia.getObject(prop,dataItem));									
+									}
+								}
+								row += "<td>" + newcontent + "</td>";
+							}
 						}
 					}
 					row += "</tr>";
@@ -91,7 +113,7 @@
 				sortStatus = [],
 				currentSort = this._getData("sort");
 			if(currentSort){
-				var sortlist = currentSort.split(",");
+				var sortlist = currentSort.split(" ");
 				sortStatus.push(sortlist[0]);
 				sortStatus.push(sortlist[1]||"asc");
 			}
@@ -196,7 +218,7 @@
 					_this.refresh(true);
 
 					if(data.sort){						
-						var sortStatus = [], sortlist = data.sort.split(",");
+						var sortStatus = [], sortlist = data.sort.split(" ");
 						sortStatus.push(sortlist[0]);
 						sortStatus.push(sortlist[1]||"asc");
 
@@ -237,7 +259,7 @@
 			var _this = this;
 			var $t = this.element;
 			if(!this._getData("page") || 
-					((!this.options.alwaysShowPage) && this.options.pageCount <=1)) return;
+					((!this.options.alwaysShowPage) && this.getPageCount() <=1)) return;
 
 			var pageSizeOptions = this._getData("pageSizeOptions");
 			var pager =
@@ -249,7 +271,7 @@
 				}
 
 			var itemStart = this.options.pageSize * (this.options.currentPage - 1) + 1;
-			var itemEnd = itemStart + this.options.pageItemCount - 1;
+			var itemEnd = itemStart + this.options.data.length - 1;
 			
 			pager += '</select>' + '</div>' +				
 				'<div class="ui-pager-block" block="navigator">' +
@@ -261,7 +283,7 @@
 				'<div class="separator"></div></div>';
 				
 			pager += '<div class="ui-pager-block" block="pagegoto"><div>' + loxia.getLocaleMsg("TABLE_PAGE") + 
-				' <input loxiaType="number" formCheck="false" min="1" max="' + this.options.pageCount + '" value="" style="width: 3em;"/>' +
+				' <input loxiaType="number" formCheck="false" min="1" max="' + this.getPageCount() + '" value="" style="width: 3em;"/>' +
 				'/<span"></span></div>' + 
 				'<div class="ui-state-default ui-corner-all"><span action="Goto" title="' + loxia.getLocaleMsg("TABLE_PAGER_GOTO") + '" class="ui-icon ui-icon-arrowreturnthick-1-w"></span></div></div>';
 			
@@ -323,7 +345,7 @@
 						break;
 
 					case 'Last':
-						moveToPage = $t.data("pageCount");
+						moveToPage = this.getPageCount();
 						break;
 						
 					case 'Goto':
@@ -376,18 +398,17 @@
 				.data("loxiaselect").val("" + this.options.pageSize);
 			$(".ui-pager-block[block='pagegoto'] input",$t)
 			.data("loxianumber").val("" + this.options.currentPage);
-			$(".ui-pager-block[block='pagegoto'] span").text(this.options.pageCount);
+			$(".ui-pager-block[block='pagegoto'] span").text(this.getPageCount());
 			$(".ui-pager-block .page-info span").text(loxia.getLocaleMsg("TABLE_PAGE_INFO",[this.options.itemCount]));
 			
 			var currentPage = this.options.currentPage;
-			var pageCount = this.options.pageCount;
 			$t.find(".ui-pager .ui-state-disabled").removeClass("ui-state-disabled");
 			if (currentPage == 1) {								
 				$t.find(".ui-pager .ui-icon-seek-first").parent().addClass("ui-state-disabled");
 				$t.find(".ui-pager .ui-icon-seek-prev").parent().addClass("ui-state-disabled");				
 			}
 
-			if (currentPage >= pageCount) {
+			if (currentPage >= this.getPageCount()) {
 				$t.find(".ui-pager .ui-icon-seek-next").parent().addClass("ui-state-disabled");
 				$t.find(".ui-pager .ui-icon-seek-end").parent().addClass("ui-state-disabled");				
 			}
@@ -396,6 +417,18 @@
 		_init: function(){
 			this.element.removeAttr("loxiaType");
 			this.element.addClass("loxia ui-loxia-table");
+			if($("tbody", this.element).length != 3)
+				throw new Error("Current table need at least and only 3 tbodies.");
+			
+			var $t = this.element;
+			var $template = $t.find("tbody:eq(1)"),
+				templateCols = [];
+			
+			if($template.html()){
+				$("tr", $template).find("td").each(function(){templateCols.push($(this).html())});
+				$("tr", $template).remove();
+			}
+			this.options.template = templateCols;
 			this._initSelector();
 			this._loadData(false);
 			this._initStyle();
@@ -459,7 +492,7 @@
 		}
 	});
 	$.widget("ui.loxiatable", loxiaTable); 
-	$.ui.loxiatable.getter = ""; 
+	$.ui.loxiatable.getter = "getPageCount"; 
 	$.ui.loxiatable.defaults = $.extend({},loxiaBaseTableDefaults,{
 		sort: "",
 		page: false,
@@ -467,9 +500,7 @@
 		pageSize: 20,
 		pageSizeOptions: ["10", "15", "20", "25", "30", "40", "50", "100"],
 		currentPage: 1,
-		pageCount: 1,
 		itemCount: 0,
-		pageItemCount : 0,
 		data: [],
 		form: "",
 		url: "",

@@ -14,7 +14,7 @@
 <script type="text/javascript" src="scripts/jquery-ui-1.7.2.custom.min.js"></script>
 <script type="text/javascript" src="scripts/jquery.livequery.js"></script>
 <script type="text/javascript" src="scripts/jquery.bgiframe.min.js"></script>
-<!-- 
+
 <script type="text/javascript" src="scripts/loxia/jquery.loxiacore-1.1.js"></script>
 <script type="text/javascript" src="scripts/loxia/jquery.loxiabutton-1.1.js"></script>
 <script type="text/javascript" src="scripts/loxia/jquery.loxiainput-1.1.js"></script>
@@ -23,8 +23,9 @@
 <script type="text/javascript" src="scripts/loxia/jquery.loxiatooltip-1.1.js"></script>
 <script type="text/javascript" src="scripts/loxia/jquery.loxiadialog-1.1.js"></script>
 <script type="text/javascript" src="scripts/loxia/jquery.loxiatable-1.1.js"></script>
--->
+<!-- 
 <script type="text/javascript" src="scripts/loxia/jquery.loxia-1.1.min.js"></script>
+ -->
 <script type="text/javascript">
 var $j = jQuery.noConflict();
 
@@ -71,7 +72,7 @@ var t1defaults = {page:true, alwaysShowPage : true,
                                   {str:"str5",num:5,boo:true},{str:"str6",num:6,boo:false}],
                   itemCount : 6, paeItemCount : 6, 
                   url : "abc",
-                  sort : "str,asc"};
+                  sort : "str asc"};
 var t2defaults = {append:1};
 var dset = {
 		modal: true,
@@ -124,10 +125,13 @@ Dropdown list<input name="dropdown" choice="loxiaChoice1" loxiaType="dropdown" s
 <p>Table</p>
 <table loxiaType="table" settings="t1defaults" cellpadding="0" cellspacing="0">
 <thead>
-<tr><th colspan="4">Head</th></tr>
-<tr><th property="num"><input type="checkbox"/></th><th property="str" sort="str">String</th><th property="num" sort="num">Num Again</th><th property="boo" sort="boo">Boolean</th></tr>
+<tr><th colspan="5">Head</th></tr>
+<tr><th property="num"><input type="checkbox"/></th><th property="str" sort="str">String</th><th property="num" sort="num">Num Again</th><th property="boo" sort="boo">Boolean</th><th>Operation</th></tr>
 </thead>
 <tbody>	
+</tbody>
+<tbody>	
+<tr><td></td><td></td><td></td><td></td><td>Show String: </td></tr>
 </tbody>
 <tbody>
 </tbody>

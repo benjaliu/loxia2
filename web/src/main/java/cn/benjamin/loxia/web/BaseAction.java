@@ -2,6 +2,9 @@ package cn.benjamin.loxia.web;
 
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
@@ -12,6 +15,8 @@ public class BaseAction extends ActionSupport {
 	 * 
 	 */
 	private static final long serialVersionUID = 4113598733962053745L;
+	
+	protected static final Logger logger = LoggerFactory.getLogger(BaseAction.class);
 	
 	public static final String FOLLOWING_URL_AFTER_OPERATING_UNIT_PICKUP = "BaseAction.followingUrl";
 
