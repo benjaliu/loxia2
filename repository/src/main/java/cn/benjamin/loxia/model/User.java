@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
@@ -28,6 +30,9 @@ import cn.benjamin.loxia.model.BaseModel;
 @Table(name="T_SYS_USER")
 @org.hibernate.annotations.Proxy(lazy=false)
 @org.hibernate.annotations.Entity(optimisticLock=OptimisticLockType.VERSION)
+@SqlResultSetMapping(name="sqlcount", columns={
+		@ColumnResult(name="NUM")
+})
 public class User extends BaseModel {
 
 	/**
