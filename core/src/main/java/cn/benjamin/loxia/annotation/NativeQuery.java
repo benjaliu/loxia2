@@ -11,4 +11,5 @@ public @interface NativeQuery {
 	String value() default "";
 	String sqlResultMapping();
 	boolean pagable() default false;
+	boolean withGroupby() default false;
 }

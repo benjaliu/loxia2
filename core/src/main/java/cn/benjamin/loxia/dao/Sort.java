@@ -12,7 +12,7 @@ public class Sort implements Serializable{
 	public static final String DESC = "desc";	
 	
 	public Sort(String sortStr) {
-		String[] strs = sortStr.split(",");
+		String[] strs = sortStr.trim().split(" ");
 		this.field = strs[0];
 		if(strs.length > 1){
 			if(ASC.equalsIgnoreCase(strs[1]))

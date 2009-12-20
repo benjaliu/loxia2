@@ -29,13 +29,17 @@ public interface DaoService {
 	
 	<T> List<T> findByNamedQuery(String queryName, Map<String,Object> params);
 	<T> List<T> findByNamedQuery(String queryName, Map<String,Object> params, int start, int pageSize);
+	<T> Pagination<T> findByNamedQuery(String queryName, Map<String,Object> params, int start, int pageSize, boolean withGroupby);
 	<T> List<T> findByNamedQuery(String queryName, Map<String,Object> params, Sort[] sorts);
 	<T> List<T> findByNamedQuery(String queryName, Map<String,Object> params, Sort[] sorts, int start, int pageSize);
+	<T> Pagination<T> findByNamedQuery(String queryName, Map<String,Object> params, Sort[] sorts, int start, int pageSize, boolean withGroupby);
 	
 	<T> List<T> findByQuery(String queryString, Map<String,Object> params);
 	<T> List<T> findByQuery(String queryString, Map<String,Object> params, int start, int pageSize);
+	<T> Pagination<T> findByQuery(String queryString, Map<String,Object> params, int start, int pageSize, boolean withGroupby);
 	<T> List<T> findByQuery(String queryString, Map<String,Object> params, Sort[] sorts);
 	<T> List<T> findByQuery(String queryString, Map<String,Object> params, Sort[] sorts, int start, int pageSize);
+	<T> Pagination<T> findByQuery(String queryString, Map<String,Object> params, Sort[] sorts, int start, int pageSize, boolean withGroupby);
 	
 	/**
 	 * Similiar with findByQuery, the difference is that the params can contain other definition do not used by query 
@@ -48,11 +52,14 @@ public interface DaoService {
 	 * @return
 	 */
 	<T> List<T> findByQueryEx(String queryString, Map<String,Object> params, Sort[] sorts, int start, int pageSize);
+	<T> Pagination<T> findByQueryEx(String queryString, Map<String,Object> params, Sort[] sorts, int start, int pageSize, boolean withGroupby);
 	
 	<T> List<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping);
 	<T> List<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping, int start, int pageSize);
+	<T> Pagination<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping, int start, int pageSize, boolean withGroupby);
 	<T> List<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping, Sort[] sorts);
 	<T> List<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping, Sort[] sorts, int start, int pageSize);
+	<T> Pagination<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping, Sort[] sorts, int start, int pageSize, boolean withGroupby);
 	
 	int batchUpdateByNamedQuery(String queryName, Map<String,Object> params);
 	int batchUpdateByQuery(String queryString, Map<String,Object> params);

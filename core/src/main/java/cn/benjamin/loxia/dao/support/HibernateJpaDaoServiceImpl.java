@@ -1,6 +1,7 @@
 package cn.benjamin.loxia.dao.support;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,6 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.ejb.HibernateQuery;
 import org.hibernate.engine.EntityEntry;
@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.benjamin.loxia.dao.DaoService;
+import cn.benjamin.loxia.dao.Pagination;
 import cn.benjamin.loxia.dao.Sort;
 import cn.benjamin.loxia.model.BaseModel;
 import cn.benjamin.loxia.utils.StringUtil;
@@ -80,10 +81,6 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
                     "Current entity manager is not an instance of HibernateEntityManager");
 		// http://docs.jboss.org/hibernate/stable/entitymanager/api/org/hibernate/ejb/AbstractEntityManagerImpl.html#getDelegate()
 		return (Session)entityManager.getDelegate();
-	}
-	
-	private SessionFactory getSessionFactory(){
-		return getSession().getSessionFactory();
 	}
 	
 	private EntityStatus getStatus(BaseModel model){
@@ -157,6 +154,40 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 			query.setMaxResults(pageSize);
 		return query.getResultList();
 	}
+	
+	private String getCountQueryStringForHql(String hql){
+		if(hql == null) return null;
+		hql = hql.trim();
+        String lowercaseOQL = hql.toLowerCase();
+        int delim1 = lowercaseOQL.indexOf("from");
+        int delim2 = lowercaseOQL.indexOf("order by");
+        if(delim1 <0){
+        	if(logger.isDebugEnabled()){
+        		logger.debug("It seemed that current hql is not one valid one.");
+        		logger.debug("HQL:{}",hql);
+        	}
+        	return null;
+        }
+        if (delim2 == -1) delim2 = hql.length();
+        String fieldlist = hql.substring(7,delim1-1);
+        int delim3 = fieldlist.indexOf(",");
+        if(delim3 == -1) delim3 = fieldlist.length();
+        String countOQL =  "select count(" + fieldlist.substring(0,delim3) + ") " + hql.substring(delim1,delim2);
+        logger.debug("Count OQL:" +  countOQL);
+        return countOQL;
+	}
+	
+	private <T> Pagination<T> findByQueryNative(Query query, Map<String,Object> params, int start, int pageSize, boolean withGroupby){
+		Pagination<T> p = new Pagination<T>();
+		List<T> list = findByQueryNative(query, params, start, pageSize);
+		p.setItems(list);
+		String countQueryString = getCountQueryStringForHql(((HibernateQuery)query).getHibernateQuery().getQueryString());
+		if(withGroupby)
+			p.setCount((long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).size());
+		else
+			p.setCount((Long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).iterator().next());
+		return p;
+	}
 
 	public <T> List<T> findByNamedQuery(String queryName, Map<String,Object> params) {
 		return findByNamedQuery(queryName, params, -1, -1);
@@ -183,6 +214,22 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 		
 	}
 	
+	public <T> Pagination<T> findByNamedQuery(String queryName, Map<String,Object> params, int start, int pageSize, boolean withGroupby) {
+		return findByNamedQuery(queryName, params, null, start, pageSize, withGroupby);
+	}
+	
+	public <T> Pagination<T> findByNamedQuery(String queryName,
+			Map<String, Object> params, Sort[] sorts, int start, int pageSize, boolean withGroupby) {
+		Query query = entityManager.createNamedQuery(queryName);
+		if(sorts == null || sorts.length == 0){
+			return findByQueryNative(query, params, start, pageSize, withGroupby);
+		}else {
+			HibernateQuery hQuery = (HibernateQuery) query;
+			return findByQuery(hQuery.getHibernateQuery().getQueryString(), params, sorts, start, pageSize, withGroupby);
+		}
+		
+	}
+	
 	public <T> List<T> findByQuery(String queryString, Map<String, Object> params) {
 		return findByQuery(queryString, params, null, -1, -1);
 	}
@@ -203,6 +250,23 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 		}
 		Query query = entityManager.createQuery(queryString);
 		return findByQueryNative(query, params, start, pageSize);
+	}
+	
+	public <T> Pagination<T> findByQuery(String queryString, Map<String, Object> params, int start, int pageSize, boolean withGroupby) {
+		return findByQuery(queryString, params, null, start, pageSize, withGroupby);
+	}
+	
+	public <T> Pagination<T> findByQuery(String queryString, Map<String, Object> params,
+			Sort[] sorts, int start, int pageSize, boolean withGroupby) {
+		Pagination<T> p = new Pagination<T>();
+		List<T> list = findByQuery(queryString, params,sorts,start,pageSize);
+		p.setItems(list);
+		String countQueryString = getCountQueryStringForHql(queryString);
+		if(withGroupby)
+			p.setCount((long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).size());
+		else
+			p.setCount((Long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).iterator().next());
+		return p;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -230,6 +294,29 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 			query.setMaxResults(pageSize);
 		return (List<T>)query.getResultList();
 	}
+	
+	public <T> Pagination<T> findByQueryEx(String queryString, Map<String, Object> params,
+			Sort[] sorts, int start, int pageSize, boolean withGroupby) {
+		Pagination<T> p = new Pagination<T>();
+		List<T> list = findByQueryEx(queryString, params, sorts, start, pageSize);
+		p.setItems(list);
+		String countQueryString = getCountQueryStringForHql(queryString);
+		Query query = entityManager.createQuery(countQueryString);
+		Map<String,Object> paramsNew = new HashMap<String, Object>();
+		HibernateQuery hQuery = (HibernateQuery) query;
+		String [] paramNames = hQuery.getHibernateQuery().getNamedParameters();
+		if(paramNames != null && paramNames.length >0){
+			for(String key: hQuery.getHibernateQuery().getNamedParameters()){
+				paramsNew.put(key, params.get(key));
+			}
+		}
+		if(withGroupby)
+			p.setCount((long)findByQueryNative(query, paramsNew, -1, -1).size());
+		else
+			p.setCount((Long)findByQueryNative(query, paramsNew, -1, -1).iterator().next());
+		return p;
+	}
+	
 
 	public <T> T findOneByNamedQuery(String queryName, Map<String,Object> params) {
 		List<T> list = findByNamedQuery(queryName, params);
@@ -285,6 +372,45 @@ public class HibernateJpaDaoServiceImpl implements DaoService, Serializable {
 		if(pageSize > 0)
 			query.setMaxResults(pageSize);
 		return (List<T>)query.getResultList();	
+	}
+	
+	private String getCountQueryStringForSql(String sql, boolean withGroupby){
+		if(sql == null) return null;
+		sql = sql.trim();
+        String lowercaseSQL = sql.toLowerCase();
+        int delim1 = lowercaseSQL.indexOf("from");
+        int delim2 = lowercaseSQL.indexOf("order by");
+        if(delim1 <0){
+        	if(logger.isDebugEnabled()){
+        		logger.debug("It seemed that current sql is not one valid one.");
+        		logger.debug("SQL:{}", sql);
+        	}
+        	return null;
+        }
+        if (delim2 == -1) delim2 = sql.length();
+        String countSQL = "";
+        if(withGroupby){
+        	countSQL = "select count(1) from (" + sql.substring(0,delim2) + ")";
+        }else{
+        	countSQL =  "select count(1) as num " + sql.substring(delim1,delim2);
+        }
+        logger.debug("Count SQL:{}", countSQL);
+        return countSQL;
+	}
+	
+	public <T> Pagination<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping,
+			int start, int pageSize, boolean withGroupby) {
+		return findByNativeQuery(queryString, params, resultSetMapping, null, start, pageSize, withGroupby);
+	}
+	
+	public <T> Pagination<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping,
+			Sort[] sorts, int start, int pageSize, boolean withGroupby) {
+		Pagination<T> p = new Pagination<T>();
+		List<T> list = findByNativeQuery(queryString, params, resultSetMapping, sorts, start, pageSize);
+		p.setItems(list);
+		String countQueryString = getCountQueryStringForSql(queryString, withGroupby);		
+		p.setCount((Integer)findByNativeQuery(countQueryString, params, "sqlcount",  -1, -1).iterator().next());
+		return p;
 	}
 
 	public <T> T findOneByNativeQuery(String queryString, Object[] params, String resultSetMapping) {

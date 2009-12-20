@@ -25,6 +25,7 @@ import cn.benjamin.loxia.annotation.QueryParam;
 import cn.benjamin.loxia.dao.DaoService;
 import cn.benjamin.loxia.dao.DynamicNamedQueryProvider;
 import cn.benjamin.loxia.dao.ModelClassSupport;
+import cn.benjamin.loxia.dao.Pagination;
 import cn.benjamin.loxia.dao.Sort;
 import cn.benjamin.loxia.service.VelocityTemplateService;
 
@@ -117,6 +118,16 @@ public class QueryAspect implements Ordered {
 					else
 						return daoService.findByNamedQuery(queryName, params, sorts);
 				}
+			}else if(Pagination.class.isAssignableFrom(ms.getMethod().getReturnType())){
+				if(pagable){
+					if(pjp.getArgs()[0] instanceof Integer &&
+							pjp.getArgs()[1] instanceof Integer)				
+						return daoService.findByNamedQuery(queryName, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], namedQuery.withGroupby());
+					else
+						throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
+				}else{
+					throw new IllegalStateException("Please set pagable to true");
+				}
 			}else
 				return daoService.findOneByNamedQuery(queryName, params);
 		}else if(query != null){
@@ -141,6 +152,16 @@ public class QueryAspect implements Ordered {
 						throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
 				}else{
 					return daoService.findByQuery(queryString, params, sorts);
+				}
+			}else if(Pagination.class.isAssignableFrom(ms.getMethod().getReturnType())){
+				if(pagable){
+					if(pjp.getArgs()[0] instanceof Integer &&
+							pjp.getArgs()[1] instanceof Integer)				
+						return daoService.findByQuery(queryString, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], query.withGroupby());
+					else
+						throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
+				}else{
+					throw new IllegalStateException("Please set pagable to true");
 				}
 			}else
 				return daoService.findOneByQuery(queryString, params);
@@ -175,6 +196,16 @@ public class QueryAspect implements Ordered {
 						throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
 				}else{
 					return daoService.findByQueryEx(queryString, params, sorts, -1, -1);
+				}
+			}else if(Pagination.class.isAssignableFrom(ms.getMethod().getReturnType())){
+				if(pagable){
+					if(pjp.getArgs()[0] instanceof Integer &&
+							pjp.getArgs()[1] instanceof Integer)				
+						return daoService.findByQueryEx(queryString, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], dynamicQuery.withGroupby());
+					else
+						throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
+				}else{
+					throw new IllegalStateException("Please set pagable to true");
 				}
 			}else
 				return daoService.findOneByQueryEx(queryString, params);
@@ -215,8 +246,19 @@ public class QueryAspect implements Ordered {
 					return daoService.findByNativeQuery(queryString, conditions.toArray(), nativeQuery.sqlResultMapping(),
 							sorts, -1, -1);
 				}
+			}else if(Pagination.class.isAssignableFrom(ms.getMethod().getReturnType())){
+				if(pagable){
+					if(pjp.getArgs()[0] instanceof Integer &&
+							pjp.getArgs()[1] instanceof Integer)				
+						return daoService.findByNativeQuery(queryString, conditions.toArray(), nativeQuery.sqlResultMapping(),
+								sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], nativeQuery.withGroupby());
+					else
+						throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
+				}else{
+					throw new IllegalStateException("Please set pagable to true");
+				}
 			}else
-				return daoService.findByNativeQuery(queryString, conditions.toArray(), nativeQuery.sqlResultMapping());
+				return daoService.findOneByNativeQuery(queryString, conditions.toArray(), nativeQuery.sqlResultMapping());
 		}else
 			return pjp.proceed(pjp.getArgs());
 	}

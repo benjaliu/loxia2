@@ -33,6 +33,7 @@ public class GenericEntityDaoTests extends AbstractTestNGSpringContextTests {
 		System.out.println("==============================2");
 		u = userDao.getByPrimaryKey(1l);
 		assert u.getUserName().equals("Dragon") : "wrong user name";
+		userDao.findUserCount();
 		System.out.println("==============================3");
 		user = new InnerUser();
 		user.setId(1l);
@@ -43,6 +44,8 @@ public class GenericEntityDaoTests extends AbstractTestNGSpringContextTests {
 		System.out.println("==============================4");
 		List<InnerUser> users = userDao.findUsers(new Sort[]{new Sort("u.userName")});		
 		u = userDao.findUserByLoginName("user");
+		Pagination<InnerUser> p = userDao.findByLoginNameP(0, 20, "user");
+		System.out.println(p.getCount());
 		System.out.println(users.size());
 		System.out.println(u.getUserName());
 		List<InnerUser> anoUsers = userDao.findUserByName(0, 20, "U", new Sort[]{new Sort("u.userName")});

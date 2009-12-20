@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface Query {
 	String value() default "";
 	boolean pagable() default false;
+	boolean withGroupby() default false;
 }

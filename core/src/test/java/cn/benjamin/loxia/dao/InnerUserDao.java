@@ -24,8 +24,14 @@ public interface InnerUserDao extends GenericEntityDao<InnerUser ,Long> {
 	@Query(value="select u from InnerUser u where u.userName like '%' + :userName + '%'", pagable=true)
 	List<InnerUser> findUserByName(int start, int pageSize, @QueryParam("userName") String userName, Sort[] sorts);
 	
+	@Query("select count(u) from InnerUser u")
+	long findUserCount();
+	
 	@DynamicQuery(pagable = true)
 	List<InnerUser> findByLoginName(int start, int pageSize, @QueryParam("loginName") String loginName);
+	
+	@DynamicQuery(value="InnerUser.findByLoginName", pagable = true)
+	Pagination<InnerUser> findByLoginNameP(int start, int pageSize, @QueryParam("loginName") String loginName);
 	
 	@NativeQuery(sqlResultMapping="user", pagable=true)
 	List<Object[]> findByLoginNameSql(int start, int pageSize, 
