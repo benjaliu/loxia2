@@ -219,7 +219,7 @@
 					.text(data.exception.message).show()
 					.animate({opacity: 1},"fast");
 				}else{
-					_this.options.data = data;					
+					$.extend(_this.options,data);
 					_this._loadData(true);
 
 					if(data.sort){						
