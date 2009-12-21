@@ -33,6 +33,7 @@ public class JsonResult extends StrutsResultSupport{
 	@Override
 	protected void doExecute(String finalLocation, ActionInvocation invocation)
 			throws Exception {
+		logger.debug("Handling JSON Result...");
 		Charset charset = null;
         if (charSet != null) {
             if (Charset.isSupported(charSet)) {

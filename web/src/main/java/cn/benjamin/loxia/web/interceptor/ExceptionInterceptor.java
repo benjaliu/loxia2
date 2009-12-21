@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.apache.struts2.interceptor.TokenInterceptor;
 import org.apache.struts2.util.TokenHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.benjamin.loxia.exception.BusinessException;
 import cn.benjamin.loxia.web.annotation.DataResponse;
@@ -25,6 +27,8 @@ public class ExceptionInterceptor extends ExceptionMappingInterceptor {
 	 *
 	 */
 	private static final long serialVersionUID = -108722874114862093L;
+	private static final Logger logger = LoggerFactory.getLogger(ExceptionInterceptor.class);
+	
 	private boolean debug = false;
 	
 	@SuppressWarnings("unchecked")
@@ -50,8 +54,13 @@ public class ExceptionInterceptor extends ExceptionMappingInterceptor {
 	public String intercept(ActionInvocation invocation) throws Exception {
 		String result = super.intercept(invocation);
 		Object action = invocation.getAction();
-		DataResponse dr = action.getClass().getAnnotation(DataResponse.class);
+		String strMethod = invocation.getProxy().getMethod();
+		Method m = getActionMethod(action.getClass(), strMethod);
+		DataResponse dr = m.getAnnotation(DataResponse.class);
+		if(dr == null)
+			dr = action.getClass().getAnnotation(DataResponse.class);
 		if(dr != null){
+			logger.debug("Data response method will redirect to related result: {}", dr.value());
 			if(TokenInterceptor.INVALID_TOKEN_CODE.equals(result)){
 				//duplicate submit error here
 				//construct one exception for jsonresult

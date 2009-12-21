@@ -46,10 +46,12 @@
 		_loadData: function(reloadAll){
 			var $t = this.element;
 			var $tbody = $t.find("tbody:first"),
-				propList = [];
+				propList = [],
+				columnGens = [];
 			
 			$t.find("thead tr:last th").each(function(){
 				propList.push($(this).attr("property"));
+				columnGens.push($(this).attr("generator"));
 			});
 
 			var selectors = this._getData("selectors"),
@@ -60,7 +62,8 @@
 				for(var dataItem,i=0; (dataItem = data[i]); i++){
 					var row = "<tr>";
 					for(var j=0; j< propList.length; j++){
-						var p=propList[j];
+						var p=propList[j],
+							g=columnGens[j];
 						if(p!=null){
 							var value = loxia.getObject(p,dataItem);
 							if(selectors[j]){
@@ -81,6 +84,8 @@
 										(loxia.isString(value) && !value)) ? "&nbsp;" : value;
 								row += "<td>" + value + "</td>";
 							}
+						}else if(g!=null){
+							row += "<td>" + loxia.hitch(loxia._g[g])(dataItem) + "</td>";
 						}else{
 							if(this.options.template.length == 0){
 								row += "<td>&nbsp;</td>";
@@ -162,7 +167,7 @@
 					var sort = $th.attr("sort");
 					if(!sort) return;
 					
-					var sortStr = "" + sort + "," , sortOrder = "";
+					var sortStr = "" + sort + " " , sortOrder = "";
 					if($th.hasClass("sort-asc")){
 						sortOrder = "desc";
 					}else
@@ -207,7 +212,7 @@
 			},args);
 			//console.dir(settings);
 			var url = args.url || this.options.url;
-			loxia.asyncXhr(url, args, function(data, textStatus){
+			loxia.asyncXhr(loxia.getTimeUrl(url), args, function(data, textStatus){
 				//console.dir(data);
 				if(data.exception){
 					$t.find(".ui-pager-status > div").addClass("ui-state-highlight")
@@ -215,7 +220,7 @@
 					.animate({opacity: 1},"fast");
 				}else{
 					_this.options.data = data;					
-					_this.refresh(true);
+					_this._loadData(true);
 
 					if(data.sort){						
 						var sortStatus = [], sortlist = data.sort.split(" ");
@@ -255,11 +260,23 @@
 				$reload.find(".loading").removeClass("loading");
 			});
 		},
+		reload : function(){
+			var settings = {
+				url: this.options.url,
+				data: {
+					pageSize: this.options.pageSize,
+					currentPage: this.options.currentPage
+				}
+			};
+			if(this.options.sort)
+				settings.data["sortString"] = this.options.sort;
+			if(this.options.form)
+				settings.data["form"] = this.options.form;				
+			this._refresh(settings);
+		},
 		_initPager : function(){
 			var _this = this;
-			var $t = this.element;
-			if(!this._getData("page") || 
-					((!this.options.alwaysShowPage) && this.getPageCount() <=1)) return;
+			var $t = this.element;			
 
 			var pageSizeOptions = this._getData("pageSizeOptions");
 			var pager =
@@ -368,9 +385,9 @@
 							}
 						};
 						if(_this.options.sort)
-							settings["sort"] = _this.options.sort;
+							settings.data["sortString"] = _this.options.sort;
 						if(_this.options.form)
-							settings["form"] = _this.options.form;		
+							settings.data["form"] = _this.options.form;		
 						_this._refresh(settings);
 					}
 				});			
@@ -394,25 +411,31 @@
 		},
 		_setPager : function(){
 			var $t = this.element;
-			$(".ui-pager-block[block='pagesize'] select",$t)
+			if(!this._getData("page") || 
+					((!this.options.alwaysShowPage) && this.getPageCount() <=1)){
+				$(".ui-pager",$t).parents("tbody").hide();
+			}else{
+				$(".ui-pager",$t).parents("tbody").show();
+				$(".ui-pager-block[block='pagesize'] select",$t)
 				.data("loxiaselect").val("" + this.options.pageSize);
-			$(".ui-pager-block[block='pagegoto'] input",$t)
-			.data("loxianumber").val("" + this.options.currentPage);
-			$(".ui-pager-block[block='pagegoto'] span").text(this.getPageCount());
-			$(".ui-pager-block .page-info span").text(loxia.getLocaleMsg("TABLE_PAGE_INFO",[this.options.itemCount]));
-			
-			var currentPage = this.options.currentPage;
-			$t.find(".ui-pager .ui-state-disabled").removeClass("ui-state-disabled");
-			if (currentPage == 1) {								
-				$t.find(".ui-pager .ui-icon-seek-first").parent().addClass("ui-state-disabled");
-				$t.find(".ui-pager .ui-icon-seek-prev").parent().addClass("ui-state-disabled");				
-			}
-
-			if (currentPage >= this.getPageCount()) {
-				$t.find(".ui-pager .ui-icon-seek-next").parent().addClass("ui-state-disabled");
-				$t.find(".ui-pager .ui-icon-seek-end").parent().addClass("ui-state-disabled");				
-			}
-			$t.find(".ui-pager-status > div").hide().css({opacity:0});
+				$(".ui-pager-block[block='pagegoto'] input",$t)
+				.data("loxianumber").val("" + this.options.currentPage);
+				$(".ui-pager-block[block='pagegoto'] span").text(this.getPageCount());
+				$(".ui-pager-block .page-info span").text(loxia.getLocaleMsg("TABLE_PAGE_INFO",[this.options.itemCount]));
+				
+				var currentPage = this.options.currentPage;
+				$t.find(".ui-pager .ui-state-disabled").removeClass("ui-state-disabled");
+				if (currentPage == 1) {								
+					$t.find(".ui-pager .ui-icon-seek-first").parent().addClass("ui-state-disabled");
+					$t.find(".ui-pager .ui-icon-seek-prev").parent().addClass("ui-state-disabled");				
+				}
+	
+				if (currentPage >= this.getPageCount()) {
+					$t.find(".ui-pager .ui-icon-seek-next").parent().addClass("ui-state-disabled");
+					$t.find(".ui-pager .ui-icon-seek-end").parent().addClass("ui-state-disabled");				
+				}
+				$t.find(".ui-pager-status > div").hide().css({opacity:0});
+			}			
 		},
 		_init: function(){
 			this.element.removeAttr("loxiaType");

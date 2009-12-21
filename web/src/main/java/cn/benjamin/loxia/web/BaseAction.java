@@ -20,8 +20,14 @@ public class BaseAction extends ActionSupport {
 	
 	public static final String FOLLOWING_URL_AFTER_OPERATING_UNIT_PICKUP = "BaseAction.followingUrl";
 
+	public static final String JSON = "json";
+	
 	private String acl;
 	private Long selectedOuId;	
+	
+	protected int pageSize;
+	protected int currentPage;
+	protected String sortString;	
 
 	protected String getMessage(String key, Object[] args){
 		Locale locale = ActionContext.getContext().getLocale();
@@ -51,5 +57,29 @@ public class BaseAction extends ActionSupport {
 	}
 	public void setSelectedOuId(Long selectedOuId) {
 		this.selectedOuId = selectedOuId;
+	}
+	
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public int getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
+	}
+
+	public String getSortString() {
+		return sortString;
+	}
+
+	public void setSortString(String sortString) {
+		this.sortString = sortString;
 	}
 }

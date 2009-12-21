@@ -12,6 +12,7 @@
 	</target>
 	<target name="min">
 		<mkdir dir="${basedir}/target/scripts"/>
+		<delete dir="${basedir}/target/scripts"><include name="*.*"/></delete>
 		<java jar="${basedir}/lib/yuicompressor/yuicompressor-2.4.2.jar" 
 			dir="${basedir}/src/main/webapp/scripts/loxia" fork="true">
 			<arg value="-v"/>			

@@ -10,6 +10,7 @@
 				pageLock : true, //default page locking after submitting
 				windowFeatures : "toolbar=no, menubar=no,scrollbars=yes, resizable=no,location=no, status=no",
 				onionPage : undefined,
+				_g: _global,
 				
 				getViewport : function(){
 					var w, h;					 

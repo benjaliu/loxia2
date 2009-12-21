@@ -66,6 +66,12 @@ function checkA(value, obj){
 		return "Too Long";
 	return loxia.SUCCESS;
 }
+function genTd(data){
+	if(data.boo)
+		return "<span>ture:so str is:" + data.str + "</span>";
+	else
+		return "<a href='#'>false:so num is:" + data.num + "</a>";
+}
 var t1defaults = {page:true, alwaysShowPage : true,
 				  data:[{str:"str1",num:1,boo:true},{str:"str2",num:2,boo:false},
                                   {str:"str3",num:3,boo:true},{str:"str4",num:4,boo:false},
@@ -126,7 +132,7 @@ Dropdown list<input name="dropdown" choice="loxiaChoice1" loxiaType="dropdown" s
 <table loxiaType="table" settings="t1defaults" cellpadding="0" cellspacing="0">
 <thead>
 <tr><th colspan="5">Head</th></tr>
-<tr><th property="num"><input type="checkbox"/></th><th property="str" sort="str">String</th><th property="num" sort="num">Num Again</th><th property="boo" sort="boo">Boolean</th><th>Operation</th></tr>
+<tr><th property="num"><input type="checkbox"/></th><th property="str" sort="str">String</th><th property="num" sort="num">Num Again</th><th property="boo" sort="boo">Boolean</th><th generator="genTd">Operation</th></tr>
 </thead>
 <tbody>	
 </tbody>
