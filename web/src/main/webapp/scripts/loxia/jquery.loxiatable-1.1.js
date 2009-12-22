@@ -215,8 +215,9 @@
 			loxia.asyncXhr(loxia.getTimeUrl(url), args, function(data, textStatus){
 				//console.dir(data);
 				if(data.exception){
+					var msg = data.exception.message[0] || "&nbsp;";
 					$t.find(".ui-pager-status > div").addClass("ui-state-highlight")
-					.text(data.exception.message).show()
+					.text(msg).show()
 					.animate({opacity: 1},"fast");
 				}else{
 					$.extend(_this.options,data);

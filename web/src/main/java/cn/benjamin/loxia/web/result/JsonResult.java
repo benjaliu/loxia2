@@ -61,9 +61,12 @@ public class JsonResult extends StrutsResultSupport{
         Map request  = (Map)invocation.getInvocationContext().get("request");
         Map<String,Object> exceptionMap = (Map<String,Object>)request.get("exception");
         if(exceptionMap != null){
+        	logger.debug("Exception found:" + exceptionMap);
         	Map<String,Object> resultMap = new HashMap<String, Object>();
-        	resultMap.put("errorMessages", new JSONArray((List<String>)exceptionMap.get("errorMessages")));
-        	resultMap.put("exception", new JSONObject(exceptionMap.get("exception")));
+        	Map<String,Object> eMap = new HashMap<String, Object>();
+        	eMap.put("obj", new JSONObject(exceptionMap.get("exception")));
+        	eMap.put("message", new JSONArray((List<String>)exceptionMap.get("errorMessages")));
+        	resultMap.put("exception", new JSONObject(eMap));
         	if(exceptionMap.get("invalidToken") != null){
         		resultMap.put("invalidToken", true);
         		resultMap.put("token", exceptionMap.get("token"));
