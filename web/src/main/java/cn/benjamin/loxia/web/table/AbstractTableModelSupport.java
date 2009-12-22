@@ -73,9 +73,11 @@ public abstract class AbstractTableModelSupport<T> implements TableModel {
 	}
 	public void setSortString(String sortStr){
 		if(sortStr == null || sortStr.trim().length() == 0) setSorts(null);
-		List<Sort> sortList = new ArrayList<Sort>();
-		for(String str: sortStr.split(","))
-			sortList.add(new Sort(str));
-		setSorts(sortList.toArray(new Sort[]{}));
+		else{
+			List<Sort> sortList = new ArrayList<Sort>();
+			for(String str: sortStr.split(","))
+				sortList.add(new Sort(str));
+			setSorts(sortList.toArray(new Sort[]{}));
+		}
 	}
 }

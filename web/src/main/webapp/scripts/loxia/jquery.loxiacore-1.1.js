@@ -144,13 +144,14 @@
 					var ret = {},
 						exclude = "file|submit|image|reset|button|",
 						_this = this;
-					$(form.elements).each(function(){
-						var name = this.name;
-						var type = (this.type||"").toLowerCase();
-						if(name && type && exclude.indexOf(type) == -1 && !this.disabled){
-							_this._setValue(ret, name, _this._fieldValue(this));
+					for(var i=0;i<form.elements.length;i++){
+						var e = form.elements[i];
+						var name = e.name,
+							type = (e.type||"").toLowerCase();
+						if(name && type && exclude.indexOf(type) == -1 && !e.disabled){
+							_this._setValue(ret, name, _this._fieldValue(e));
 						}
-					});
+					}
 					return ret;
 				},
 				asyncXhr : function(url, args, callback){

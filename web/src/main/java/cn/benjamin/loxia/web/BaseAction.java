@@ -1,7 +1,9 @@
 package cn.benjamin.loxia.web;
 
 import java.util.Locale;
+import java.util.Map;
 
+import org.apache.struts2.interceptor.RequestAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +11,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.LocalizedTextUtil;
 
-public class BaseAction extends ActionSupport {
+public class BaseAction extends ActionSupport implements RequestAware{
 
 	/**
 	 * 
@@ -28,6 +30,14 @@ public class BaseAction extends ActionSupport {
 	protected int pageSize;
 	protected int currentPage;
 	protected String sortString;	
+	
+	@SuppressWarnings("unchecked")
+	protected Map request;
+
+	@SuppressWarnings("unchecked")
+	public void setRequest(Map request) {
+		this.request = request;
+	}
 
 	protected String getMessage(String key, Object[] args){
 		Locale locale = ActionContext.getContext().getLocale();

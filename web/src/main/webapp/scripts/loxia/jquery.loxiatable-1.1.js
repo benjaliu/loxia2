@@ -12,7 +12,8 @@
 	var loxiaTable = $.extend({}, loxiaBaseTable, {
 		getPageCount: function(){
 			if(!this.options.page) return 1;
-			return (this.options.itemCount + this.options.pageSize -1)/this.options.pageSize;
+			var v = this.options.itemCount > 1 ? this.options.itemCount-1 : 0;
+			return Math.floor(v / this.options.pageSize) + 1;
 		},
 		_initSelector: function(){
 			var $t = this.element,
@@ -302,7 +303,7 @@
 				
 			pager += '<div class="ui-pager-block" block="pagegoto"><div>' + loxia.getLocaleMsg("TABLE_PAGE") + 
 				' <input loxiaType="number" formCheck="false" min="1" max="' + this.getPageCount() + '" value="" style="width: 3em;"/>' +
-				'/<span"></span></div>' + 
+				'/<span></span></div>' + 
 				'<div class="ui-state-default ui-corner-all"><span action="Goto" title="' + loxia.getLocaleMsg("TABLE_PAGER_GOTO") + '" class="ui-icon ui-icon-arrowreturnthick-1-w"></span></div></div>';
 			
 			pager +=			
@@ -363,7 +364,7 @@
 						break;
 
 					case 'Last':
-						moveToPage = this.getPageCount();
+						moveToPage = _this.getPageCount();
 						break;
 						
 					case 'Goto':
@@ -403,9 +404,9 @@
 						}
 					};
 					if(_this.options.sort)
-						settings["sort"] = _this.options.sort;
+						settings.data["sortString"] = _this.options.sort;
 					if(_this.options.form)
-						settings["form"] = _this.options.form;		
+						settings.data["form"] = _this.options.form;		
 					_this._refresh(settings);
 				});
 			});
@@ -419,8 +420,9 @@
 				$(".ui-pager",$t).parents("tbody").show();
 				$(".ui-pager-block[block='pagesize'] select",$t)
 				.data("loxiaselect").val("" + this.options.pageSize);
-				$(".ui-pager-block[block='pagegoto'] input",$t)
-				.data("loxianumber").val("" + this.options.currentPage);
+				var jumpto = $(".ui-pager-block[block='pagegoto'] input",$t).data("loxianumber");
+				jumpto.val("" + this.options.currentPage);
+				jumpto._setData("max",this.getPageCount());
 				$(".ui-pager-block[block='pagegoto'] span").text(this.getPageCount());
 				$(".ui-pager-block .page-info span").text(loxia.getLocaleMsg("TABLE_PAGE_INFO",[this.options.itemCount]));
 				
