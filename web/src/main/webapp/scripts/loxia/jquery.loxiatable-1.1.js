@@ -50,10 +50,11 @@
 				propList = [],
 				columnGens = [];
 			
-			$t.find("thead tr:last th").each(function(){
+			var cols = $t.find("thead tr:last th").each(function(){
 				propList.push($(this).attr("property"));
 				columnGens.push($(this).attr("generator"));
-			});
+			}).length;
+			this.options.cols = cols;
 
 			var selectors = this._getData("selectors"),
 				selectCache = this._getData("selected");
@@ -112,6 +113,8 @@
 				}else
 					$tbody.append(rowlist);
 			}
+			if($tbody.find("tr").length == 0)
+				$tbody.append('<tr><td colspan="' + cols + '">' + this.options.emptyMessage + '</td></tr>');
 			$t.trigger("dataloaded",[data]);
 		},
 		_initStyle : function(){
@@ -128,7 +131,7 @@
 				$(this).find("th").addClass("ui-state-default");
 			});
 			$t.find("tbody:gt(0)").addClass("ui-widget-content");
-			var cols = $t.find("thead tr:last th").each(function(i){
+			$t.find("thead tr:last th").each(function(i){
 				var sortClass = "", sort = $(this).attr("sort");	
 				if(sort){
 					sortClass = "sort-nosort";
@@ -142,8 +145,7 @@
 				$(this).addClass(sortClass).addClass("col-" + i);
 				$(this).html("<div class='th-col-" + i + "'>" + $(this).html() + "<div class='ui-sort'></div></div>");
 				$t.find("tbody:first tr").find("td:eq(" + i + ")").addClass(className + " col-" + i);
-			}).length;
-			this._setData("cols",cols);
+			});
 			$t.find('tbody:first tr:odd').addClass("odd");
 			$t.find('tbody:first tr:even').addClass("even");
 			
@@ -528,6 +530,7 @@
 		currentPage: 1,
 		itemCount: 0,
 		data: [],
+		emptyMessage: "No records found.",
 		form: "",
 		url: "",
 		cacheSelect: false,
