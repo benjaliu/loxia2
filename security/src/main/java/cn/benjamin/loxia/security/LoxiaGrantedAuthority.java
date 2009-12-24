@@ -67,7 +67,7 @@ public class LoxiaGrantedAuthority implements GrantedAuthority {
 		} else if (!authority.equals(other.authority))
 			return false;
 		return true;
-	}
+	}	
 
 	public int compareTo(Object o) {
 		if(o ==null) throw new IllegalArgumentException();
@@ -77,4 +77,9 @@ public class LoxiaGrantedAuthority implements GrantedAuthority {
 		return getAuthority().compareTo(auth.getAuthority());
 	}
 
+	@Override
+	public String toString() {
+		return "LoxiaGrantedAuthority [authority=" + authority + ", ouIds="
+				+ ouIds + "]";
+	}
 }

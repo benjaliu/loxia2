@@ -12,7 +12,7 @@ import org.springframework.security.userdetails.UserDetails;
 import cn.benjamin.loxia.model.OperatingUnit;
 import cn.benjamin.loxia.model.User;
 
-public class LoxiaUserDetails implements UserDetails {
+public class LoxiaUserDetails implements UserDetails {	
 
 	/**
 	 * 
@@ -100,5 +100,11 @@ public class LoxiaUserDetails implements UserDetails {
 				ouIds.addAll(auth.getOuIds());
 		}
 		return ouIds.contains(getCurrentOu().getId());
+	}
+	
+	@Override
+	public String toString() {
+		return "LoxiaUserDetails [user=" + user.getUserName() + "(" + user.getLoginName() + ")\n" 
+			+ loxiaAuthorities + "]";
 	}
 }

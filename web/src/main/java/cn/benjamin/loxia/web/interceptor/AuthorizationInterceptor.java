@@ -86,7 +86,7 @@ public class AuthorizationInterceptor extends AbstractInterceptor implements Str
 			BaseProfileAction act = (BaseProfileAction)action;
 									
 			LoxiaUserDetails userDetails = (LoxiaUserDetails)authentication.getPrincipal();
-			
+			logger.debug("Current Principal:" + userDetails);
 			String entryAcl = act.getAcl();
 			if(entryAcl != null){
 				userDetails.setCurrentOu(null);

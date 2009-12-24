@@ -143,7 +143,7 @@
 
 				var className = $(this).hasClass("selector") ? "selector" : "";
 				$(this).addClass(sortClass).addClass("col-" + i);
-				$(this).html("<div class='th-col-" + i + "'>" + $(this).html() + "<div class='ui-sort'></div></div>");
+				$(this).html("<div class='th-col-" + i + "'>" + $(this).html() + "</div><div class='ui-sort'></div>");
 				$t.find("tbody:first tr").find("td:eq(" + i + ")").addClass(className + " col-" + i);
 			});
 			$t.find('tbody:first tr:odd').addClass("odd");

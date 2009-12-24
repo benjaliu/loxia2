@@ -1,5 +1,7 @@
 package cn.benjamin.loxia.web;
 
+import cn.benjamin.loxia.model.OperatingUnit;
+import cn.benjamin.loxia.model.User;
 import cn.benjamin.loxia.security.LoxiaUserDetails;
 
 public class BaseProfileAction extends BaseAction implements
@@ -17,4 +19,13 @@ public class BaseProfileAction extends BaseAction implements
 
 	}
 
+	public User getCurrentUser(){
+		if(this.userDetails == null) return null;
+		return this.userDetails.getUser();
+	}
+	
+	public OperatingUnit getCurrentOperatingUnit(){
+		if(this.userDetails == null) return null;
+		return this.userDetails.getCurrentOu();
+	}
 }
