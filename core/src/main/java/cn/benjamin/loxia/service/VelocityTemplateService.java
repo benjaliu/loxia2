@@ -17,14 +17,22 @@ public class VelocityTemplateService implements Serializable {
 	 */
 	private static final long serialVersionUID = -5003667862282402287L;
 
-static final Logger logger = LoggerFactory.getLogger(VelocityTemplateService.class);
+	static final Logger logger = LoggerFactory.getLogger(VelocityTemplateService.class);
 	
+	/**
+	 * Default Encoding for Velocity
+	 */
 	public static final String DEFAULT_ENCODING = "UTF-8";
+	
+	/**
+	 * Default vm files place in classpath
+	 */
 	public static final String DEFAULT_TEMPLATE_PLACE = "template/vm/";
 
     private boolean initFlag = false;
 
     public VelocityTemplateService() {
+    	//initiate Velocity engine
         Velocity.setProperty("resource.loader", "class");
         Velocity.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
@@ -37,6 +45,12 @@ static final Logger logger = LoggerFactory.getLogger(VelocityTemplateService.cla
         }
     }
 
+    /**
+     * parse string template which is provided by String
+     * @param templateContent
+     * @param contextParameters
+     * @return
+     */
     public String parseVMContent(String templateContent, Map<String,Object> contextParameters) {
         if (!initFlag)
             throw new RuntimeException("Velocity initialize failed");
@@ -66,6 +80,12 @@ static final Logger logger = LoggerFactory.getLogger(VelocityTemplateService.cla
         }
     }
 
+    /**
+     * parse string template which is provided by vm file in classpath
+     * @param templateFileName
+     * @param contextParameters
+     * @return
+     */
     public String parseVMTemplate(String templateFileName, Map<String,Object> contextParameters) {
         if (!initFlag)
             throw new RuntimeException("Velocity initialize failed");
@@ -75,6 +95,7 @@ static final Logger logger = LoggerFactory.getLogger(VelocityTemplateService.cla
         	logger.debug("Parameters: {}", contextParameters);
         }
         try {
+        	//Notice that every template file should be encoded with UTF-8
             Template template = Velocity.getTemplate(DEFAULT_TEMPLATE_PLACE + templateFileName, 
             		DEFAULT_ENCODING);
             VelocityContext context = new VelocityContext();
