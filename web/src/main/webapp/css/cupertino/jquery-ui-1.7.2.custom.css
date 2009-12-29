@@ -406,6 +406,7 @@
 .ui-tabs .ui-tabs-panel { padding: 1em 1.4em; display: block; border-width: 0; background: none; }
 .ui-tabs .ui-tabs-hide { display: none !important; }/* Loxia Tables
 ----------------------------------*/
+.readonly-overlay {background-color: #efefef; opacity: 0; filter: alpha(opacity=0);}
 .loxia-button {padding: 0 0.6em;}
 .ui-loxia-table {padding: 0px; margin: -1px 0px; border-collapse: collapse; width: 100%; border: 0px solid #dedede; overflow: hidden;}
 .ui-loxia-table tr {border-collapse: collapse; border: 1px solid; border-color: #f0f0f0 #aed0ea #ebebeb; height: 28px;}
