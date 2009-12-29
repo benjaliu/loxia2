@@ -9,7 +9,7 @@
 			this._setData("checkmaster",this.element.attr("checkmaster") || "");
 			
 			this.element.focus(function(){	
-				if($(this).is(".ui-state-disabled")) return;
+				if($(this).is(".ui-state-disabled") || this.readOnly) return;
 				var _t = $(this).data("loxiaselect"),
 					tooltip = $(this).data("loxiatooltip");
 				$(this).addClass("ui-state-active");
@@ -20,7 +20,7 @@
 			});
 			
 			this.element.blur(function(){
-				if($(this).is(".ui-state-disabled")) return;
+				if($(this).is(".ui-state-disabled") || this.readOnly) return;
 				var tooltip = $(this).data("loxiatooltip");
 				$(this).removeClass("ui-state-active");
 				tooltip.hide();
