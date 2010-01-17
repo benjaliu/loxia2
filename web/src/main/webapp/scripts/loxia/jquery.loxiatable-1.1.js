@@ -526,7 +526,7 @@
 		page: false,
 		alwaysShowPage: false,
 		pageSize: 20,
-		pageSizeOptions: ["10", "15", "20", "25", "30", "40", "50", "100"],
+		pageSizeOptions: ["5", "10", "15", "20", "25", "30", "40", "50", "100"],
 		currentPage: 1,
 		itemCount: 0,
 		data: [],
