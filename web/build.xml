@@ -1,10 +1,53 @@
-<project name="loxia-web" basedir="." default="merge">
+<project name="loxia-web" basedir="." default="merge"
+	xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
 	<property name="classes.dir" value="${basedir}/target/classes"/>
 	<property name="resources.dir" value="${basedir}/src/main/resources"/>
 	
 	<property name="deploy.home" value="${appserver.home}/webapps/basicwebapp"/>
 	
+	<path id="maven-ant-tasks.classpath" path="${basedir}/lib/ant/maven-ant-tasks-2.0.10.jar" />
+	<typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+		         uri="antlib:org.apache.maven.artifact.ant"
+		         classpathref="maven-ant-tasks.classpath" />		
+	
+	<target name="generate-taglib">
+		<artifact:dependencies filesetId="project.dep.fileset">
+	      <pom file="pom.xml"/>
+	    </artifact:dependencies>
+		<path id="project.class.path">
+	    	<dirset dir="${classes.dir}"/>
+	        <dirset dir="${resources.dir}"/>
+			<fileset refid="project.dep.fileset" />
+	    </path>
+		
+		<delete dir="${basedir}/target/tld"/>
+		<delete dir="${basedir}/doc"/>
+		<mkdir dir="${basedir}/target/tld"/>
+		<mkdir dir="${basedir}/doc"/>
+		<apt classpathref="project.class.path" 
+            factorypathref="project.class.path" 			
+            srcdir="${basedir}/src/main/java" 
+            compile="false" 
+            destdir="${basedir}/target/tld" 
+            fork="true" 
+            preprocessdir="target" 
+            verbose="true" 
+            source="1.5" 
+			debug="on"
+			encoding="UTF-8"
+            factory="cn.benjamin.loxia.web.taglib.annotation.apt.TLDAnnotationProcessorFactory"> 
+
+            <compilerarg value="-AtlibVersion=1.0"/> 
+            <compilerarg value="-AjspVersion=1.2"/> 
+            <compilerarg value="-AshortName=l"/> 
+            <compilerarg value="-Auri=/loxia2-tags"/> 
+            <compilerarg value="-Adescription='Extension from Struts Tags'"/> 
+            <compilerarg value="-AdisplayName='Loxia2 Tags'"/>
+            <compilerarg value="-AoutTemplatesDir=${basedir}/doc"/> 
+            <compilerarg value="-AoutFile=${basedir}/target/tld/loxia2-tags.tld"/>
+		</apt>
+	</target>
 	<target name="merge" depends="min">
 		<exec executable="cmd">
 			<arg value="/c merge.bat"/>
