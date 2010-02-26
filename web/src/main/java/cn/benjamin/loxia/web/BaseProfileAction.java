@@ -28,4 +28,9 @@ public class BaseProfileAction extends BaseAction implements
 		if(this.userDetails == null) return null;
 		return this.userDetails.getCurrentOu();
 	}
+	
+	public boolean checkPrivilege(String[] acls){
+		if(this.userDetails == null) return false;		
+		return this.userDetails.checkAuthority(acls);
+	}
 }
