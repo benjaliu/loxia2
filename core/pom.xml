@@ -81,7 +81,8 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-		</dependency>
+			<optional>true</optional>
+		</dependency>		
 		
 		<dependency>
 	      	<groupId>velocity</groupId>
