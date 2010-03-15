@@ -8,7 +8,7 @@
   <description><![CDATA['Extension from Struts Tags']]></description>
   <tag>
     <name>button</name>
-    <tag-class>cn.benjamin.loxia.web.taglib.tag.ButtonTag</tag-class>
+    <tag-class>cn.benjamin.loxia.struts2.taglib.tag.ButtonTag</tag-class>
     <body-content>JSP</body-content>
     <description><![CDATA[Render an HTML input field of type button]]></description>
     <attribute>
@@ -284,7 +284,7 @@
   </tag>
   <tag>
     <name>date</name>
-    <tag-class>cn.benjamin.loxia.web.taglib.tag.DateFieldTag</tag-class>
+    <tag-class>cn.benjamin.loxia.struts2.taglib.tag.DateFieldTag</tag-class>
     <body-content>JSP</body-content>
     <description><![CDATA[Render an HTML input field of type date]]></description>
     <attribute>
@@ -572,7 +572,7 @@
   </tag>
   <tag>
     <name>dropdown</name>
-    <tag-class>cn.benjamin.loxia.web.taglib.tag.DropdownTag</tag-class>
+    <tag-class>cn.benjamin.loxia.struts2.taglib.tag.DropdownTag</tag-class>
     <body-content>JSP</body-content>
     <description><![CDATA[Render an HTML input field of type dropdown]]></description>
     <attribute>
@@ -866,7 +866,7 @@
   </tag>
   <tag>
     <name>edittable</name>
-    <tag-class>cn.benjamin.loxia.web.taglib.tag.EditTableTag</tag-class>
+    <tag-class>cn.benjamin.loxia.struts2.taglib.tag.EditTableTag</tag-class>
     <body-content>JSP</body-content>
     <description><![CDATA[Render an HTML Table element]]></description>
     <attribute>
@@ -1142,7 +1142,7 @@
   </tag>
   <tag>
     <name>number</name>
-    <tag-class>cn.benjamin.loxia.web.taglib.tag.NumberFieldTag</tag-class>
+    <tag-class>cn.benjamin.loxia.struts2.taglib.tag.NumberFieldTag</tag-class>
     <body-content>JSP</body-content>
     <description><![CDATA[Render an HTML input field of type number]]></description>
     <attribute>
@@ -1436,7 +1436,7 @@
   </tag>
   <tag>
     <name>password</name>
-    <tag-class>cn.benjamin.loxia.web.taglib.tag.PasswordFieldTag</tag-class>
+    <tag-class>cn.benjamin.loxia.struts2.taglib.tag.PasswordFieldTag</tag-class>
     <body-content>JSP</body-content>
     <description><![CDATA[Render an HTML input field of type password]]></description>
     <attribute>
@@ -1712,7 +1712,7 @@
   </tag>
   <tag>
     <name>select</name>
-    <tag-class>cn.benjamin.loxia.web.taglib.tag.SelectTag</tag-class>
+    <tag-class>cn.benjamin.loxia.struts2.taglib.tag.SelectTag</tag-class>
     <body-content>JSP</body-content>
     <description><![CDATA[Render an select element]]></description>
     <attribute>
@@ -2018,7 +2018,7 @@
   </tag>
   <tag>
     <name>table</name>
-    <tag-class>cn.benjamin.loxia.web.taglib.tag.TableTag</tag-class>
+    <tag-class>cn.benjamin.loxia.struts2.taglib.tag.TableTag</tag-class>
     <body-content>JSP</body-content>
     <description><![CDATA[Render an HTML Table element]]></description>
     <attribute>
@@ -2294,7 +2294,7 @@
   </tag>
   <tag>
     <name>textfield</name>
-    <tag-class>cn.benjamin.loxia.web.taglib.tag.TextFieldTag</tag-class>
+    <tag-class>cn.benjamin.loxia.struts2.taglib.tag.TextFieldTag</tag-class>
     <body-content>JSP</body-content>
     <description><![CDATA[Render an HTML input field of type text]]></description>
     <attribute>
