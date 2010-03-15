@@ -36,7 +36,7 @@
             source="1.5" 
 			debug="on"
 			encoding="UTF-8"
-            factory="cn.benjamin.loxia.web.taglib.annotation.apt.TLDAnnotationProcessorFactory"> 
+            factory="cn.benjamin.loxia.struts2.taglib.annotation.apt.TLDAnnotationProcessorFactory"> 
 
             <compilerarg value="-AtlibVersion=1.0"/> 
             <compilerarg value="-AjspVersion=1.2"/> 
