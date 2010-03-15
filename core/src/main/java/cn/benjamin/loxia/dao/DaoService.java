@@ -23,9 +23,7 @@ public interface DaoService {
 	 * @param params
 	 * @return
 	 */
-	<T> T findOneByQueryEx(String queryString, Map<String,Object> params);
-	
-	<T> T findOneByNativeQuery(String queryString, Object[] params, String resultSetMapping);
+	<T> T findOneByQueryEx(String queryString, Map<String,Object> params);	
 	
 	<T> List<T> findByNamedQuery(String queryName, Map<String,Object> params);
 	<T> List<T> findByNamedQuery(String queryName, Map<String,Object> params, int start, int pageSize);
@@ -54,6 +52,9 @@ public interface DaoService {
 	<T> List<T> findByQueryEx(String queryString, Map<String,Object> params, Sort[] sorts, int start, int pageSize);
 	<T> Pagination<T> findByQueryEx(String queryString, Map<String,Object> params, Sort[] sorts, int start, int pageSize, boolean withGroupby);
 	
+	int batchUpdateByNamedQuery(String queryName, Map<String,Object> params);
+	int batchUpdateByQuery(String queryString, Map<String,Object> params);
+	
 	<T> List<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping);
 	<T> List<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping, int start, int pageSize);
 	<T> Pagination<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping, int start, int pageSize, boolean withGroupby);
@@ -61,8 +62,17 @@ public interface DaoService {
 	<T> List<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping, Sort[] sorts, int start, int pageSize);
 	<T> Pagination<T> findByNativeQuery(String queryString, Object[] params, String resultSetMapping, Sort[] sorts, int start, int pageSize, boolean withGroupby);
 	
-	int batchUpdateByNamedQuery(String queryName, Map<String,Object> params);
-	int batchUpdateByQuery(String queryString, Map<String,Object> params);
+	<T> List<T> findByNativeQuery(String queryString, Object[] params, RowMapper<T> rowMapper);
+	<T> List<T> findByNativeQuery(String queryString, Object[] params, int start, int pageSize, RowMapper<T> rowMapper);
+	<T> Pagination<T> findByNativeQuery(String queryString, Object[] params, int start, int pageSize, boolean withGroupby, RowMapper<T> rowMapper);
+	<T> List<T> findByNativeQuery(String queryString, Object[] params, Sort[] sorts, RowMapper<T> rowMapper);
+	<T> List<T> findByNativeQuery(String queryString, Object[] params, Sort[] sorts, int start, int pageSize, RowMapper<T> rowMapper);
+	<T> Pagination<T> findByNativeQuery(String queryString, Object[] params, Sort[] sorts, int start, int pageSize, boolean withGroupby, RowMapper<T> rowMapper);
+	
+	<T> T findOneByNativeQuery(String queryString, Object[] params, String resultSetMapping);
+	<T> T findOneByNativeQuery(String queryString, Object[] params, RowMapper<T> rowMapper);
+		
+	int batchUpdateByNativeQuery(String queryString, Object[] params);
 	
 	void executeDDL(String queryString);
 }

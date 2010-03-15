@@ -9,8 +9,11 @@ import org.testng.annotations.Test;
 
 import cn.benjamin.loxia.model.InnerUser;
 
-@ContextConfiguration(locations={"classpath*:loxia-*.xml"})
-public class GenericEntityDaoTests extends AbstractTestNGSpringContextTests {
+@ContextConfiguration(locations={"classpath*:loxia-service-*.xml",
+		"classpath*:loxia-hibernate-*.xml",
+		"classpath*:loxia-test-hibernate-*.xml",
+		"classpath*:loxia-test-dynamic-*.xml"})
+public class LocalGenericEntityDaoTests extends AbstractTestNGSpringContextTests {
 	
 	@Autowired
 	private InnerUserDao userDao;

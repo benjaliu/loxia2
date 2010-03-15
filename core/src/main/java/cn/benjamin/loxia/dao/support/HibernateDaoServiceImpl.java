@@ -5,69 +5,69 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.persistence.Query;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.ejb.HibernateEntityManager;
-import org.hibernate.ejb.HibernateQuery;
+import org.hibernate.SessionFactory;
 import org.hibernate.engine.EntityEntry;
 import org.hibernate.engine.ForeignKeys;
-import org.hibernate.engine.SessionImplementor;
 import org.hibernate.engine.Status;
+import org.hibernate.impl.SessionImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.benjamin.loxia.dao.Pagination;
 import cn.benjamin.loxia.dao.Sort;
 import cn.benjamin.loxia.model.BaseModel;
 import cn.benjamin.loxia.utils.StringUtil;
 
-public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl {
+public class HibernateDaoServiceImpl extends AbstractHibernateDaoServiceImpl {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5388572435277626633L;
-
-	@PersistenceContext
-	private EntityManager entityManager;
+	private static final long serialVersionUID = -4979034935314898726L;
 	
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	@SuppressWarnings("unchecked")
 	public <T extends BaseModel> T save(T model) {
+		Session session = getSession();
 		if (EntityStatus.TRANSIENT == getStatus(model)) {
-			entityManager.persist(model);
+			session.persist(model);
 			return model;
 		} else {
-			return (T) entityManager.merge(model);
+			return (T) session.merge(model);
 		}
 	}
 	
 	public <T extends BaseModel> void delete(T model) {
-		entityManager.remove(model);
+		Session session = getSession();
+		session.delete(model);
 	}
 
 	public <T extends BaseModel> void deleteByPrimaryKey(Class<T> clazz, Serializable pk) {
 		T entity = getByPrimaryKey(clazz, pk);
-		if(entity != null)
-			entityManager.remove(entity);
-		else throw new PersistenceException("The entity you want to delete is not existed.");
+		if(entity != null){
+			Session session = getSession();
+			session.delete(entity);
+		}else throw new PersistenceException("The entity you want to delete is not existed.");
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends BaseModel> T getByPrimaryKey(Class<T> clazz,
 			Serializable pk) {
-		return (T) entityManager.find(clazz, pk);
+		Session session = getSession();
+		return (T) session.get(clazz, pk);
 	}
 	
 	protected Session getSession() {
-		if(!(entityManager instanceof HibernateEntityManager))
-			throw new PersistenceException(
-                    "Current entity manager is not an instance of HibernateEntityManager");
-		// http://docs.jboss.org/hibernate/stable/entitymanager/api/org/hibernate/ejb/AbstractEntityManagerImpl.html#getDelegate()
-		return (Session)entityManager.getDelegate();
+		return sessionFactory.getCurrentSession();
 	}
 	
 	private EntityStatus getStatus(BaseModel model){
-		SessionImplementor simpl = (SessionImplementor)getSession();
+		SessionImpl simpl = (SessionImpl)getSession();		
 		EntityEntry entry = simpl.getPersistenceContext().getEntry(model);
 		if(entry != null){
 			//Persistent Object
@@ -91,10 +91,11 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 			}
 		}
 	}
-
+	
 	public int batchUpdateByNamedQuery(String queryName, Map<String,Object> params) {
-		Query query = entityManager.createNamedQuery(queryName);
-		logger.debug("Batch Update[{}]",((HibernateQuery)query).getHibernateQuery().getQueryString());
+		Session session = getSession();
+		Query query = session.getNamedQuery(queryName);
+		logger.debug("Batch Update[{}]",query.getQueryString());
 		if(params != null && !params.keySet().isEmpty()){
 			logger.debug("Parameter List:");
 			int i=1;
@@ -107,7 +108,8 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 	}
 	
 	public int batchUpdateByQuery(String queryString, Map<String, Object> params) {
-		Query query = entityManager.createQuery(queryString);
+		Session session = getSession();
+		Query query = session.createQuery(queryString);
 		logger.debug("Batch Update[{}]", queryString);
 		if(params != null && !params.keySet().isEmpty()){
 			logger.debug("Parameter List:");
@@ -134,31 +136,34 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 			query.setFirstResult(start);
 		if(pageSize > 0)
 			query.setMaxResults(pageSize);
-		return query.getResultList();
+		return query.list();
 	}
 	
 	protected <T> List<T> findByNamedQueryNative(String queryName, Map<String,Object> params, Sort[] sorts,  int start, int pageSize){
-		Query query = entityManager.createNamedQuery(queryName);				
+		Session session = getSession();
+		Query query = session.getNamedQuery(queryName);		
 		if(sorts == null || sorts.length == 0){
-			logger.debug("Find[{}]",((HibernateQuery)query).getHibernateQuery().getQueryString());
+			logger.debug("Find[{}]", query.getQueryString());
 			return findByQueryNative(query, params, start, pageSize);
 		}else{
-			return findByQueryNative(((HibernateQuery)query).getHibernateQuery().getQueryString(), params, sorts, start, pageSize);
+			return findByQueryNative(query.getQueryString(), params, sorts, start, pageSize);
 		}		
 	}	
 	
-	protected <T> List<T> findByQueryNative(String query, Map<String,Object> params, Sort[] sorts, int start, int pageSize){
-		logger.debug("Find[{}]", query);
+	protected <T> List<T> findByQueryNative(String query, Map<String,Object> params, Sort[] sorts, int start, int pageSize){		
+		Session session = getSession();
 		if(sorts != null && sorts.length > 0){
 			query += " order by " + StringUtil.join(sorts);
 		}
-		return findByQueryNative(entityManager.createQuery(query), params, start, pageSize);
-	}	
+		logger.debug("Find[{}]", query);
+		return findByQueryNative(session.createQuery(query), params, start, pageSize);
+	}
 	
 	protected <T> Pagination<T> findByNamedQueryNative(String queryName, Map<String,Object> params, 
 			Sort[] sorts, int start, int pageSize, boolean withGroupby){
-		Query query = entityManager.createNamedQuery(queryName);
-		String queryString = ((HibernateQuery)query).getHibernateQuery().getQueryString();		
+		Session session = getSession();
+		Query query = session.getNamedQuery(queryName);		
+		String queryString = query.getQueryString();		
 		if(sorts == null || sorts.length == 0){
 			logger.debug("Find[{}]", queryString);
 			Pagination<T> p = new Pagination<T>();
@@ -166,9 +171,9 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 			p.setItems(list);	
 			String countQueryString = getCountQueryStringForHql(queryString);
 			if(withGroupby)
-				p.setCount((long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).size());
+				p.setCount((long)findByQueryNative(session.createQuery(countQueryString), params, -1, -1).size());
 			else
-				p.setCount((Long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).iterator().next());
+				p.setCount((Long)findByQueryNative(session.createQuery(countQueryString), params, -1, -1).iterator().next());
 			return p;
 		}else{
 			return findByQueryNative(queryString, params, sorts, start, pageSize, withGroupby);
@@ -177,17 +182,18 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 	
 	protected <T> Pagination<T> findByQueryNative(String query, Map<String,Object> params, 
 			Sort[] sorts, int start, int pageSize, boolean withGroupby){
+		Session session = getSession();
 		Pagination<T> p = new Pagination<T>();
 		List<T> list = findByQueryNative(query, params, sorts, start, pageSize);
 		p.setItems(list);
 		String countQueryString = getCountQueryStringForHql(query);
 		if(withGroupby)
-			p.setCount((long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).size());
+			p.setCount((long)findByQueryNative(session.createQuery(countQueryString), params, -1, -1).size());
 		else
-			p.setCount((Long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).iterator().next());
+			p.setCount((Long)findByQueryNative(session.createQuery(countQueryString), params, -1, -1).iterator().next());
 		return p;
 	}	
-		
+	
 	@SuppressWarnings("unchecked")
 	private <T> List<T> findByQueryExNative(String queryString, Map<String, Object> params,
 			Sort[] sorts, int start, int pageSize) {
@@ -195,9 +201,9 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 			queryString += " order by " + StringUtil.join(sorts);
 		}
 		logger.debug("Find[{}]", queryString);
-		Query query = entityManager.createQuery(queryString);
-		HibernateQuery hQuery = (HibernateQuery) query;
-		String [] paramNames = hQuery.getHibernateQuery().getNamedParameters();
+		Session session = getSession();
+		Query query = session.createQuery(queryString);		
+		String [] paramNames = query.getNamedParameters();
 		if(paramNames != null && paramNames.length >0){
 			logger.debug("Parameter List:");
 			int i=1;
@@ -211,7 +217,7 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 			query.setFirstResult(start);
 		if(pageSize > 0)
 			query.setMaxResults(pageSize);
-		return (List<T>)query.getResultList();
+		return (List<T>)query.list();
 	}
 	
 	public <T> List<T> findByQueryEx(String queryString, Map<String, Object> params,
@@ -225,10 +231,10 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 		List<T> list = findByQueryExNative(queryString, params, sorts, start, pageSize);
 		p.setItems(list);
 		String countQueryString = getCountQueryStringForHql(queryString);
-		Query query = entityManager.createQuery(countQueryString);
-		Map<String,Object> paramsNew = new HashMap<String, Object>();
-		HibernateQuery hQuery = (HibernateQuery) query;
-		String [] paramNames = hQuery.getHibernateQuery().getNamedParameters();
+		Session session = getSession();
+		Query query = session.createQuery(countQueryString);	
+		Map<String,Object> paramsNew = new HashMap<String, Object>();		
+		String [] paramNames = query.getNamedParameters();
 		if(paramNames != null && paramNames.length >0){
 			for(String key: paramNames){
 				paramsNew.put(key, params.get(key));
@@ -246,5 +252,5 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 		if(list.isEmpty())
 			return null;
 		return list.get(0);
-	}
+	}		
 }

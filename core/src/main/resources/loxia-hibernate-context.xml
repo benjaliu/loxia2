@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"	
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<aop:aspectj-autoproxy/>
+	<context:annotation-config/>
+	<bean class="cn.benjamin.loxia.aspect.QueryAspect"/>
+	
+	<tx:annotation-driven order="10"/>
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource"/>
+		</property>	
+		<property name="configLocation">
+			<value>hibernate.cfg.xml</value>
+		</property>
+	</bean>	
+	
+	<bean id="daoService" class="cn.benjamin.loxia.dao.support.HibernateDaoServiceImpl"/>
+	
+	<bean class="cn.benjamin.loxia.dao.support.SpringBeanDynamicNamedQueryProvider"/>
+	
+	<bean class="cn.benjamin.loxia.spring.GenericDaoBeanFactoryPostProcessor"/>	
+</beans>
