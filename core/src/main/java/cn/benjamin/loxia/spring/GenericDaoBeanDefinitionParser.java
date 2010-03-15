@@ -54,7 +54,7 @@ public class GenericDaoBeanDefinitionParser extends
 			}
 		}else{
 			try {
-				Class<?> iClazz = ClassUtils.forName(element.getAttribute(INTERFACE_ATTRIBUTE));				
+				Class<?> iClazz = ClassUtils.forName(element.getAttribute(INTERFACE_ATTRIBUTE), getClass().getClassLoader());				
 				interfaces = new Class<?>[]{iClazz};
 			} catch (Exception e) {
 				throw new IllegalArgumentException(element.getAttribute(INTERFACE_ATTRIBUTE) + " is not found");
