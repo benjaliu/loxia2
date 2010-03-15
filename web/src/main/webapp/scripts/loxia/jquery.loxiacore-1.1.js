@@ -366,6 +366,7 @@
 						});
 					
 					if(fieldErrorNums > 0){
+						errorMsg.push(this.getLocaleMsg("VALIDATE_FORM_ERROR"));
 						errorMsg.push(this.getLocaleMsg("VALIDATE_FIELD_ERROR",[fieldErrorNums]));
 						return errorMsg;
 					}
