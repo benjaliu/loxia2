@@ -22,7 +22,7 @@
 			<ref bean="dataSource"/>
 		</property>	
 		<property name="configLocation">
-			<value>hibernate.cfg.xml</value>
+			<value>classpath:hibernate.cfg.xml</value>
 		</property>
 	</bean>	
 	
