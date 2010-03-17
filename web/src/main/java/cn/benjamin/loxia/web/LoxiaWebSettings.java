@@ -1,4 +1,4 @@
-package cn.benjamin.loxia.struts2;
+package cn.benjamin.loxia.web;
 
 import java.io.IOException;
 import java.io.InputStream;

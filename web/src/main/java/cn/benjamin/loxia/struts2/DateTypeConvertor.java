@@ -8,6 +8,9 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
+import cn.benjamin.loxia.web.LoxiaWebConstants;
+import cn.benjamin.loxia.web.LoxiaWebSettings;
+
 import com.opensymphony.xwork2.conversion.TypeConversionException;
 
 public class DateTypeConvertor extends StrutsTypeConverter {

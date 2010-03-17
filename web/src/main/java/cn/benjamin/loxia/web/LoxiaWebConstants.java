@@ -1,4 +1,4 @@
-package cn.benjamin.loxia.struts2;
+package cn.benjamin.loxia.web;
 
 public interface LoxiaWebConstants {
 	public static final String DATE_PATTERN = "date.pattern";
