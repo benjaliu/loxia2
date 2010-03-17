@@ -26,7 +26,7 @@ import cn.benjamin.loxia.security.LoxiaUserDetails;
 import cn.benjamin.loxia.struts2.BaseAction;
 import cn.benjamin.loxia.struts2.BaseProfileAction;
 import cn.benjamin.loxia.struts2.LoxiaUserDetailsAware;
-import cn.benjamin.loxia.struts2.annotation.Acl;
+import cn.benjamin.loxia.web.annotation.Acl;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;

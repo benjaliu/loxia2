@@ -8,7 +8,7 @@ import cn.benjamin.loxia.model.User;
 import cn.benjamin.loxia.security.LoxiaUserDetails;
 import cn.benjamin.loxia.struts2.LoxiaUserDetailsAware;
 
-public class BaseProfileController implements LoxiaUserDetailsAware {
+public class BaseProfileController extends AbstractController implements LoxiaUserDetailsAware {
 	
 	protected Logger logger = LoggerFactory.getLogger(BaseProfileController.class);
 	
@@ -26,6 +26,10 @@ public class BaseProfileController implements LoxiaUserDetailsAware {
 	public OperatingUnit getCurrentOperatingUnit(){
 		if(this.userDetails == null) return null;
 		return this.userDetails.getCurrentOu();
+	}
+	
+	public void setCurrentOperatingUnit(OperatingUnit currentOu){
+		this.userDetails.setCurrentOu(currentOu);
 	}
 	
 	public boolean checkPrivilege(String[] acls){
