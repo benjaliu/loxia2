@@ -3,15 +3,15 @@ package cn.benjamin.loxia.springmvc.aspect;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
+import javax.annotation.Resource;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 
 import cn.benjamin.loxia.dao.OperatingUnitDao;
@@ -25,11 +25,12 @@ import cn.benjamin.loxia.web.LoxiaWebSettings;
 import cn.benjamin.loxia.web.annotation.Acl;
 
 @Aspect
-public class AuthorizationAspect implements ApplicationContextAware,Ordered{
+public class AuthorizationAspect implements Ordered{
 	
 	private static final Logger logger = LoggerFactory.getLogger(AuthorizationAspect.class);
 	
-	private ApplicationContext ac;
+	@Resource
+	private ApplicationContext context;
 	
 	public int getOrder() {
 		return 10;
@@ -50,7 +51,7 @@ public class AuthorizationAspect implements ApplicationContextAware,Ordered{
 		Acl acl = ms.getMethod().getAnnotation(Acl.class);
 		
 		logger.debug("Acl found: {}", Arrays.asList(acl.value()));
-		OperatingUnitDao operatingUnitDao = (OperatingUnitDao)ac.getBean("loxiaOperatingUnitDao");
+		OperatingUnitDao operatingUnitDao = (OperatingUnitDao)context.getBean("loxiaOperatingUnitDao");
 		OperatingUnit currentOu = null;
 		Annotation[][] paramAnnos = ms.getMethod().getParameterAnnotations();
 		for(int i=0; i < paramAnnos.length; i++){
@@ -95,11 +96,5 @@ public class AuthorizationAspect implements ApplicationContextAware,Ordered{
 		}else{
 			throw new BusinessException(PreserveErrorCode.NO_SUFFICICENT_PRIVILEGE);
 		}
-	}
-
-
-	public void setApplicationContext(ApplicationContext ac)
-			throws BeansException {
-		this.ac = ac;
 	}
 }

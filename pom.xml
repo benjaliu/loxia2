@@ -19,7 +19,7 @@
    <properties>
    		<loxia2.version>1.2</loxia2.version>
    		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>3.0.0.RELEASE</spring.version>
+        <spring.version>3.0.1.RELEASE</spring.version>
         <hibernate.version>3.4.0.GA</hibernate.version>
         <struts2.version>2.1.8</struts2.version>
         <jbpm.version>4.3</jbpm.version>
@@ -88,8 +88,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>${pom.groupId}</Bundle-SymbolicName>							<Export-Package>
-							${pom.groupId}.*;version=${pom.version};-noimport:=true
+						<Bundle-SymbolicName>${project.groupId}</Bundle-SymbolicName>							<Export-Package>
+							${project.groupId}.*;version=${project.version};-noimport:=true
 						</Export-Package>
 					</instructions>
 				</configuration>
