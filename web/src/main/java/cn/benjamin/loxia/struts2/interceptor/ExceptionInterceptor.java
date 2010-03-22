@@ -1,6 +1,5 @@
 package cn.benjamin.loxia.struts2.interceptor;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,14 +7,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts2.StrutsStatics;
 import org.apache.struts2.interceptor.TokenInterceptor;
 import org.apache.struts2.util.TokenHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.benjamin.loxia.exception.BusinessException;
-import cn.benjamin.loxia.struts2.annotation.DataResponse;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.ExceptionHolder;
 import com.opensymphony.xwork2.interceptor.ExceptionMappingInterceptor;
@@ -30,37 +32,16 @@ public class ExceptionInterceptor extends ExceptionMappingInterceptor {
 	private static final Logger logger = LoggerFactory.getLogger(ExceptionInterceptor.class);
 	
 	private boolean debug = false;
-	
-	@SuppressWarnings("unchecked")
-	protected Method getActionMethod(Class actionClass, String methodName) throws NoSuchMethodException {
-        Method method;
-        try {
-            method = actionClass.getMethod(methodName, new Class[0]);
-        } catch (NoSuchMethodException e) {
-            // hmm -- OK, try doXxx instead
-            try {
-                String altMethodName = "do" + methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
-                method = actionClass.getMethod(altMethodName, new Class[0]);
-            } catch (NoSuchMethodException e1) {
-                // throw the original one
-                throw e;
-            }
-        }
-        return method;
-    }
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception {
+		final ActionContext context = invocation.getInvocationContext();
+		HttpServletRequest request = (HttpServletRequest)context.get(StrutsStatics.HTTP_REQUEST);
+		boolean isXhr = (request.getHeader("X-Requested-With") != null);
 		String result = super.intercept(invocation);
-		Object action = invocation.getAction();
-		String strMethod = invocation.getProxy().getMethod();
-		Method m = getActionMethod(action.getClass(), strMethod);
-		DataResponse dr = m.getAnnotation(DataResponse.class);
-		if(dr == null)
-			dr = action.getClass().getAnnotation(DataResponse.class);
-		if(dr != null){
-			logger.debug("Data response method will redirect to related result: {}", dr.value());
+		if(isXhr){
+			logger.debug("This is one xhrequest.");
 			if(TokenInterceptor.INVALID_TOKEN_CODE.equals(result)){
 				//duplicate submit error here
 				//construct one exception for jsonresult
@@ -68,19 +49,20 @@ public class ExceptionInterceptor extends ExceptionMappingInterceptor {
 		                invocation.getInvocationContext().getLocale(),
 		                "The form has already been processed or no token was supplied, please try again.", new Object[0]);
 				
-				Map request  = (Map)invocation.getInvocationContext().get("request");
-				Map session = invocation.getInvocationContext().getSession();
+				Map req  = (Map)context.get("request");
+				Map session = context.getSession();
 				Map<String,Object> exceptionMap = new HashMap<String, Object>();
 				exceptionMap.put("invalidToken", true);
 				exceptionMap.put("errorMessages", Arrays.asList(errorMessage));
 				synchronized (session) {
 					exceptionMap.put("token", TokenHelper.setToken());
 				}
-				request.put("exception", exceptionMap);
+				req.put("exception", exceptionMap);
 			}
-			return dr.value();
-		}else
-			return result;		
+			return "json";
+		}else{
+			return result;
+		}		
 	}	
 	
 	private List<String> getErrMessage(ActionInvocation invocation, ExceptionHolder exceptionHolder){

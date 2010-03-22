@@ -27,7 +27,10 @@ public class JsonResult extends StrutsResultSupport{
 	
 	private static final Logger logger = LoggerFactory.getLogger(JsonResult.class);
 	
-	private String charSet;
+	public static final String DEFAULT_CONTENT_TYPE = "application/json";
+	public static final String DEFAULT_ENCODING = "UTF-8";
+	
+	private String charSet = DEFAULT_ENCODING;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -35,22 +38,20 @@ public class JsonResult extends StrutsResultSupport{
 			throws Exception {
 		logger.debug("Handling JSON Result...");
 		Charset charset = null;
-        if (charSet != null) {
-            if (Charset.isSupported(charSet)) {
-                charset = Charset.forName(charSet);
-            }
-            else {
-                logger.warn("charset ["+charSet+"] is not recognized ");
-                charset = null;
-            }
+		if (Charset.isSupported(charSet)) {
+            charset = Charset.forName(charSet);
+        }
+        else {
+            logger.warn("charset ["+charSet+"] is not recognized ");
+            charset = null;
         }
 		HttpServletResponse response = (HttpServletResponse) invocation.getInvocationContext().get(HTTP_RESPONSE);
  
         if (charset != null) {
-            response.setContentType("text/plain; charset="+charSet);
+            response.setContentType(DEFAULT_CONTENT_TYPE + "; charset="+charSet);
         }
         else {
-            response.setContentType("text/plain");
+            response.setContentType(DEFAULT_CONTENT_TYPE);
         }
         response.setHeader("Content-Disposition", "inline");
 
