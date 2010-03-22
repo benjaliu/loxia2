@@ -11,8 +11,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
-import cn.benjamin.loxia.web.LoxiaWebConstants;
-import cn.benjamin.loxia.web.LoxiaWebSettings;
+import cn.benjamin.loxia.support.LoxiaSupportConstants;
+import cn.benjamin.loxia.support.LoxiaSupportSettings;
 
 public abstract class AbstractController {
 	
@@ -21,8 +21,8 @@ public abstract class AbstractController {
 	
 	@InitBinder
     public void initBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(LoxiaWebSettings.getInstance().
-        		get(LoxiaWebConstants.DATE_PATTERN));
+        SimpleDateFormat dateFormat = new SimpleDateFormat(LoxiaSupportSettings.getInstance().
+        		get(LoxiaSupportConstants.DATE_PATTERN));
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
         initBinderInternal(binder);
     }

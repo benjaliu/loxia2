@@ -65,7 +65,7 @@ public abstract class AbstractJSONObject {
      	private String pattern;
      	public InnerJSONTranslator(){
      		pattern = 
-     			LoxiaSupportSettings.getInstance().get(LoxiaSupportConstants.JSON_DATE_PATTERN);
+     			LoxiaSupportSettings.getInstance().get(LoxiaSupportConstants.DATE_PATTERN);
      	}
      	
  		public Object toConcreteObject(String str, Class<? extends Object> clazz) throws JSONException {

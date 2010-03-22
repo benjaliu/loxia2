@@ -20,8 +20,6 @@ import cn.benjamin.loxia.exception.PreserveErrorCode;
 import cn.benjamin.loxia.model.OperatingUnit;
 import cn.benjamin.loxia.springmvc.BaseProfileController;
 import cn.benjamin.loxia.springmvc.annotation.CurrentOu;
-import cn.benjamin.loxia.web.LoxiaWebConstants;
-import cn.benjamin.loxia.web.LoxiaWebSettings;
 import cn.benjamin.loxia.web.annotation.Acl;
 
 @Aspect
@@ -83,12 +81,7 @@ public class AuthorizationAspect implements Ordered{
 		
 		if(controller.getCurrentOperatingUnit() == null){
 			logger.warn("Current ou is null.");
-			String setting = LoxiaWebSettings.getInstance().get(LoxiaWebConstants.DEVELOPMENT);
-			if(setting != null && setting.trim().toLowerCase().equals("true")){
-				logger.info("Development mode is active, so the user's ou will be used as current ou");
-				controller.setCurrentOperatingUnit(controller.getCurrentUser().getOu());
-			}else
-				throw new BusinessException(PreserveErrorCode.NO_SUFFICICENT_PRIVILEGE);
+			throw new BusinessException(PreserveErrorCode.NO_SUFFICICENT_PRIVILEGE);
 		}
 		if(controller.checkPrivilege(acl.value())){
 			logger.debug("User pass the authorization.");

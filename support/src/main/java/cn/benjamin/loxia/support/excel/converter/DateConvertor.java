@@ -7,14 +7,16 @@ import java.util.Date;
 
 import org.apache.poi.ss.usermodel.DateUtil;
 
+import cn.benjamin.loxia.support.LoxiaSupportConstants;
+import cn.benjamin.loxia.support.LoxiaSupportSettings;
 import cn.benjamin.loxia.support.excel.definition.ExcelCell;
 import cn.benjamin.loxia.support.excel.exception.ErrorCode;
 import cn.benjamin.loxia.support.excel.exception.ExcelManipulateException;
 
 public class DateConvertor implements DataConvertor<Date> {
-	private static final String DATE_PATTERN = "yyyy-MM-dd";
 	
-	private String datePattern = DATE_PATTERN;
+	private String datePattern = LoxiaSupportSettings.getInstance().
+		get(LoxiaSupportConstants.DATE_PATTERN);
 	
 	public String getDatePattern() {
 		return datePattern;

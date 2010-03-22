@@ -8,8 +8,8 @@ import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
 
-import cn.benjamin.loxia.web.LoxiaWebConstants;
-import cn.benjamin.loxia.web.LoxiaWebSettings;
+import cn.benjamin.loxia.support.LoxiaSupportConstants;
+import cn.benjamin.loxia.support.LoxiaSupportSettings;
 
 import com.opensymphony.xwork2.conversion.TypeConversionException;
 
@@ -19,7 +19,7 @@ public class DateTypeConvertor extends StrutsTypeConverter {
 	@Override
 	public Object convertFromString(Map context, String[] values, Class toClass) {
 		if(values == null || values.length == 0) return null;
-		String dateFormat = LoxiaWebSettings.getInstance().get(LoxiaWebConstants.DATE_PATTERN);
+		String dateFormat = LoxiaSupportSettings.getInstance().get(LoxiaSupportConstants.DATE_PATTERN);
 		DateFormat df = new SimpleDateFormat(dateFormat);
 		try {
 			return df.parse(values[0]);
@@ -33,7 +33,7 @@ public class DateTypeConvertor extends StrutsTypeConverter {
 	@Override
 	public String convertToString(Map context, Object o) {
 		if(!(o instanceof Date)) throw new TypeConversionException();
-		String dateFormat = LoxiaWebSettings.getInstance().get(LoxiaWebConstants.DATE_PATTERN);
+		String dateFormat = LoxiaSupportSettings.getInstance().get(LoxiaSupportConstants.DATE_PATTERN);
 		DateFormat df = new SimpleDateFormat(dateFormat);
 		return df.format((Date)o);
 	}
