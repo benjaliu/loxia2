@@ -28,7 +28,11 @@ public class OgnlStack{
 	public Object getValue(String expr){
 		for(Object obj: stack){
 			try {
-				if("top".equals(expr)) return obj;
+				if(expr.indexOf("top") >=0){
+					//contains top evaluation
+					context.put("__top", obj);
+					expr = expr.replaceAll("top", "#__top");
+				}				
 				return Ognl.getValue(getExpression(expr), context, obj);
 			} catch (OgnlException e) {
 				
