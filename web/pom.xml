@@ -52,5 +52,26 @@
             <version>2.0</version>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>5.9</version>	
+			<classifier>jdk15</classifier>
+			<scope>test</scope>			
+		</dependency>
+		
+		<dependency>
+	    	<groupId>org.apache.poi</groupId>
+	    	<artifactId>poi</artifactId>
+	    	<version>3.6</version>
+	    	<scope>test</scope>
+    	</dependency>    
+    	<dependency>
+	    	<groupId>org.apache.poi</groupId>
+	    	<artifactId>poi-ooxml</artifactId>
+	    	<version>3.6</version>
+	    	<scope>test</scope>
+    	</dependency>
 	</dependencies>
 </project>

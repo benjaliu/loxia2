@@ -26,6 +26,13 @@ public class ExcelKit {
 	
 	public static final String XLS = "xls";
 	public static final String XLSX = "xlsx";
+	
+	public static final String DATA_TYPE_INTEGER = "integer";
+	public static final String DATA_TYPE_LONG = "long";
+	public static final String DATA_TYPE_BIGDECIMAL = "bigdecimal";
+	public static final String DATA_TYPE_STRING = "string";
+	public static final String DATA_TYPE_DATE = "date";
+	public static final String DATA_TYPE_BOOLEAN = "boolean";
 		
 	private Set<Locale> defaultMissResources = new HashSet<Locale>();
 	private Set<Locale> customMissResources = new HashSet<Locale>();

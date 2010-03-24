@@ -15,11 +15,53 @@ public abstract class AbstractTableModelSupport<T> implements TableModel {
 	protected int itemPerPage;
 	protected int currentPage = 1;
 	protected Sort[] sorts;
+	
+	protected String modelName;
+	protected String[] columnNames;
+	protected String[] columns;	
 
 	public abstract long getCount();
 
-	public abstract TableModel query();
+	/**
+	 * Model name, will be used in data export
+	 * @return
+	 */
+	public String getModelName() {
+		return modelName;
+	}
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
+	}
 	
+	/**
+	 * Column names, will be used in data export
+	 * @return
+	 */
+	public String[] getColumnNames() {
+		return columnNames;
+	}
+
+	public void setColumnNames(String... columnNames) {
+		this.columnNames = columnNames;
+	}
+	
+	/**
+	 * Column value's property string, will be used in data export
+	 */
+	public String[] getColumns() {
+		return columns;
+	}
+	public void setColumns(String... columns) {
+		this.columns = columns;
+	}
+	
+	/**
+	 * Query data for table model
+	 * @param showAll query all data or only current page
+	 * @return
+	 */
+	public abstract TableModel query(boolean showAll);	
+
 	public abstract List<T> getItems();
 
 	public JSONObject getModel() {

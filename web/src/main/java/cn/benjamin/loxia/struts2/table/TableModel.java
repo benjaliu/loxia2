@@ -6,7 +6,13 @@ import cn.benjamin.loxia.dao.Sort;
 import cn.benjamin.loxia.support.json.JSONObject;
 
 public interface TableModel {
+	String getModelName();
+	void setModelName(String modelName);
+	String[] getColumnNames();
+	void setColumnNames(String... columnNames);
 	TableModel query();
+	String[] getColumns();
+	void setColumns(String... columns);
 	List<? extends Object> getItems();
 	boolean isPagable();
 	void setPagable(boolean pagable);

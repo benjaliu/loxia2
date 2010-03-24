@@ -26,6 +26,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.benjamin.loxia.support.LoxiaSupportConstants;
+import cn.benjamin.loxia.support.LoxiaSupportSettings;
 import cn.benjamin.loxia.support.excel.ExcelUtil;
 import cn.benjamin.loxia.support.excel.ExcelWriter;
 import cn.benjamin.loxia.support.excel.WriteStatus;
@@ -473,8 +475,17 @@ public class DefaultExcelWriter implements ExcelWriter, Serializable {
 		Row row = sheet.getRow(rowIndex);
 		if(row == null) row = sheet.createRow(rowIndex);
 		Cell cell = row.getCell(cellIndex);
-		if(cell == null) cell = row.createCell(cellIndex);		
-		cell.setCellStyle(style);
+		if(cell == null) cell = row.createCell(cellIndex);			
+		if(cell.getCellStyle() == null || (cell.getCellType() != Cell.CELL_TYPE_NUMERIC)
+				|| (!DateUtil.isCellDateFormatted(cell))
+				|| DateUtil.isADateFormat(style.getDataFormat(), style.getDataFormatString()))
+			cell.setCellStyle(style);
+		else{			
+			CellStyle cstyle = sheet.getWorkbook().createCellStyle();
+			cstyle.cloneStyleFrom(style);
+			cstyle.setDataFormat(cell.getCellStyle().getDataFormat());
+			cell.setCellStyle(cstyle);
+		}
 	}
 	
 	private void setCellValue(Sheet sheet, int rowIndex, int cellIndex, String dataName, OgnlStack stack){
@@ -502,6 +513,23 @@ public class DefaultExcelWriter implements ExcelWriter, Serializable {
 			cell.setCellValue((String)null);
 			return;
 		}
+		if(value instanceof Date) {
+			//if current cell do not formatted as date, set is as one date			
+			if(cell.getCellType() != Cell.CELL_TYPE_NUMERIC)
+				cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+			if(!DateUtil.isCellDateFormatted(cell)){
+				CellStyle style = cell.getSheet().getWorkbook().createCellStyle();
+				if(cell.getCellStyle() == null){
+					style.cloneStyleFrom(cell.getCellStyle());
+				}
+				style.setDataFormat(
+						cell.getSheet().getWorkbook().getCreationHelper().createDataFormat()
+							.getFormat(LoxiaSupportSettings.getInstance().
+									get(LoxiaSupportConstants.DATE_PATTERN))
+						);
+				cell.setCellStyle(style);
+			}					
+		}
 		if(cell.getCellType() == Cell.CELL_TYPE_BLANK ||
 				cell.getCellType() == Cell.CELL_TYPE_ERROR ||
 				cell.getCellType() == Cell.CELL_TYPE_FORMULA){
@@ -523,9 +551,8 @@ public class DefaultExcelWriter implements ExcelWriter, Serializable {
 				cell.setCellValue((Boolean)value);
 			}
 		}else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
-			if(DateUtil.isCellDateFormatted(cell)) {
-				if(value instanceof Date)
-					cell.setCellValue((Date)value);
+			if(value instanceof Date){
+				cell.setCellValue((Date)value);
 			}else{
 				if(value instanceof Integer)
 					cell.setCellValue(new BigDecimal((Integer)value).doubleValue());
@@ -535,8 +562,6 @@ public class DefaultExcelWriter implements ExcelWriter, Serializable {
 					cell.setCellValue((Double)value);
 				else if(value instanceof BigDecimal)
 					cell.setCellValue(((BigDecimal)value).doubleValue());
-				else if(value instanceof Date)
-					cell.setCellValue(new BigDecimal(((Date)value).getTime()).doubleValue());
 				else{
 					try {
 						cell.setCellValue(Double.parseDouble(value.toString()));
