@@ -27,6 +27,7 @@ public class LoxiaUserDetailsService implements UserDetailsService {
 
 	private UserDao userDao;	
 
+	@Transactional(readOnly = true)
 	public UserDetails loadUserByUsername(String userName)
 			throws UsernameNotFoundException, DataAccessException {
 		User user = userDao.findByLoginName(userName);
