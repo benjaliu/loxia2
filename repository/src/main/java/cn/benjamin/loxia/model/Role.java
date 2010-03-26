@@ -56,6 +56,11 @@ public class Role extends BaseModel {
 	@Index(name="IDX_ROL_OUTYPE")
 	private OperatingUnitType ouType;
 	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="OU_ID")
+	@Index(name="IDX_ROL_OU")
+	private OperatingUnit ou;
+		
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(
 	        name="T_SYS_ROLEPRIV",
@@ -99,6 +104,12 @@ public class Role extends BaseModel {
 	}
 	public OperatingUnitType getOuType() {
 		return ouType;
+	}
+	public OperatingUnit getOu() {
+		return ou;
+	}
+	public void setOu(OperatingUnit ou) {
+		this.ou = ou;
 	}
 	public void setOuType(OperatingUnitType ouType) {
 		this.ouType = ouType;
