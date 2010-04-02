@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<title>Template</title>
+<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.8.custom.css"/>
+<link rel="stylesheet" type="text/css" href="css/smoothness/loxia-ui-1.2.custom.css"/>
+<style>
+	body { font:10pt Verdana, Arail,"Trebuchet MS", sans-serif; margin: 50px;}	
+	/* div.ui-datepicker{ font-size: 11px;} */
+</style>
+<script type="text/javascript" src="scripts/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="scripts/jquery-ui-1.8.custom.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.livequery.js"></script>
+<script type="text/javascript" src="scripts/jquery.bgiframe.min.js"></script>
+
+<script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiacore-1.2.js"></script>
+<script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiainput-1.2.js"></script>
+<script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiaselect-1.2.js"></script>
+
+<script type="text/javascript">
+var $j = jQuery.noConflict();
+
+$j(document).ready(function(){
+	
+	loxia.init({debug: true});		
+	
+});
+
+function checkA(value, obj){
+	if(value.length > 10)
+		return "Too Long";
+	return loxia.SUCCESS;
+}
+function toggleState(){
+	var $input = $j("select").data("loxiaselect");
+	$input.option("readonly", !$input.option("readonly"));
+	var obj = $j("select").get(0);
+	loxia.log(obj);
+	loxia.log(loxia.isWidget(obj));
+	loxia.log(loxia.val(obj));
+}
+</script>
+</head>
+<body>
+<form id="idForm" name="sampleForm">
+	<input type="button" loxiaType="button" value="heh" onclick="loxia.lockPage(); loxia.log(loxia.isLocked());"/>
+	<input type="button" loxiaType="button" value="show" onclick="loxia.tip(this,'This is a tip');"/><p></p>
+	<input type="button" loxiaType="button" value="hide" onclick="loxia.tip();"/>
+	<input type="button" loxiaType="button" value="toggle" onclick="toggleState();"/>
+	<p>
+Auto Trim Textbox(with auto select text when focus, maxsize = 10, optional field)<input name="input" loxiaType="input" value="abc" trim="true" checkmaster="checkA" selectonfocus="true"/>
+</p>
+<p>
+Textbox(maxsize = 10, mandatory field)<input name="input" loxiaType="input" value="abc" required="true" checkmaster="checkA"/><input name="input" loxiaType="input" value="abc" disabled="disabled" required="true" checkmaster="checkA"/><input name="input" loxiaType="input" value="abc" readonly="readonly" required="true" checkmaster="checkA"/>
+</p>
+<p>
+Number(decimal =2, max=20, mandatory field)<input name="input" loxiaType="number" value="" decimal="2" max="20" required="true" checkmaster="checkA"/>
+</p>
+<p>
+Textarea(optional field)<textarea name="input" loxiaType="input"></textarea><textarea name="input" disabled="disabled" loxiaType="input"></textarea>
+</p>
+<p>
+Datebox(mandatory field)<input name="date" loxiaType="date" required="true" min="2009-11-05" max="today"/>
+<input name="date" loxiaType="date" disabled="disabled" min="2009-11-05" max="today"/>
+<input name="date" loxiaType="date" readonly="readonly" min="2009-11-05" max="today"/>
+</p>
+<p>
+Select(mandatory field)<select name="select" loxiaType = "select" required="true"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+<select name="select" loxiaType = "select" required="true" disabled="disabled"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+<select name="select" loxiaType = "select" required="true" readonly="readonly"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+</p>
+</form>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>4</p>
+<p>5</p>
+<p>6</p>
+<p>7</p>
+<p>8</p>
+<p>9</p>
+<p>10</p>
+<p>11</p>
+<p>12</p>
+<p>13</p>
+<p>14</p>
+<p>15</p>
+<p>16</p>
+<p>17</p>
+<p>18</p>
+<p>19</p>
+<p>20</p>
+<input type="button" loxiaType="button" value="heh" onclick="loxia.lockPage();"/>
+</body>
+</html>
