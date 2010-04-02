@@ -1,0 +1,24 @@
+.loxiaOnion .inner{
+	background: url(images/ui-ajax-loader_999999_31x31.gif) #999999 6px 6px no-repeat;
+	border: 1px solid; color: #666666;
+	position: absolute;	width: 100px; height: 32px;
+	margin: auto;
+	padding: 14px 0px 0px 40px;
+}
+.loxiaTip {
+	position: absolute;
+}
+
+.loxiaTip .arrow{position: absolute; z-index: 2;}
+.loxiaTip-l .arrow{right:0px; top:5px; background: url(images/ui-tip-arrow-l.gif) transparent no-repeat; width: 11px; height: 17px;}
+.loxiaTip-r .arrow{left:0px; top:5px; background: url(images/ui-tip-arrow-r.gif) transparent no-repeat; width: 11px; height: 17px;}
+.loxiaTip-t .arrow{left:5px; bottom:0px; background: url(images/ui-tip-arrow-t.gif) transparent no-repeat; width: 17px; height: 11px;}
+.loxiaTip-b .arrow{left:5px; top:0px; background: url(images/ui-tip-arrow-b.gif) transparent no-repeat; width: 17px; height: 11px;}
+
+.loxiaTip .inner{border: 1px solid #cbcbcb; color: #666666;	background-color: #fff;}
+.loxiaTip-l {padding-right: 10px;}
+.loxiaTip-r {padding-left: 10px;}
+.loxiaTip-t {padding-bottom: 10px;}
+.loxiaTip-b {padding-top: 10px;}
+
+div.ui-datepicker{ font-size: 11px;}
