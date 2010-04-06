@@ -7,7 +7,8 @@
 <link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.8.custom.css"/>
 <link rel="stylesheet" type="text/css" href="css/smoothness/loxia-ui-1.2.custom.css"/>
 <style>
-	body { font:10pt Verdana, Arail,"Trebuchet MS", sans-serif; margin: 50px;}	
+	body, .ui-widget { font:10pt Verdana, Arail,"Trebuchet MS", sans-serif;}	
+	body { margin: 50px;}
 	/* div.ui-datepicker{ font-size: 11px;} */
 </style>
 <script type="text/javascript" src="scripts/jquery-1.4.2.min.js"></script>
@@ -22,10 +23,34 @@
 <script type="text/javascript">
 var $j = jQuery.noConflict();
 
+var s1 = ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"];
+var s2 = [{value:"1",label:"c++"},{value:"2",label:"java"},{value:"3",label:"php"},
+                  {value:"4",label:"coldfusion"},{value:"5",label:"javascript"},{value:"6",label:"asp"},
+                  {value:"7",label:"ruby"}];
 $j(document).ready(function(){
 	
 	loxia.init({debug: true});		
-	
+
+	var $tglBtn = $j("#toggle").data("button");
+
+	var $input = $j("select").data("loxiaselect");
+	$tglBtn.option("icons", {primary: $input.option("readonly") ? 'ui-icon-locked' : 'ui-icon-unlocked'});
+
+	$j("#ac input:first").autocomplete({
+		source : s2,
+		minLength : 0,
+		focus : function(event, ui) {
+			$j(this).val(ui.item.label);
+			$j(this).next().val(ui.item.value);
+			return false;
+		},
+		select : function(event, ui) {
+			var input = $j(this).data("loxiainput");
+			input.val(ui.item.label);
+			$j(this).next().val(ui.item.value);
+			return false;
+		}
+		});
 });
 
 function checkA(value, obj){
@@ -33,22 +58,39 @@ function checkA(value, obj){
 		return "Too Long";
 	return loxia.SUCCESS;
 }
-function toggleState(){
+function checkB(value, obj){
+	var result = false;
+	for(var i=0; !result && i< s2.length; i++){
+		if(s2[i].label === value){
+			$j("#ac input:last").val(s2[i].value);
+			result = true;
+		}
+	}
+	if(result) return loxia.SUCCESS;
+	else return "No matching record.";
+}
+function toggleState(obj){
 	var $input = $j("select").data("loxiaselect");
 	$input.option("readonly", !$input.option("readonly"));
-	var obj = $j("select").get(0);
-	loxia.log(obj);
-	loxia.log(loxia.isWidget(obj));
-	loxia.log(loxia.val(obj));
+	$j(obj).data("button").option("icons", 
+			{primary: $input.option("readonly") ? 'ui-icon-locked' : 'ui-icon-unlocked'});
 }
 </script>
 </head>
 <body>
 <form id="idForm" name="sampleForm">
 	<input type="button" loxiaType="button" value="heh" onclick="loxia.lockPage(); loxia.log(loxia.isLocked());"/>
-	<input type="button" loxiaType="button" value="show" onclick="loxia.tip(this,'This is a tip');"/><p></p>
-	<input type="button" loxiaType="button" value="hide" onclick="loxia.tip();"/>
-	<input type="button" loxiaType="button" value="toggle" onclick="toggleState();"/>
+	<p></p>
+	<p>
+	<div style="padding: 12px;">
+	<span class="ui-widget-header ui-corner-all" style="padding: 10px 4px;">
+	<button type="button" loxiaType="button" icon1="ui-icon-tag" value="show" onclick="loxia.tip(this,'This is a tip');">show</button>
+	<button loxiaType="button" icon1="ui-icon-bookmark" showText="false" onclick="loxia.tip();">hide</button>
+	<input id="toggle" type="checkbox" loxiaType="button" value="toggle" onclick="toggleState(this);"/>
+	<label for="toggle">Toggle</label>
+	<a href="#" loxiaType="button" onclick="window.location.href=loxia.encodeUrl('abc');return false;">Hello</a>
+	</span></div>
+	</p>
 	<p>
 Auto Trim Textbox(with auto select text when focus, maxsize = 10, optional field)<input name="input" loxiaType="input" value="abc" trim="true" checkmaster="checkA" selectonfocus="true"/>
 </p>
@@ -70,6 +112,9 @@ Datebox(mandatory field)<input name="date" loxiaType="date" required="true" min=
 Select(mandatory field)<select name="select" loxiaType = "select" required="true"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
 <select name="select" loxiaType = "select" required="true" disabled="disabled"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
 <select name="select" loxiaType = "select" required="true" readonly="readonly"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+</p>
+<p>
+Auto complete(mandatory field)<span id="ac"><input loxiaType="input" required="true" checkmaster="checkB"/><input name="input" type="hidden"/></span>
 </p>
 </form>
 <p>1</p>

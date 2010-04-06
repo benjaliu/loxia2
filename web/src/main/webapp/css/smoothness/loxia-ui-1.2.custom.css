@@ -21,4 +21,4 @@
 .loxiaTip-t {padding-bottom: 10px;}
 .loxiaTip-b {padding-top: 10px;}
 
-div.ui-datepicker{ font-size: 11px;}
+div.ui-datepicker, .ui-button{ font-size: 0.8em;}

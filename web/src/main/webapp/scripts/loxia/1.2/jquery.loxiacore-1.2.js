@@ -38,7 +38,20 @@
 					this.hitch($(context), "loxia" + $(context).attr("loxiaType"))();
 			},			
 			_initButton : function(context){
+				$(context).removeAttr("loxiaType");
+				var picon = $(context).attr("icon1"),
+					sicon = $(context).attr("icon2");				
 				$(context).button();
+				if(picon || sicon){
+					var icons = {};
+					if(picon) icons['primary'] = picon;
+					if(sicon) icons['secondary'] = sicon;
+					$(context).button("option","icons", icons);
+					if($(context).attr("showText")){
+						$(context).button("option","text", !($(context).attr("showText") === "false"));
+					}
+				}
+				
 			},
 			/*decide whether object is one string object or not */
 			isString: function(obj){
@@ -90,14 +103,17 @@
 					url = url.replace(/loxiaflag=\d{13}/, "loxiaflag="+iTime.toString());
 					return url ;
 				}
-
 				url+=(/\?/.test(url)) ? "&" : "?";
 				return (url+"loxiaflag="+iTime.toString());
 			},
 			/* encode url with timestamp, timestamp is added in default.*/
 			encodeUrl: function(url, withTimeStamp){					
 			    var index = url.indexOf("?");
-			    if (index === -1) return url;
+			    if (index === -1) 
+			    	if(withTimeStamp === undefined || withTimeStamp)
+			    		return this.getTimeUrl(url);
+			    	else
+			    		return url;
 
 			    var result = url.substring(0, index + 1),
 			    	params = url.substring(index + 1).split("&");
@@ -595,18 +611,24 @@
 			this.onionPage.hide();
 		},
 		
-		show : function(){
-			if(this.isShown) return;		
-			this.onionPage.find(".ui-widget-overlay").css({
+		_layout : function(){
+			$(".loxiaOnion .ui-widget-overlay").css({
 				left : $("html").scrollLeft(),
 				top : $("html").scrollTop()
 			});
+			loxia.center($(".loxiaOnion .inner").get(0));
+		},
+		
+		show : function(){
+			if(this.isShown) return;	
 			this.onionPage.show();
-			loxia.center(this.onionPage.find(".inner")[0]);
+			this._layout();
+			$(window).bind("scroll", this._layout);
 			this.isShown = true;
 		},
 		
 		hide : function(){
+			$(window).unbind("scroll", this._layout);
 			this.onionPage.hide();
 			this.isShown = false;
 		},
