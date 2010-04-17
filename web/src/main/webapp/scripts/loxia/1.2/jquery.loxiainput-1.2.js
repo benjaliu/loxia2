@@ -63,7 +63,7 @@
 		},
 	
 		_focus : function(){
-			this.element.css({"text-align":"left","padding-right":"0px"});
+			this.element.css({"text-align":"left"});
 		},
 		
 		_blur : function(){
