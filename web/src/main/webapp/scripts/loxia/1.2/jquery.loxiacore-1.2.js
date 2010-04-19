@@ -565,7 +565,10 @@
 		var decimal = obj.option("decimal");
 		var regex = new RegExp("^\\d+$");
 		if(decimal){
-			regex = new RegExp("^\\d+\\.?\\d{0," + decimal + "}$");
+			if(decimal > 0)
+				regex = new RegExp("^\\d+\\.?\\d{0," + decimal + "}$");
+			else
+				regex = new RegExp("^\\d+\\.?\\d*$");
 		}else{
 			decimal = 0;				
 		}
@@ -582,7 +585,10 @@
 		if((min && v < min) || (max && v > max))
 			return loxia.getLocaleMsg("DATA_EXCEED_RANGE");
 		
-		return loxia.SUCCESS + "^" + v.toFixed(decimal);
+		if(decimal)
+			return loxia.SUCCESS + "^" + v.toFixed(decimal);
+		else
+			return loxia.SUCCESS;
 	};
 	/*need jquery ui datepicker*/
 	checkDate = function(value,obj){		
