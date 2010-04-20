@@ -40,7 +40,7 @@ public class LoxiaUserDetailsService implements UserDetailsService {
 			PropertyUtil.copyProperties(user.getOu().getType(), ouType);
 			PropertyUtil.copyProperties(user.getOu(), ou, new PropListCopyable("id","code","name","isAvailable"));
 			PropertyUtil.copyProperties(user, u, new PropListCopyable("id","loginName","userName","password",
-					"isAccNonExpired","isAccNonLocked","isPwdNonExpired","isAvailable"));
+					"isAccNonExpired","isAccNonLocked","isPwdNonExpired","isAvailable","isSystem"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Copy bean values error.");
