@@ -10,7 +10,7 @@
       <property name="hibernate.hbm2ddl.auto">create-drop</property>
       <property name="hibernate.jdbc.batch_size">100</property>
       
-      <mapping class="cn.benjamin.loxia.model.InnerUser"/>
+      <mapping class="loxia.model.InnerUser"/>
       <mapping resource="META-INF/orm.xml"/>
 </session-factory>
 </hibernate-configuration>

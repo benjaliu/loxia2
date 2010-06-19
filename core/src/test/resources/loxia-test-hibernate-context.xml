@@ -14,5 +14,5 @@
 		<property name="password" value="" />
 	</bean>	
 	
-	<loxia:dao id="userDao" interface="cn.benjamin.loxia.dao.InnerUserDao"/>
+	<loxia:dao id="userDao" interface="loxia.dao.InnerUserDao"/>
 </beans>

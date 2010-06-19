@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 		
-	<bean id="InnerUser.findByLoginName" class="cn.benjamin.loxia.dao.support.DynamicQueryHolder">
+	<bean id="InnerUser.findByLoginName" class="loxia.dao.support.DynamicQueryHolder">
 		<constructor-arg>
 			<value>
 				<![CDATA[select u from InnerUser u
@@ -17,7 +17,7 @@
 			</value>
 		</constructor-arg>
 	</bean>
-	<bean id="InnerUser.findByLoginNameSql" class="cn.benjamin.loxia.dao.support.DynamicQueryHolder">
+	<bean id="InnerUser.findByLoginNameSql" class="loxia.dao.support.DynamicQueryHolder">
 		<constructor-arg>
 			<value>
 				<![CDATA[select * from users u
