@@ -6,10 +6,10 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://loxia.benjamin.cn/schema/core http://loxia.benjamin.cn/schema/core/loxia-spring-ext.xsd">
 		
-	<loxia:dao id="loxiaUserDao" interface="cn.benjamin.loxia.dao.UserDao"/>
-	<loxia:dao id="loxiaOperatingUnitDao" interface="cn.benjamin.loxia.dao.OperatingUnitDao"/>
+	<loxia:dao id="loxiaUserDao" interface="loxia.dao.UserDao"/>
+	<loxia:dao id="loxiaOperatingUnitDao" interface="loxia.dao.OperatingUnitDao"/>
 	
-	<bean id="userDetailsService" class="cn.benjamin.loxia.security.LoxiaUserDetailsService">
+	<bean id="userDetailsService" class="loxia.security.LoxiaUserDetailsService">
 		<property name="userDao" ref="loxiaUserDao"/>
 	</bean>
 </beans>
