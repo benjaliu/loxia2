@@ -10,7 +10,7 @@
 
 	<aop:aspectj-autoproxy/>
 	<context:annotation-config/>
-	<bean class="cn.benjamin.loxia.aspect.QueryAspect"/>
+	<bean class="loxia.aspect.QueryAspect"/>
 	
 	<tx:annotation-driven order="10"/>
 	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
@@ -26,9 +26,9 @@
 		</property>
 	</bean>	
 	
-	<bean id="daoService" class="cn.benjamin.loxia.dao.support.HibernateDaoServiceImpl"/>
+	<bean id="daoService" class="loxia.dao.support.HibernateDaoServiceImpl"/>
 	
-	<bean class="cn.benjamin.loxia.dao.support.SpringBeanDynamicNamedQueryProvider"/>
+	<bean class="loxia.dao.support.SpringBeanDynamicNamedQueryProvider"/>
 	
-	<bean class="cn.benjamin.loxia.spring.GenericDaoBeanFactoryPostProcessor"/>	
+	<bean class="loxia.spring.GenericDaoBeanFactoryPostProcessor"/>	
 </beans>
