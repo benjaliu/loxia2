@@ -87,13 +87,7 @@
 		<dependency>
 	      	<groupId>velocity</groupId>
 	      	<artifactId>velocity-dep</artifactId>
-	    </dependency>
-	    
-	    <dependency>
-	    	<groupId>ognl</groupId>
-	    	<artifactId>ognl</artifactId>
-	    	<version>2.7.3</version>
-	    </dependency>
+	    </dependency>	   	    
 		
 		<dependency>
 			<groupId>org.testng</groupId>
