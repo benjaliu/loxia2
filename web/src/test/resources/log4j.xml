@@ -17,7 +17,7 @@
         </layout>
     </appender>
 
-    <logger name="cn.benjamin.loxia"><level value="DEBUG"/></logger>
+    <logger name="loxia"><level value="DEBUG"/></logger>
     <logger name="org.springframework"><level value="INFO"/></logger>
     <logger name="org.hibernate"><level value="INFO"/></logger>
     
