@@ -21,6 +21,7 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -51,7 +52,11 @@ public abstract class AbstractHibernateDaoServiceImpl implements DaoService, Ini
 	protected PageQueryProvider pageQueryProvider;	
 	
 	public void afterPropertiesSet() throws Exception {
-		pageQueryProvider = ac.getBean(PageQueryProvider.class);
+		try{
+			pageQueryProvider = ac.getBean(PageQueryProvider.class);
+		}catch (NoSuchBeanDefinitionException e) {
+			//do nothing
+		}
 		if(pageQueryProvider == null)
 			logger.warn("PageQueryProvider is not set so sql page query will not effected.");
 	}
@@ -193,7 +198,16 @@ public abstract class AbstractHibernateDaoServiceImpl implements DaoService, Ini
 		if(sorts != null && sorts.length > 0){
 			queryString += " order by " + StringUtil.join(sorts);
 		}
-		logger.debug("NativeFind[{}]", queryString);
+		if(logger.isDebugEnabled()){
+			logger.debug("NativeFind[{}]", queryString);
+			logger.debug("parameters: {}", params == null? "null" : "[" + params.length + "]");			
+			if(params != null){
+				int index = 1;
+				for(Object p: params){
+					logger.debug("{}): {}", index++, p);
+				}
+			}
+		}
 
 		return jdbcTemplate.query(pageQueryProvider == null? queryString : 
 			pageQueryProvider.getPagableQuery(queryString, start, pageSize), 
