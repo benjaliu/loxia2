@@ -3,9 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	
 	<parent>
-		<groupId>cn.benjamin.loxia2</groupId>
+		<groupId>loxia2</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.2</version>
+		<version>2.0</version>
 	</parent>
 	
 	<modelVersion>4.0.0</modelVersion>
@@ -14,14 +14,14 @@
 	<version>${loxia2.version}</version>
 	<name>Loxia2 Platform Web Module</name>
 	
-	<dependencies>
+	<dependencies>		
 		<dependency>
-			<groupId>cn.benjamin.loxia2</groupId>
+			<groupId>loxia2</groupId>
 			<artifactId>loxia2-security</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>cn.benjamin.loxia2</groupId>
+			<groupId>loxia2</groupId>
 			<artifactId>loxia2-support</artifactId>
 			<version>${project.version}</version>
 		</dependency>
