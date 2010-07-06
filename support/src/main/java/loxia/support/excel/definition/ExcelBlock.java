@@ -162,8 +162,7 @@ public class ExcelBlock implements Comparable<ExcelBlock>{
 	public ExcelBlock cloneBlock(){
 		ExcelBlock block = new ExcelBlock();
 		block.setBreakCondition(breakCondition == null ? null : breakCondition.cloneCondition());
-		block.setChild(isChildBlock);
-		block.setChildBlock(childBlock == null? null : childBlock.cloneBlock());
+		block.setChild(isChildBlock);		
 		block.setDataName(dataName);
 		block.setEndCol(endCol);
 		block.setEndRow(endRow);
@@ -177,6 +176,8 @@ public class ExcelBlock implements Comparable<ExcelBlock>{
 		
 		for(ExcelCell cell: getCells())
 			block.addCell(cell.cloneCell());
+		
+		block.setChildBlock(childBlock == null? null : childBlock.cloneBlock());
 		
 		return block;
 	}
