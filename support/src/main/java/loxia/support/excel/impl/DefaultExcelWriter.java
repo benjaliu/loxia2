@@ -324,7 +324,7 @@ public class DefaultExcelWriter implements ExcelWriter, Serializable {
 			
 			//delete style sheet
 			sheet.shiftRows(blockDefinition.getEndRow() + 1, sheet.getLastRowNum(), 
-					blockDefinition.getStartRow() - blockDefinition.getEndRow() - 1, true, false);
+					blockDefinition.getStartRow() - blockDefinition.getEndRow() - 1, true, true);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//do nothing
