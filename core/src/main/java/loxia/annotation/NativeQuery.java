@@ -11,6 +11,6 @@ public @interface NativeQuery {
 	String value() default "";
 	boolean pagable() default false;
 	boolean withGroupby() default false;
-	String[] alias();
-	Class<?>[] clazzes();
+	String[] alias() default {};
+	Class<?>[] clazzes() default {};
 }
