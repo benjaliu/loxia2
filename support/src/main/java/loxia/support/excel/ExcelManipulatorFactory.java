@@ -84,12 +84,12 @@ public class ExcelManipulatorFactory {
 				throw new RuntimeException("Initiate ExcelWriter[" + writerClazzName + "] failure");
 			}
 		}
+		ExcelManipulatorDefinition definition = new ExcelManipulatorDefinition();
 		for(String sheet: sheets){
-			ExcelSheet sheetDefinition = getExcelSheet(sheet);
-			ExcelManipulatorDefinition definition = new ExcelManipulatorDefinition();
-			definition.getExcelSheets().add(sheetDefinition);
-			excelWriter.setDefinition(definition);
+			ExcelSheet sheetDefinition = getExcelSheet(sheet);			
+			definition.getExcelSheets().add(sheetDefinition);			
 		}
+		excelWriter.setDefinition(definition);
 		return excelWriter;
 	}
 	
@@ -115,12 +115,12 @@ public class ExcelManipulatorFactory {
 				throw new RuntimeException("Initiate ExcelReader[" + readerClazzName + "] failure");
 			}
 		}
+		ExcelManipulatorDefinition definition = new ExcelManipulatorDefinition();
 		for(String sheet: sheets){
-			ExcelSheet sheetDefinition = getExcelSheet(sheet);
-			ExcelManipulatorDefinition definition = new ExcelManipulatorDefinition();
-			definition.getExcelSheets().add(sheetDefinition);
-			excelReader.setDefinition(definition);
+			ExcelSheet sheetDefinition = getExcelSheet(sheet);			
+			definition.getExcelSheets().add(sheetDefinition);			
 		}
+		excelReader.setDefinition(definition);
 		return excelReader;
 	}
 	
