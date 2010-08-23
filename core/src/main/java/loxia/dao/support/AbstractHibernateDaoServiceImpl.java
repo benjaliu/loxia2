@@ -113,7 +113,7 @@ public abstract class AbstractHibernateDaoServiceImpl implements DaoService, Ini
         if (delim2 == -1) delim2 = sql.length();
         String countSQL = "";
         if(withGroupby){
-        	countSQL = "select count(1) as num from (" + sql.substring(0,delim2) + ")";
+        	countSQL = "select count(1) as num from (" + sql.substring(0,delim2) + ") tmp_tbl";
         }else{
         	countSQL =  "select count(1) as num " + sql.substring(delim1,delim2);
         }
@@ -208,11 +208,13 @@ public abstract class AbstractHibernateDaoServiceImpl implements DaoService, Ini
 				}
 			}
 		}
-
-		return jdbcTemplate.query(pageQueryProvider == null? queryString : 
-			pageQueryProvider.getPagableQuery(queryString, start, pageSize), 
-			params,
-			rowMapper);		
+		if(start < 0 || pageSize < 0)
+			return jdbcTemplate.query(queryString, params, rowMapper);
+		else
+			return jdbcTemplate.query(pageQueryProvider == null? queryString : 
+				pageQueryProvider.getPagableQuery(queryString, start, pageSize), 
+				params,
+				rowMapper);		
 	}
 	
 	protected <T> Pagination<T> findByNativeQueryNative(String queryString, Object[] params,
