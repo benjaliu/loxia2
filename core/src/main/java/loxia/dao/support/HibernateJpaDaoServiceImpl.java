@@ -1,6 +1,7 @@
 package loxia.dao.support;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +128,10 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 			int i=1;
 			for(String key: params.keySet()){
 				logger.debug("{}) [{}] : {}", new Object[]{i++, key, params.get(key)});
-				query.setParameter(key, params.get(key));
+				if(params.get(key) instanceof Collection<?>){
+					((HibernateQuery)query).getHibernateQuery().setParameterList(key,(Collection<?>)params.get(key));
+				}else
+					query.setParameter(key, params.get(key));
 			}
 		}
 		if(start > 0)
