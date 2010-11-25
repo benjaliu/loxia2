@@ -7,6 +7,8 @@ import loxia.dao.GenericEntityDao;
 import loxia.dao.ModelClassSupport;
 import loxia.dao.support.GenericEntityDaoImpl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValue;
@@ -20,17 +22,20 @@ import org.springframework.util.ClassUtils;
 public class GenericDaoBeanFactoryPostProcessor implements
 		BeanFactoryPostProcessor {
 	
+	private static final Logger logger = LoggerFactory.getLogger(GenericDaoBeanFactoryPostProcessor.class);
+	
 	public void postProcessBeanFactory(
 			ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		for (String beanDefinitionName : beanFactory.getBeanDefinitionNames()) {			
 			BeanDefinition beanDefinition = beanFactory
 					.getBeanDefinition(beanDefinitionName);	
 			if (beanDefinition instanceof LoxiaBeanDefinition) {
+				logger.debug("Bean '{}' is one loxia dao bean.", beanDefinitionName);
 				LoxiaBeanDefinition loxiaBeanDefinition = (LoxiaBeanDefinition) beanDefinition;
 				try {
 					Class<?> clazz = loxiaBeanDefinition.resolveBeanClass(ClassUtils.getDefaultClassLoader());
 					
-					if (clazz == ProxyFactoryBean.class) {
+					if (ProxyFactoryBean.class.equals(clazz)) {
 						Class<?>[] interfaces = new Class<?>[0];
 						PropertyValue propertyValue = loxiaBeanDefinition
 								.getPropertyValues().getPropertyValue("interfaces");
@@ -40,6 +45,7 @@ public class GenericDaoBeanFactoryPostProcessor implements
 
 						Class<?> targetType = null;
 						for (Class<?> targetInterface : interfaces) {
+							logger.debug("Add Interface '{}' to '{}'.",targetInterface,beanDefinitionName);
 							if (targetInterface == null) {
 								throw new NullPointerException(
 										"interfaces should not be null");
@@ -54,7 +60,7 @@ public class GenericDaoBeanFactoryPostProcessor implements
 										&& targetBeanDefinition.getParentName()
 												.equals(GenericDaoBeanDefinitionParser.BASE_BEAN_NAME)) {
 									targetBeanDefinition
-											.setBeanClass(GenericEntityDaoImpl.class);												
+											.setBeanClass(GenericEntityDaoImpl.class);	
 									break;
 								}
 							}
