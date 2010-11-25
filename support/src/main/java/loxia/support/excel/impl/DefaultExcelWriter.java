@@ -323,8 +323,12 @@ public class DefaultExcelWriter implements ExcelWriter, Serializable {
 			stack.removeContext("lineNum");
 			
 			//delete style sheet
-			sheet.shiftRows(blockDefinition.getEndRow() + 1, sheet.getLastRowNum(), 
-					blockDefinition.getStartRow() - blockDefinition.getEndRow() - 1, true, true);
+			//if no data, just remove the dummy data
+			if(listValue.size() == 0){
+				sheet.removeRow(sheet.getRow(blockDefinition.getEndRow()));
+			}else
+				sheet.shiftRows(blockDefinition.getEndRow() + 1, sheet.getLastRowNum(), 
+						blockDefinition.getStartRow() - blockDefinition.getEndRow() - 1, true, true);
 		} catch (Exception e) {
 			e.printStackTrace();
 			//do nothing
