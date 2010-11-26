@@ -69,6 +69,7 @@ import freemarker.template.Template;
 
 public class TagAnnotationProcessor implements AnnotationProcessor {
 	public static final String LOXIA_TAG = "loxia.struts2.taglib.annotation.LoxiaTag";
+	public static final String LOXIA_SKIP_TAG = "loxia.struts2.taglib.annotation.LoxiaSkipTag";
 	public static final String LOXIA_TAG_ATTRIBUTE = "loxia.struts2.taglib.annotation.LoxiaTagAttribute";
     public static final String TAG_ATTRIBUTE = "org.apache.struts2.views.annotations.StrutsTagAttribute";
 	public static final String LOXIA_TAG_SKIP_HIERARCHY = "loxia.struts2.taglib.annotation.LoxiaTagSkipInheritance";

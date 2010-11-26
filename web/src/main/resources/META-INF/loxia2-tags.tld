@@ -192,6 +192,12 @@
       <description><![CDATA[Set the html onselect attribute on rendered html element]]></description>
     </attribute>
     <attribute>
+      <name>openTemplate</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set template to use for opening the rendered html.]]></description>
+    </attribute>
+    <attribute>
       <name>popfor</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -502,576 +508,6 @@
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <description><![CDATA[HTML size attribute]]></description>
-    </attribute>
-    <attribute>
-      <name>tabindex</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html tabindex attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>template</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The template (other than default) to use for rendering the element]]></description>
-    </attribute>
-    <attribute>
-      <name>templateDir</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The template directory.]]></description>
-    </attribute>
-    <attribute>
-      <name>theme</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The theme (other than default) to use for rendering the element]]></description>
-    </attribute>
-    <attribute>
-      <name>title</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html title attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltip</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the tooltip of this particular component]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipConfig</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Deprecated. Use individual tooltip configuration attributes instead.]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipCssClass</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[CSS class applied to JavaScrip tooltips]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipDelay</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Delay in milliseconds, before showing JavaScript tooltips ]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipIconPath</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Icon path used for image that will have the tooltip]]></description>
-    </attribute>
-    <attribute>
-      <name>value</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Preset the value of input element.]]></description>
-    </attribute>
-  </tag>
-  <tag>
-    <name>dropdown</name>
-    <tag-class>loxia.struts2.taglib.tag.DropdownTag</tag-class>
-    <body-content>JSP</body-content>
-    <description><![CDATA[Render an HTML input field of type dropdown]]></description>
-    <attribute>
-      <name>accesskey</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html accesskey attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>checkmaster</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Attributes Extension for Client Validation]]></description>
-    </attribute>
-    <attribute>
-      <name>choice</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Data source for list]]></description>
-    </attribute>
-    <attribute>
-      <name>cssClass</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css class to use for element]]></description>
-    </attribute>
-    <attribute>
-      <name>cssErrorClass</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css error class to use for element]]></description>
-    </attribute>
-    <attribute>
-      <name>cssErrorStyle</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css error style definitions for element to use]]></description>
-    </attribute>
-    <attribute>
-      <name>cssStyle</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css style definitions for element to use]]></description>
-    </attribute>
-    <attribute>
-      <name>disabled</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html disabled attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>editable</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Attributes Extension for Editable setting]]></description>
-    </attribute>
-    <attribute>
-      <name>findMode</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Match mode, can be 'like','leftlike', and 'rightlike']]></description>
-    </attribute>
-    <attribute>
-      <name>htmlAttr</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Attributes Extension]]></description>
-    </attribute>
-    <attribute>
-      <name>id</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[HTML id attribute]]></description>
-    </attribute>
-    <attribute>
-      <name>javascriptTooltip</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Use JavaScript to generate tooltips]]></description>
-    </attribute>
-    <attribute>
-      <name>key</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the key (name, value, label) for this particular component]]></description>
-    </attribute>
-    <attribute>
-      <name>label</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Label expression used for rendering an element specific label]]></description>
-    </attribute>
-    <attribute>
-      <name>labelSeparator</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[String that will be appended to the label]]></description>
-    </attribute>
-    <attribute>
-      <name>labelposition</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Define label position of form element (top/left)]]></description>
-    </attribute>
-    <attribute>
-      <name>maxlength</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[HTML maxlength attribute]]></description>
-    </attribute>
-    <attribute>
-      <name>name</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The name to set for element]]></description>
-    </attribute>
-    <attribute>
-      <name>onblur</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[ Set the html onblur attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onchange</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onchange attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onclick</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onclick attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>ondblclick</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html ondblclick attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onfocus</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onfocus attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onkeydown</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onkeydown attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onkeypress</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onkeypress attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onkeyup</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onkeyup attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmousedown</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmousedown attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmousemove</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmousemove attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmouseout</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmouseout attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmouseover</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmouseover attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmouseup</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmouseup attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onselect</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onselect attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>readonly</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Attributes Extension for ReadOnly]]></description>
-    </attribute>
-    <attribute>
-      <name>required</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[If set to true, the rendered element will indicate that input is required]]></description>
-    </attribute>
-    <attribute>
-      <name>requiredposition</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Define required position of required form element (left|right)]]></description>
-    </attribute>
-    <attribute>
-      <name>size</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[HTML size attribute]]></description>
-    </attribute>
-    <attribute>
-      <name>tabindex</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html tabindex attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>template</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The template (other than default) to use for rendering the element]]></description>
-    </attribute>
-    <attribute>
-      <name>templateDir</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The template directory.]]></description>
-    </attribute>
-    <attribute>
-      <name>theme</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The theme (other than default) to use for rendering the element]]></description>
-    </attribute>
-    <attribute>
-      <name>title</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html title attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltip</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the tooltip of this particular component]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipConfig</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Deprecated. Use individual tooltip configuration attributes instead.]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipCssClass</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[CSS class applied to JavaScrip tooltips]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipDelay</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Delay in milliseconds, before showing JavaScript tooltips ]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipIconPath</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Icon path used for image that will have the tooltip]]></description>
-    </attribute>
-    <attribute>
-      <name>value</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Preset the value of input element.]]></description>
-    </attribute>
-  </tag>
-  <tag>
-    <name>edittable</name>
-    <tag-class>loxia.struts2.taglib.tag.EditTableTag</tag-class>
-    <body-content>JSP</body-content>
-    <description><![CDATA[Render an HTML Table element]]></description>
-    <attribute>
-      <name>accesskey</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html accesskey attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>cellpadding</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Table's Cellpadding]]></description>
-    </attribute>
-    <attribute>
-      <name>cellspacing</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Table's Cellspacing]]></description>
-    </attribute>
-    <attribute>
-      <name>cssClass</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css class to use for element]]></description>
-    </attribute>
-    <attribute>
-      <name>cssErrorClass</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css error class to use for element]]></description>
-    </attribute>
-    <attribute>
-      <name>cssErrorStyle</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css error style definitions for element to use]]></description>
-    </attribute>
-    <attribute>
-      <name>cssStyle</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css style definitions for element to use]]></description>
-    </attribute>
-    <attribute>
-      <name>disabled</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html disabled attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>htmlAttr</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Attributes Extension]]></description>
-    </attribute>
-    <attribute>
-      <name>id</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[HTML id attribute]]></description>
-    </attribute>
-    <attribute>
-      <name>javascriptTooltip</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Use JavaScript to generate tooltips]]></description>
-    </attribute>
-    <attribute>
-      <name>key</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the key (name, value, label) for this particular component]]></description>
-    </attribute>
-    <attribute>
-      <name>label</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Label expression used for rendering an element specific label]]></description>
-    </attribute>
-    <attribute>
-      <name>labelSeparator</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[String that will be appended to the label]]></description>
-    </attribute>
-    <attribute>
-      <name>labelposition</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Define label position of form element (top/left)]]></description>
-    </attribute>
-    <attribute>
-      <name>name</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The name to set for element]]></description>
-    </attribute>
-    <attribute>
-      <name>onblur</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[ Set the html onblur attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onchange</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onchange attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onclick</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onclick attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>ondblclick</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html ondblclick attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onfocus</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onfocus attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onkeydown</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onkeydown attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onkeypress</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onkeypress attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onkeyup</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onkeyup attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmousedown</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmousedown attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmousemove</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmousemove attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmouseout</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmouseout attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmouseover</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmouseover attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmouseup</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmouseup attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onselect</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onselect attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>openTemplate</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set template to use for opening the rendered html.]]></description>
-    </attribute>
-    <attribute>
-      <name>required</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[If set to true, the rendered element will indicate that input is required]]></description>
-    </attribute>
-    <attribute>
-      <name>requiredposition</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Define required position of required form element (left|right)]]></description>
-    </attribute>
-    <attribute>
-      <name>settings</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Table Settings]]></description>
     </attribute>
     <attribute>
       <name>tabindex</name>
@@ -2017,282 +1453,6 @@
     </attribute>
   </tag>
   <tag>
-    <name>table</name>
-    <tag-class>loxia.struts2.taglib.tag.TableTag</tag-class>
-    <body-content>JSP</body-content>
-    <description><![CDATA[Render an HTML Table element]]></description>
-    <attribute>
-      <name>accesskey</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html accesskey attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>cellpadding</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Table's Cellpadding]]></description>
-    </attribute>
-    <attribute>
-      <name>cellspacing</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Table's Cellspacing]]></description>
-    </attribute>
-    <attribute>
-      <name>cssClass</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css class to use for element]]></description>
-    </attribute>
-    <attribute>
-      <name>cssErrorClass</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css error class to use for element]]></description>
-    </attribute>
-    <attribute>
-      <name>cssErrorStyle</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css error style definitions for element to use]]></description>
-    </attribute>
-    <attribute>
-      <name>cssStyle</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The css style definitions for element to use]]></description>
-    </attribute>
-    <attribute>
-      <name>disabled</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html disabled attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>htmlAttr</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Attributes Extension]]></description>
-    </attribute>
-    <attribute>
-      <name>id</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[HTML id attribute]]></description>
-    </attribute>
-    <attribute>
-      <name>javascriptTooltip</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Use JavaScript to generate tooltips]]></description>
-    </attribute>
-    <attribute>
-      <name>key</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the key (name, value, label) for this particular component]]></description>
-    </attribute>
-    <attribute>
-      <name>label</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Label expression used for rendering an element specific label]]></description>
-    </attribute>
-    <attribute>
-      <name>labelSeparator</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[String that will be appended to the label]]></description>
-    </attribute>
-    <attribute>
-      <name>labelposition</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Define label position of form element (top/left)]]></description>
-    </attribute>
-    <attribute>
-      <name>name</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The name to set for element]]></description>
-    </attribute>
-    <attribute>
-      <name>onblur</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[ Set the html onblur attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onchange</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onchange attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onclick</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onclick attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>ondblclick</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html ondblclick attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onfocus</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onfocus attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onkeydown</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onkeydown attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onkeypress</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onkeypress attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onkeyup</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onkeyup attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmousedown</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmousedown attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmousemove</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmousemove attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmouseout</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmouseout attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmouseover</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmouseover attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onmouseup</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onmouseup attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>onselect</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html onselect attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>openTemplate</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set template to use for opening the rendered html.]]></description>
-    </attribute>
-    <attribute>
-      <name>required</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[If set to true, the rendered element will indicate that input is required]]></description>
-    </attribute>
-    <attribute>
-      <name>requiredposition</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Define required position of required form element (left|right)]]></description>
-    </attribute>
-    <attribute>
-      <name>settings</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <description><![CDATA[Table Settings]]></description>
-    </attribute>
-    <attribute>
-      <name>tabindex</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html tabindex attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>template</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The template (other than default) to use for rendering the element]]></description>
-    </attribute>
-    <attribute>
-      <name>templateDir</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The template directory.]]></description>
-    </attribute>
-    <attribute>
-      <name>theme</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[The theme (other than default) to use for rendering the element]]></description>
-    </attribute>
-    <attribute>
-      <name>title</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the html title attribute on rendered html element]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltip</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Set the tooltip of this particular component]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipConfig</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Deprecated. Use individual tooltip configuration attributes instead.]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipCssClass</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[CSS class applied to JavaScrip tooltips]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipDelay</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Delay in milliseconds, before showing JavaScript tooltips ]]></description>
-    </attribute>
-    <attribute>
-      <name>tooltipIconPath</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Icon path used for image that will have the tooltip]]></description>
-    </attribute>
-    <attribute>
-      <name>value</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <description><![CDATA[Preset the value of input element.]]></description>
-    </attribute>
-  </tag>
-  <tag>
     <name>textfield</name>
     <tag-class>loxia.struts2.taglib.tag.TextFieldTag</tag-class>
     <body-content>JSP</body-content>
@@ -2566,6 +1726,294 @@
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <description><![CDATA[Preset the value of input element.]]></description>
+    </attribute>
+  </tag>
+  <tag>
+    <name>textarea</name>
+    <tag-class>loxia.struts2.taglib.tag.TextareaTag</tag-class>
+    <body-content>JSP</body-content>
+    <description><![CDATA[Render HTML textarea tag]]></description>
+    <attribute>
+      <name>accesskey</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html accesskey attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>checkmaster</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description><![CDATA[Attributes Extension for Client Validation]]></description>
+    </attribute>
+    <attribute>
+      <name>cols</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description><![CDATA[HTML cols attribute]]></description>
+    </attribute>
+    <attribute>
+      <name>cssClass</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[The css class to use for element]]></description>
+    </attribute>
+    <attribute>
+      <name>cssErrorClass</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[The css error class to use for element]]></description>
+    </attribute>
+    <attribute>
+      <name>cssErrorStyle</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[The css error style definitions for element to use]]></description>
+    </attribute>
+    <attribute>
+      <name>cssStyle</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[The css style definitions for element to use]]></description>
+    </attribute>
+    <attribute>
+      <name>disabled</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html disabled attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>htmlAttr</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description><![CDATA[Attributes Extension]]></description>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[HTML id attribute]]></description>
+    </attribute>
+    <attribute>
+      <name>javascriptTooltip</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Use JavaScript to generate tooltips]]></description>
+    </attribute>
+    <attribute>
+      <name>key</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the key (name, value, label) for this particular component]]></description>
+    </attribute>
+    <attribute>
+      <name>label</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Label expression used for rendering an element specific label]]></description>
+    </attribute>
+    <attribute>
+      <name>labelSeparator</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[String that will be appended to the label]]></description>
+    </attribute>
+    <attribute>
+      <name>labelposition</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Define label position of form element (top/left)]]></description>
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[The name to set for element]]></description>
+    </attribute>
+    <attribute>
+      <name>onblur</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[ Set the html onblur attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onchange</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onchange attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onclick</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onclick attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>ondblclick</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html ondblclick attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onfocus</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onfocus attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onkeydown</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onkeydown attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onkeypress</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onkeypress attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onkeyup</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onkeyup attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onmousedown</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onmousedown attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onmousemove</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onmousemove attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onmouseout</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onmouseout attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onmouseover</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onmouseover attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onmouseup</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onmouseup attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>onselect</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html onselect attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>openTemplate</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set template to use for opening the rendered html.]]></description>
+    </attribute>
+    <attribute>
+      <name>readonly</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description><![CDATA[Whether the textarea is readonly]]></description>
+    </attribute>
+    <attribute>
+      <name>required</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[If set to true, the rendered element will indicate that input is required]]></description>
+    </attribute>
+    <attribute>
+      <name>requiredposition</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Define required position of required form element (left|right)]]></description>
+    </attribute>
+    <attribute>
+      <name>rows</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description><![CDATA[HTML rows attribute]]></description>
+    </attribute>
+    <attribute>
+      <name>tabindex</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html tabindex attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>template</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[The template (other than default) to use for rendering the element]]></description>
+    </attribute>
+    <attribute>
+      <name>templateDir</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[The template directory.]]></description>
+    </attribute>
+    <attribute>
+      <name>theme</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[The theme (other than default) to use for rendering the element]]></description>
+    </attribute>
+    <attribute>
+      <name>title</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the html title attribute on rendered html element]]></description>
+    </attribute>
+    <attribute>
+      <name>tooltip</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Set the tooltip of this particular component]]></description>
+    </attribute>
+    <attribute>
+      <name>tooltipConfig</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Deprecated. Use individual tooltip configuration attributes instead.]]></description>
+    </attribute>
+    <attribute>
+      <name>tooltipCssClass</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[CSS class applied to JavaScrip tooltips]]></description>
+    </attribute>
+    <attribute>
+      <name>tooltipDelay</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Delay in milliseconds, before showing JavaScript tooltips ]]></description>
+    </attribute>
+    <attribute>
+      <name>tooltipIconPath</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Icon path used for image that will have the tooltip]]></description>
+    </attribute>
+    <attribute>
+      <name>value</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[Preset the value of input element.]]></description>
+    </attribute>
+    <attribute>
+      <name>wrap</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <description><![CDATA[HTML wrap attribute]]></description>
     </attribute>
   </tag>
 </taglib>

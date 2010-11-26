@@ -6,6 +6,9 @@
 <#if parameters.disabled?default(false)>
  disabled="disabled"<#rt/>
 </#if>
+<#if parameters.required?default(false)>
+ required="true"<#rt/>
+</#if>
 <#if parameters.tabindex?exists>
  tabindex="${parameters.tabindex?html}"<#rt/>
 </#if>

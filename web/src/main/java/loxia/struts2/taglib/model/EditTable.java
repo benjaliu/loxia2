@@ -3,11 +3,11 @@ package loxia.struts2.taglib.model;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import loxia.struts2.taglib.annotation.LoxiaTag;
+import loxia.struts2.taglib.annotation.LoxiaSkipTag;
 
 import com.opensymphony.xwork2.util.ValueStack;
 
-@LoxiaTag(name="edittable", tldTagClass="loxia.struts2.taglib.tag.EditTableTag", description="Render an HTML Table element")
+@LoxiaSkipTag(name="edittable", tldTagClass="loxia.struts2.taglib.tag.EditTableTag", description="Render an HTML Table element")
 public class EditTable extends Table {
 	
 	/**

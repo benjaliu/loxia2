@@ -3,12 +3,12 @@ package loxia.struts2.taglib.model;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import loxia.struts2.taglib.annotation.LoxiaTag;
+import loxia.struts2.taglib.annotation.LoxiaSkipTag;
 import loxia.struts2.taglib.annotation.LoxiaTagAttribute;
 
 import com.opensymphony.xwork2.util.ValueStack;
 
-@LoxiaTag(name="dropdown", tldTagClass="loxia.struts2.taglib.tag.DropdownTag", description="Render an HTML input field of type dropdown")
+@LoxiaSkipTag(name="dropdown", tldTagClass="loxia.struts2.taglib.tag.DropdownTag", description="Render an HTML input field of type dropdown")
 public class Dropdown extends TextField {
 
 	/**

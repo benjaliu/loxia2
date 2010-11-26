@@ -16,7 +16,7 @@
 <#if parameters.readonly?default(false)>
  readonly="readonly"<#rt/>
 </#if>
-<#if parameters.required?default(true)>
+<#if parameters.required?default(false)>
  required="true"<#rt/>
 </#if>
 <#if parameters.checkmaster?exists>

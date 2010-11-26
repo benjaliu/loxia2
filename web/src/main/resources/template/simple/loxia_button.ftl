@@ -1,5 +1,7 @@
-<input type="button" loxiaType="button" <#rt/>
- buttonType="${parameters.buttonType?default("button")?html}"<#rt/>
+<button type="button" loxiaType="button" <#rt/>
+<#if parameters.buttonType?exists>
+ buttonType="${parameters.buttonType?html}"<#rt/>
+</#if>
 <#if parameters.name?exists>
  name="${parameters.name?html}"<#rt/>
 </#if>
@@ -8,9 +10,6 @@
 </#if>
 <#if parameters.disabled?default(false)>
  disabled="disabled"<#rt/>
-</#if>
-<#if parameters.pageSize?exists>
- size="${parameters.pageSize?html}"<#rt/>
 </#if>
 <#if parameters.href?exists>
  href="${parameters.href?html}"<#rt/>
@@ -41,4 +40,4 @@
 </#if>
 <#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
-/>
+>

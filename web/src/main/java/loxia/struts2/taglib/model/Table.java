@@ -3,12 +3,12 @@ package loxia.struts2.taglib.model;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import loxia.struts2.taglib.annotation.LoxiaTag;
+import loxia.struts2.taglib.annotation.LoxiaSkipTag;
 import loxia.struts2.taglib.annotation.LoxiaTagAttribute;
 
 import com.opensymphony.xwork2.util.ValueStack;
 
-@LoxiaTag(name="table", tldTagClass="loxia.struts2.taglib.tag.TableTag", description="Render an HTML Table element")
+@LoxiaSkipTag(name="table", tldTagClass="loxia.struts2.taglib.tag.TableTag", description="Render an HTML Table element")
 public class Table extends LoxiaClosingUIBean {
 	
 	/**

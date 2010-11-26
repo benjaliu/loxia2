@@ -1,20 +1,15 @@
-<#setting number_format="#"/>
-<input loxiaType="input"<#rt/>
+<textarea loxiaType="input"<#rt/>
  name="${parameters.name?default("")?html}"<#rt/>
- <#if parameters.get("size")?exists>
- size="${parameters.get("size")?html}"<#rt/>
-</#if>
-<#if parameters.maxlength?exists>
- maxlength="${parameters.maxlength?html}"<#rt/>
-</#if>
-<#if parameters.nameValue?exists>
- value="<@s.property value="parameters.nameValue"/>"<#rt/>
+ cols="${parameters.cols?default("")?html}"<#rt/>
+ rows="${parameters.rows?default("")?html}"<#rt/>
+<#if parameters.wrap?exists>
+ wrap="${parameters.wrap?html}"<#rt/>
 </#if>
 <#if parameters.disabled?default(false)>
  disabled="disabled"<#rt/>
 </#if>
 <#if parameters.readonly?default(false)>
- readonly="readonly"<#rt/>
+ readonly="true"<#rt/>
 </#if>
 <#if parameters.required?default(false)>
  required="true"<#rt/>
@@ -42,4 +37,7 @@
 </#if>
 <#include "/${parameters.templateDir}/simple/scripting-events.ftl" />
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
-/>
+><#rt/>
+<#if parameters.nameValue?exists>
+<@s.property value="parameters.nameValue"/><#t/>
+</#if>

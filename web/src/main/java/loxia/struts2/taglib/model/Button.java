@@ -9,29 +9,34 @@ import loxia.struts2.taglib.annotation.LoxiaTagAttribute;
 import com.opensymphony.xwork2.util.ValueStack;
 
 @LoxiaTag(name="button", tldTagClass="loxia.struts2.taglib.tag.ButtonTag", description="Render an HTML input field of type button")
-public class Button extends LoxiaUIBean {
+public class Button extends LoxiaClosingUIBean {
 
 	/**
      * The name of the default template for the Loxia ButtonTag
      */
-    final public static String TEMPLATE = "loxia_button";
+	final public static String OPEN_TEMPLATE = "loxia_button";
+	final public static String TEMPLATE = "loxia_button_close";
 
     protected String buttonType;
     protected String href;
     protected String target;
-    protected String popfor;
-    
+    protected String popfor;    
 
     protected String contextPath;
+    
+    @Override
+	public String getDefaultOpenTemplate() {
+		return OPEN_TEMPLATE;
+	}
+
+	protected String getDefaultTemplate() {
+		return TEMPLATE;
+	}
 
     public Button(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
         super(stack, request, response);
         this.contextPath = request.getContextPath();
     }
-
-	protected String getDefaultTemplate() {
-		return TEMPLATE;
-	}
 
     @Override
     protected void evaluateExtraParams() {
