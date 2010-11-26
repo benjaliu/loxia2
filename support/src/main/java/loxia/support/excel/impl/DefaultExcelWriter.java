@@ -325,7 +325,8 @@ public class DefaultExcelWriter implements ExcelWriter, Serializable {
 			//delete style sheet
 			//if no data, just remove the dummy data
 			if(listValue.size() == 0){
-				sheet.removeRow(sheet.getRow(blockDefinition.getEndRow()));
+				for(int i = blockDefinition.getEndRow(); i< blockDefinition.getStartRow(); i--)
+					sheet.removeRow(sheet.getRow(i));
 			}else
 				sheet.shiftRows(blockDefinition.getEndRow() + 1, sheet.getLastRowNum(), 
 						blockDefinition.getStartRow() - blockDefinition.getEndRow() - 1, true, true);
