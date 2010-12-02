@@ -327,18 +327,18 @@ public class TagAnnotationProcessor implements AnnotationProcessor {
 			// taglib
 			Element tagLib = document.createElement("taglib");
 
-			//tagLib.setAttribute("xmlns", "http://java.sun.com/xml/ns/j2ee");
-			//tagLib.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-			//tagLib.setAttribute("xsi:schemaLocation", "http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd");
-			//tagLib.setAttribute("version", getOption("jspVersion"));
+			tagLib.setAttribute("xmlns", "http://java.sun.com/xml/ns/j2ee");
+			tagLib.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+			tagLib.setAttribute("xsi:schemaLocation", "http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd");
+			
+			tagLib.setAttribute("version", getOption("jspVersion"));
 			document.appendChild(tagLib);
 			// tag lib attributes
+			appendTextNode(document, tagLib, "description", getOption("description"), true);
+			appendTextNode(document, tagLib, "display-name", getOption("displayName"), false);
 			appendTextNode(document, tagLib, "tlib-version", getOption("tlibVersion"), false);
-			appendTextNode(document, tagLib, "jsp-version", getOption("jspVersion"), false);
 			appendTextNode(document, tagLib, "short-name", getOption("shortName"), false);
 			appendTextNode(document, tagLib, "uri", getOption("uri"), false);
-			appendTextNode(document, tagLib, "display-name", getOption("displayName"), false);
-			appendTextNode(document, tagLib, "description", getOption("description"), true);
 
 			// create tags
 			for (Map.Entry<String, Tag> entry : tags.entrySet()) {
@@ -386,10 +386,10 @@ public class TagAnnotationProcessor implements AnnotationProcessor {
 	private void createElement(Document doc, Element tagLibElement, Tag tag) {
 		Element tagElement = doc.createElement("tag");
 		tagLibElement.appendChild(tagElement);
+		appendTextNode(doc, tagElement, "description", tag.getDescription(), true);
 		appendTextNode(doc, tagElement, "name", tag.getName(), false);
 		appendTextNode(doc, tagElement, "tag-class", tag.getTldTagClass(), false);
 		appendTextNode(doc, tagElement, "body-content", tag.getTldBodyContent(), false);
-		appendTextNode(doc, tagElement, "description", tag.getDescription(), true);
 
 		// save attributes
 		for (TagAttribute attribute : tag.getAttributes()) {
@@ -402,10 +402,10 @@ public class TagAnnotationProcessor implements AnnotationProcessor {
 	private void createElement(Document doc, Element tagElement, TagAttribute attribute) {
 		Element attributeElement = doc.createElement("attribute");
 		tagElement.appendChild(attributeElement);
+		appendTextNode(doc, attributeElement, "description", attribute.getDescription(), true);
 		appendTextNode(doc, attributeElement, "name", attribute.getName(), false);
 		appendTextNode(doc, attributeElement, "required", String.valueOf(attribute.isRequired()), false);
 		appendTextNode(doc, attributeElement, "rtexprvalue", String.valueOf(attribute.isRtexprvalue()), false);
-		appendTextNode(doc, attributeElement, "description", attribute.getDescription(), true);
 	}
 
 	private void appendTextNode(Document doc, Element element, String name, String text, boolean cdata) {
