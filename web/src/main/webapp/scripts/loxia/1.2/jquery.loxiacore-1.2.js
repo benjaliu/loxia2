@@ -582,7 +582,7 @@
 		var v = parseFloat(value),
 			min = obj.option("min"),
 			max = obj.option("max");
-		if((min && v < min) || (max && v > max))
+		if((min != undefined && v < min) || (max != undefined && v > max))
 			return loxia.getLocaleMsg("DATA_EXCEED_RANGE");
 		
 		if(decimal)
