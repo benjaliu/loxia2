@@ -20,7 +20,7 @@
 				this.initContext();
 			},
 			initContext : function(context){
-				if(context === undefined) context = document;
+				if(context === undefined) context = document.body;
 				if($(context).attr("loxiaType")) this.initLoxiaWidget(context);
 				else{
 					$(context).find("> table[loxiaType]").each(function(){
@@ -37,21 +37,26 @@
 				}else
 					this.hitch($(context), "loxia" + $(context).attr("loxiaType"))();
 			},			
+			byId : function(widgetId){				
+				var $obj = this.isString(widgetId) ? $("#" + widgetId) : $(widgetId);
+				if($obj && $obj.data("loxiaType"))
+					return $obj.data($obj.data("loxiaType"));
+				return null;
+			},
 			_initButton : function(context){
-				$(context).removeAttr("loxiaType");
-				var picon = $(context).attr("icon1"),
-					sicon = $(context).attr("icon2");				
+				$(context).removeAttr("loxiaType");					
 				$(context).button();
-				if(picon || sicon){
-					var icons = {};
-					if(picon) icons['primary'] = picon;
-					if(sicon) icons['secondary'] = sicon;
+				var stricons = $(context).attr("icons");
+				if(stricons){
+					stricons = stricons.split(",");
+					var icons = {primary: stricons[0]};
+					if(stricons[1]) icons['secondary'] = stricons[1];
 					$(context).button("option","icons", icons);
+					
 					if($(context).attr("showText")){
 						$(context).button("option","text", !($(context).attr("showText") === "false"));
 					}
-				}
-				
+				}					
 			},
 			/*decide whether object is one string object or not */
 			isString: function(obj){
@@ -472,11 +477,11 @@
 				this.element.data("loxiaType", this.widgetName);
 				this.element.removeAttr("loxiaType");
 				
-				this.element.addClass("loxia ui-state-default ui-corner-all");
+				this.element.addClass("ui-loxia-default ui-corner-all");
 				
-				this.option("required", (this.element.attr("required") === "true"));
+				this.option("required", (this.element.attr("mandatory") === "true"));
 				if(this.option("required"))
-					this.element.addClass("ui-state-highlight");
+					this.element.addClass("ui-loxia-highlight");
 				this.option("disabled", !!this.element.attr("disabled"));
 				this.option("select", (this.element.attr("selectonfocus") === "true"));
 				this.option("lastRightValue", this.element.val()?this.element.val():null);
@@ -497,6 +502,8 @@
 			},
 			setEnable : function(state){
 				this._setOption("disabled", !state);
+				if(!state)
+					this.state(null);
 			},
 			state : function(st, msg){
 				if(st === undefined){
@@ -505,12 +512,15 @@
 					//clear state or set state to true
 					this._setOption("state", st === null? null : !!st);
 					this._setOption("errorMessage", null);
-					this.element.removeClass("ui-state-error");
+					this.element.removeClass("ui-loxia-error");
+					//clear state
+					if(st === null)
+						this._setOption("lastRightValue", null);
 				}else{
 					//set error state
 					this._setOption("state", false);
 					this._setOption("errorMessage", msg);
-					this.element.addClass("ui-state-error");
+					this.element.addClass("ui-loxia-error");
 				}
 			},
 			check : function(){
@@ -552,7 +562,7 @@
 		};
 	}
 	
-	checkNumber = function(value, obj){
+	checkLoxiaNumber = function(value, obj){
 		var value = $.trim(value);
 		if(!value) return loxia.SUCCESS;
 		var prefix = value.charAt(0);
@@ -591,7 +601,7 @@
 			return loxia.SUCCESS;
 	};
 	/*need jquery ui datepicker*/
-	checkDate = function(value,obj){		
+	checkLoxiaDate = function(value,obj){		
 		try{
 			var currDate = $.datepicker.parseDate(loxia.dateFormat,value),
 				minDate = obj.option("min"),
@@ -656,7 +666,7 @@
 			this.tipDiv.hide();
 		},
 		show : function(obj, message){					
-			this.tipDiv.find(".inner").text(message);
+			this.tipDiv.find(".inner").html(message);
 			var left = $(obj).offset().left, 
 				top = $(obj).offset().top,
 				width = $(obj).width(),
@@ -670,7 +680,7 @@
 			});
 			this.tipDiv.show();
 			this.tipDiv.animate({opacity : 1, 
-				left : left + width + 4, 
+				left : left + width + 8, 
 				top : top}, "fast");
 			this.isShown = true;
 		},

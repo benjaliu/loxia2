@@ -35,29 +35,26 @@
 		},
 		
 		_initSelect : function(){
+			var _this = this;
 			this.element.focus(function(){	
-				var input = $(this).data($(this).data("loxiaType"));
-				if(input.option("disabled") || input.option("readonly")) return;
-				$(this).addClass("ui-state-active");
-				if(input.option("errorMessage")){
-					loxia.tip(this,input.option("errorMessage"));
+				if(_this.option("disabled") || _this.option("readonly")) return;
+				$(this).addClass("ui-loxia-active");
+				if(_this.option("errorMessage")){
+					loxia.tip(this,_this.option("errorMessage"));
 				}
 			});
 			
 			this.element.blur(function(){
-				var input = $(this).data($(this).data("loxiaType"));
-				if(input.option("disabled") || input.option("readonly")) return;
-				$(this).removeClass("ui-state-active");
+				$(this).removeClass("ui-loxia-active");
 				loxia.tip();
 			});
 		
 			this.element.change(function(){			
-				var input = $(this).data($(this).data("loxiaType"));
-				input.val($(this).val());
-				if(input.state){
+				_this.val($(this).val());
+				if(_this.state()){
 					loxia.tip();
-				}else if($(this).is("ui-state-active") && input.option("errorMessage"))
-					loxia.tip(this,input.option("errorMessage"));
+				}else if($(this).is("ui-loxia-active"))
+					loxia.tip(this,_this.option("errorMessage"));
 			});
 		},
 		_create : function(){

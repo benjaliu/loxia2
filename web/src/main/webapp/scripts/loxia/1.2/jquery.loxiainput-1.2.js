@@ -13,32 +13,31 @@
 		
 				this._initInput();
 				
+				var _this = this;
 				this.element.focus(function(){	
-					var input = $(this).data($(this).data("loxiaType"));
-					if(input.option("disabled") || input.option("readonly")) return;
-					$(this).addClass("ui-state-active");
+					if(_this.option("disabled") || _this.option("readonly")) return;
+					$(this).addClass("ui-loxia-active");
 					
-					if(input.option("errorMessage")){
-						loxia.tip(this,input.option("errorMessage"));
+					if(_this.option("errorMessage")){
+						loxia.tip(this,_this.option("errorMessage"));
 					}
-					if(input.option("select"))					
+					if(_this.option("select"))					
 						$(this).select();
-					input._focus();					
+					_this._focus();					
 				});
 				
 				this.element.blur(function(){
-					var input = $(this).data($(this).data("loxiaType"));
-					if(input.option("disabled") || input.option("readonly")) return;
-					$(this).removeClass("ui-state-active");
+					if(_this.option("disabled") || _this.option("readonly")) return;
+					$(this).removeClass("ui-loxia-active");
 					loxia.tip();
 				
 					var value = $(this).val();
-					if(input.option("trim")){
+					if(_this.option("trim")){
 						value = $.trim(value);	
 						$(this).val(value);
 					}
-					input.val(value);
-					input._blur();
+					_this.val(value);
+					_this._blur();
 				});
 			}else
 				throw new Error("Wrong Dom Type for Input");
@@ -48,26 +47,57 @@
 	$.widget("ui.loxiainput", loxiaInput); 
 	$.ui.loxiainput.prototype.options = loxia.defaults;
 	
-	var loxiaNumber = $.extend({}, loxiaInput, {
+	var loxiaNumber = $.extend({}, loxiaInput, {	
+		decimal: function(value){
+			if(value == undefined) return this.option("decimal");
+			value = "0"||value;
+			value = parseInt(value,10);
+			if(isNaN(value)) throw "decimal is not a valid number";
+			this.option("decimal", value);
+			this.state(null);
+		},
+	
+		min: function(value){
+			if(value == undefined) return this.option("min");
+			if(value != undefined && value != null){
+				value = loxia.isString(value)?parseFloat(value):value;
+				if(isNaN(value)) throw "min is not a valid number";
+				this.option("min", value);
+				this.state(null);				
+			}
+		},
+		
+		max: function(value){
+			if(value == undefined) return this.option("max");
+			if(value != undefined && value != null){
+				value = loxia.isString(value)?parseFloat(value):value;
+				if(isNaN(value)) throw "max is not a valid number";
+				this.option("max", value);
+				this.state(null);				
+			}
+		},
+		
 		_initInput : function(){
+			this.element.addClass("ui-loxia-number");
 			if(this.option("checkmaster"))
-				this.option("checkmaster","checkNumber," + this.option("checkmaster"));
+				this.option("checkmaster","checkLoxiaNumber," + this.option("checkmaster"));
 			else
-				this.option("checkmaster","checkNumber");
+				this.option("checkmaster","checkLoxiaNumber");
 			var _e = this.element;
-			$.each(["decimal","min","max"],function(i,v){
-				var value = parseInt(_e.attr(v),10);
-				if(!isNaN(value)) _e.data("loxianumber").option(v,value);
-			});
-			_e.css({"text-align":"right","padding-right":"5px"});
+			
+			var dv = parseInt(_e.attr("decimal"),10), minv = parseFloat(_e.attr("min")) ,maxv = parseFloat(_e.attr("max"));
+			
+			if(!isNaN(dv)) this.option("decimal",dv);
+			if(!isNaN(minv)) this.option("min",minv);
+			if(!isNaN(maxv)) this.option("max",maxv);
 		},
 	
 		_focus : function(){
-			this.element.css({"text-align":"left"});
+			this.element.addClass("ui-loxia-number-active");
 		},
 		
 		_blur : function(){
-			this.element.css({"text-align":"right","padding-right":"5px"});
+			this.element.removeClass("ui-loxia-number-active");
 		}
 	});	
 	
@@ -97,6 +127,28 @@
 			}
 		},
 		
+		min: function(value){
+			if(value == undefined) return this.option("min");
+			if(value != undefined && value != null){
+				value = loxia.isString(value)? this._parseDate(value):value;
+				if(!value) throw "min is not a valid date";
+				this.option("min", value);
+				this.element.datepicker("option","minDate",value);
+				this.state(null);				
+			}
+		},
+		
+		max: function(value){
+			if(value == undefined) return this.option("max");
+			if(value != undefined && value != null){
+				value = loxia.isString(value)? this._parseDate(value):value;
+				if(!value) throw "max is not a valid date";
+				this.option("max", value);
+				this.element.datepicker("option","maxDate",value);
+				this.state(null);				
+			}
+		},
+		
 		_parseDate : function(dateStr){
 			if(dateStr){
 				if(dateStr === "today")	return new Date();
@@ -107,11 +159,15 @@
 			return null;
 		},
 		
+		parseDate : function(dateStr){
+			return this._parseDate(dateStr);
+		},
+		
 		_initInput : function(){
 			if(this.option("checkmaster"))
-				this.option("checkmaster","checkDate," + this.option("checkmaster"));
+				this.option("checkmaster","checkLoxiaDate," + this.option("checkmaster"));
 			else
-				this.option("checkmaster","checkDate");
+				this.option("checkmaster","checkLoxiaDate");
 			
 			var minDate = this._parseDate(this.element.attr("min")),
 				maxDate = this._parseDate(this.element.attr("max")),

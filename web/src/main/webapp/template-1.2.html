@@ -4,23 +4,26 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 <title>Template</title>
-<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.8.custom.css"/>
-<link rel="stylesheet" type="text/css" href="css/smoothness/loxia-ui-1.2.custom.css"/>
+<link rel="stylesheet" type="text/css" href="css/redmond/jquery-ui-1.8.7.custom.css"/>
+<link rel="stylesheet" type="text/css" href="css/redmond/loxia-ui-1.2.custom.css"/>
+<link rel="stylesheet" type="text/css" href="css/SyntaxHighlighter.css"></link> 
 <style>
 	body, .ui-widget { font:10pt Verdana, Arail,"Trebuchet MS", sans-serif;}	
 	body { margin: 50px;}
 	/* div.ui-datepicker{ font-size: 11px;} */
 </style>
-<script type="text/javascript" src="scripts/jquery-1.4.2.min.js"></script>
-<script type="text/javascript" src="scripts/jquery-ui-1.8.custom.min.js"></script>
+<script type="text/javascript" src="scripts/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="scripts/jquery-ui-1.8.7.custom.min.js"></script>
 <script type="text/javascript" src="scripts/jquery.livequery.js"></script>
 <script type="text/javascript" src="scripts/jquery.bgiframe.min.js"></script>
 
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiacore-1.2.js"></script>
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiainput-1.2.js"></script>
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiaselect-1.2.js"></script>
+<script type="text/javascript" src="scripts/loxia/1.2/jquery.loxia.locale-zh-CN.js"></script>
+<script type="text/javascript" src="scripts/jquery.ui.datepicker-zh-CN.js"></script>
 
-<script type="text/javascript">
+<script type="text/javascript"><!--
 var $j = jQuery.noConflict();
 
 var s1 = ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"];
@@ -29,12 +32,51 @@ var s2 = [{value:"1",label:"c++"},{value:"2",label:"java"},{value:"3",label:"php
                   {value:"7",label:"ruby"}];
 $j(document).ready(function(){
 	
-	loxia.init({debug: true});		
+	loxia.init({debug: true, region: 'zh-CN'});		
+	
+	$j("#btn_ctle").click(function(){
+		var $btn = $j(this);
+		var flag = $btn.attr("value") === "disable";
+		if(flag){
+			$btn.attr("value","enable");
+			$btn.attr("title","启用");
+			$btn.button("option","label","启用");
+		}else{
+			$btn.attr("value","disable");
+			$btn.attr("title","禁用");
+			$btn.button("option","label","禁用");
+		}
+		loxia.byId("input2").setEnable(!flag);
+	});
+	
+	$j("#btn_ctlro").click(function(){
+		var $btn = $j(this);
+		var flag = $btn.attr("value") === "readonly";
+		if(flag){
+			$btn.attr("value","writable");
+			$btn.attr("title","读写");
+			$btn.button("option","label","读写");
+		}else{
+			$btn.attr("value","readonly");
+			$btn.attr("title","只读");
+			$btn.button("option","label","只读");
+		}
+		loxia.byId("input2").setReadonly(flag);
+	});
 
-	var $tglBtn = $j("#toggle").data("button");
-
+	$j("#btn_setmax").click(function(){
+		var value = loxia.byId($j(this).next("input").get(0)).val();
+		if(value != null)
+			loxia.byId("input3").max(value);
+	});
+	
+	$j("#btn_setmin").click(function(){
+		var value = loxia.byId($j(this).next("input").get(0)).val();
+		if(value != null)
+			loxia.byId("input4").min(value);
+	});
+	
 	var $input = $j("select").data("loxiaselect");
-	$tglBtn.option("icons", {primary: $input.option("readonly") ? 'ui-icon-locked' : 'ui-icon-unlocked'});
 
 	$j("#ac input:first").autocomplete({
 		source : s2,
@@ -53,90 +95,210 @@ $j(document).ready(function(){
 		});
 });
 
-function checkA(value, obj){
+function checkFieldLength(value, obj){
 	if(value.length > 10)
-		return "Too Long";
+		return "此处最多只能输入10个字符";
 	return loxia.SUCCESS;
 }
-function checkB(value, obj){
-	var result = false;
-	for(var i=0; !result && i< s2.length; i++){
-		if(s2[i].label === value){
-			$j("#ac input:last").val(s2[i].value);
-			result = true;
-		}
+
+function setInput5(value, obj){
+	if(value === "date"){
+		loxia.byId($j(obj.element).next("input").get(0)).val("2010-12-10");
+	}else if(value === "number"){
+		loxia.byId($j(obj.element).next("input").get(0)).val("100");
 	}
-	if(result) return loxia.SUCCESS;
-	else return "No matching record.";
+	return loxia.SUCCESS;
 }
-function toggleState(obj){
-	var $input = $j("select").data("loxiaselect");
-	$input.option("readonly", !$input.option("readonly"));
-	$j(obj).data("button").option("icons", 
-			{primary: $input.option("readonly") ? 'ui-icon-locked' : 'ui-icon-unlocked'});
-}
-</script>
+--></script>
 </head>
-<body>
-<form id="idForm" name="sampleForm">
-	<input type="button" loxiaType="button" value="heh" onclick="loxia.lockPage(); loxia.log(loxia.isLocked());"/>
+<body style="background-color: #f2f2f2;">
+	<button type="button" loxiaType="button" onclick="loxia.lockPage(); setTimeout(function(){loxia.unlockPage();}, 5000);">锁屏</button>
 	<p></p>
-	<p>
-	<div style="padding: 12px;">
+	<div>
+	<span class="ui-state-error ui-corner-all" style="padding: 12px; padding-left: 30px;">
+	锁屏5s后结束锁屏，锁屏使用<code>loxia.lockPage();</code>,解锁使用<code>loxia.unlockPage();</code>
+	</span>
+	</div>
+	<br/><br/>
+	<div>
 	<span class="ui-widget-header ui-corner-all" style="padding: 10px 4px;">
-	<button type="button" loxiaType="button" icon1="ui-icon-tag" value="show" onclick="loxia.tip(this,'This is a tip');">show</button>
-	<button loxiaType="button" icon1="ui-icon-bookmark" showText="false" onclick="loxia.tip();">hide</button>
-	<input id="toggle" type="checkbox" loxiaType="button" value="toggle" onclick="toggleState(this);"/>
-	<label for="toggle">Toggle</label>
-	<a href="#" loxiaType="button" onclick="window.location.href=loxia.encodeUrl('abc');return false;">Hello</a>
+	<button type="button" loxiaType="button" icons="ui-icon-bookmark" showText="false" onclick="loxia.tip();">关闭提示框</button>
+	<button type="button" loxiaType="button" icons="ui-icon-tag,ui-icon-help" value="show" title="点击出现提示框" onclick="loxia.tip(this,'这是一个提示信息，<br>请参考xxxxxxx');">点击出现提示框</button>	
+	<a href="#" target="_blank" loxiaType="button">点击此处打开新窗口</a>
 	</span></div>
-	</p>
 	<p>
-Auto Trim Textbox(with auto select text when focus, maxsize = 10, optional field)<input name="input" loxiaType="input" value="abc" trim="true" checkmaster="checkA" selectonfocus="true"/>
+	对于一个loxia组件，需要定义有loxiaType属性，下面将列举当前支持的几种组件类型，组件默认拥有以下属性：<br></br>
+	<ul>
+		<li><b>readonly</b>：是否只读，只读的组件显示的值可以被submit</li>
+		<li><b>disabled</b>：是否禁用，禁用的组件的值不会被submit</li>
+		<li><b>mandatory</b>：是否必填项，如果是必填项则必须填值</li>
+		<li><b>selectonfocus</b>：是否在获取焦点时全选内容</li>
+		<li><b>checkmaster</b>：自定义校验方法，可以有多个校验方法，以','分隔。每个方法有两个参数，第一个参数是当前输入域的值，第二个参数是当前输入组件的jQuery对象，如果正确返回 loxia.SUCCESS，否则返回错误说明信息。</li>
+	</ul>
+	组件默认有以下方法：<br></br>
+	<ul>
+		<li><b>val(value)</b>：读取组件的值或设置组件的值，读取值时不设置参数，会获取组件最近一次正确的值；设置值时先设置组件中的显示值并触发检查工作</li>
+		<li><b>setReadonly(state)</b>：设置组件是否只读</li>
+		<li><b>setEnable(state)</b>：设置组件是否启用</li>
+		<li><b>state(st,msg)</b>：读取或者设置组件当前的状态，可能是null，true或 false，读取值时不设置参数，设置值时，如果设置为false，可以通过msg设置错误说明信息</li>
+		<li><b>check()</b>：检查当前组件的数值有效性。</li>
+	</ul>
+	定义一个文本输入框或者一个多行文本输入框，需要增加属性 <code>loxiaType="input"</code>，此输入框有以下属性：<br></br>
+	<ul>
+		<li><b>trim</b>：是否去掉首尾多余空格</li>
+	</ul>
+	<b>示例1：</b>创建一个文本输入框，非必填，只能输入最多10个字符，首尾空格会被自动去除且获得焦点时会全选文本，如果超长希望看见错误提示：此处最多只能输入10个字符<br></br>	
+	创建一个多行文本输入框，非必填<br></br>	
+    <input name="input1" loxiaType="input" value="" trim="true" checkmaster="checkFieldLength" selectonfocus="true"/><br></br>
+    <textarea name="input1" loxiaType="input" rows="5"></textarea>
+    <div style="padding: 6px; width: 80%;">
+    <div class="ui-widget-header ui-corner-all">页面代码</div>
+    <textarea name="code" class="xml" rows="15" cols="100"> 
+	<input name="input1" loxiaType="input" value="" trim="true" checkmaster="checkFieldLength" selectonfocus="true"/><br></br>
+    <textarea name="input1" loxiaType="input" rows="5"></textarea>
+	</textarea> 
+	<div class="ui-widget-header ui-corner-all">脚本代码</div>
+	<textarea name="code" class="xml" rows="15" cols="100"> 
+	function checkFieldLength(value, obj){
+		if(value.length > 10)
+			return "此处最多只能输入10个字符";
+		return loxia.SUCCESS;
+	}
+	</textarea> 
+	</div>
+	<b>示例2：</b>创建一个文本输入框，必填，由代码控制其禁用和只读，禁用时会将组件的有效性检查重置<br></br>	
+	<input name="input2" id="input2" loxiaType="input" value="" mandatory="true"/> 
+	<button type="button" loxiaType="button" id="btn_ctle" value="disable" title="禁用">禁用</button>
+	<button type="button" loxiaType="button" id="btn_ctlro" value="readonly" title="只读">只读</button>
+	<div style="padding: 6px; width: 80%;">
+    <div class="ui-widget-header ui-corner-all">页面代码</div>
+    <textarea name="code" class="xml" rows="15" cols="100"> 
+	<input name="input2" id="input2" loxiaType="input" value="" mandatory="true"/> 
+	<button type="button" loxiaType="button" id="btn_ctle" value="disable" title="禁用">禁用</button>
+	<button type="button" loxiaType="button" id="btn_ctlro" value="readonly" title="只读">只读</button>
+	</textarea> 
+	<div class="ui-widget-header ui-corner-all">脚本代码(写在 $j(document).ready() 中)</div>
+	<textarea name="code" class="xml" rows="15" cols="100"> 
+	$j("#btn_ctle").click(function(){
+		var $btn = $j(this);
+		var flag = $btn.attr("value") === "disable";
+		if(flag){
+			$btn.attr("value","enable");
+			$btn.attr("title","启用");
+			$btn.button("option","label","启用");
+		}else{
+			$btn.attr("value","disable");
+			$btn.attr("title","禁用");
+			$btn.button("option","label","禁用");
+		}
+		loxia.byId("input2").setEnable(!flag); //使用 loxia.byId 方法获得loxia组件，参数可以是Id或者Dom 对象
+	});
+	
+	$j("#btn_ctlro").click(function(){
+		var $btn = $j(this);
+		var flag = $btn.attr("value") === "readonly";
+		if(flag){
+			$btn.attr("value","writable");
+			$btn.attr("title","读写");
+			$btn.button("option","label","读写");
+		}else{
+			$btn.attr("value","readonly");
+			$btn.attr("title","只读");
+			$btn.button("option","label","只读");
+		}
+		loxia.byId("input2").setReadonly(flag);
+	});
+	</textarea> 
+	</div>
+	定义一个数值输入框，需要增加属性 <code>loxiaType="number"</code>，此输入框有以下属性：<br></br>
+	<ul>
+		<li><b>decimal</b>：数值精度，默认是0，即整数</li>
+		<li><b>min</b>：最小值，数值允许的最小值，不设置表示无限制</li>
+		<li><b>max</b>：最大值，数值允许的最大值，不设置表示无限制</li>
+	</ul>
+	组件有以下方法：<br></br>
+	<ul>
+		<li><b>decimal(value)</b>：读取/设置精度且重置状态</li>
+		<li><b>min(value)</b>：读取/设置最小值且重置状态</li>
+		<li><b>max(value)</b>：读取/设置最大值且重置状态</li>
+	</ul>
+	<b>示例3：</b>创建一个数值输入框，必填，精度为2，最大值是50，通过代码设置最大值<br></br>	
+	<input name="input3" id="input3" loxiaType="number" value="" decimal="2" max="50" mandatory="true"/>
+	<button type="button" loxiaType="button" id="btn_setmax" title="修改最大值">修改最大值至:</button><input name="input4" loxiaType="number" value="" mandatory="true" style="width:40px;"/>
+	<div style="padding: 6px; width: 80%;">
+    <div class="ui-widget-header ui-corner-all">页面代码</div>
+    <textarea name="code" class="xml" rows="15" cols="100"> 
+	<input name="input3" id="input3" loxiaType="number" value="" decimal="2" max="50" mandatory="true"/>
+	<button type="button" loxiaType="button" id="btn_setmax" title="修改最大值">修改最大值至:</button><input name="input4" loxiaType="number" value="" mandatory="true" style="width:40px;"/>
+	</textarea> 
+	<div class="ui-widget-header ui-corner-all">脚本代码(写在 $j(document).ready() 中)</div>
+	<textarea name="code" class="xml" rows="15" cols="100"> 
+	$j("#btn_setmax").click(function(){
+		var value = loxia.byId($j(this).next("input").get(0)).val();
+		if(value != null)
+			loxia.byId("input3").max(value);
+	});
+	</textarea>
+	</div>
+	定义一个日期输入框，需要增加属性 <code>loxiaType="date"</code>，此输入框有以下属性：<br></br>
+	<ul>
+		<li><b>min</b>：最小值，日期允许的最小值，不设置表示无限制</li>
+		<li><b>max</b>：最大值，日期允许的最大值，不设置表示无限制</li>
+	</ul>
+	组件有以下方法：<br></br>
+	<ul>
+		<li><b>min(value)</b>：读取/设置最小值且重置状态</li>
+		<li><b>max(value)</b>：读取/设置最大值且重置状态</li>
+	</ul>
+	<b>示例4：</b>创建一个数值输入框，非必填，最小值是当前日期，通过代码设置最小值<br></br>
+	<input name="input4" id="input4" loxiaType="date" value="" min="today"/>
+	<button type="button" loxiaType="button" id="btn_setmin" title="修改最小值">修改最小值至:</button><input name="input4" loxiaType="date"/>
+	<div style="padding: 6px; width: 80%;">
+    <div class="ui-widget-header ui-corner-all">页面代码</div>
+    <textarea name="code" class="xml" rows="15" cols="100"> 
+	<input name="input4" id="input4" loxiaType="date" value="" min="today"/>
+	<button type="button" loxiaType="button" id="btn_setmin" title="修改最小值">修改最小值至:</button><input name="input4" loxiaType="date"/>
+	</textarea> 
+	<div class="ui-widget-header ui-corner-all">脚本代码(写在 $j(document).ready() 中)</div>
+	<textarea name="code" class="xml" rows="15" cols="100"> 
+	$j("#btn_setmin").click(function(){
+		var value = loxia.byId($j(this).next("input").get(0)).val();
+		if(value != null)
+			loxia.byId("input4").min(value);
+	});
+	</textarea>
+	</div>
+	<b>示例5：</b>创建一个下拉框，必填，可选项有日期和数字，如果选择日期则在后面的输入框中填写日期，如果选择数字则填写100<br></br>
+	<select name="select1" id="select1" loxiaType="select" mandatory="true" checkmaster="setInput5"><option value="">请选择...</option><option value="number">数字</option><option value="date">日期</option></select>
+	<input name="input5" loxiaType="input"/>
+	<div style="padding: 6px; width: 80%;">
+    <div class="ui-widget-header ui-corner-all">页面代码</div>
+    <textarea name="code" class="xml" rows="15" cols="100"> 
+	<select name="select1" id="select1" loxiaType="select" mandatory="true" checkmaster="setInput5"><option value="">请选择...</option><option value="number">数字</option><option value="date">日期</option></select>
+	<input name="input5" loxiaType="input"/>
+	</textarea> 
+	<div class="ui-widget-header ui-corner-all">脚本代码</div>
+	<textarea name="code" class="xml" rows="15" cols="100"> 
+	function setInput5(value, obj){
+		if(value === "date"){
+			loxia.byId($j(obj.element).next("input").get(0)).val("2010-12-10");
+		}else if(value === "number"){
+			loxia.byId($j(obj.element).next("input").get(0)).val("100");
+		}
+		return loxia.SUCCESS;
+	}
+	</textarea>
+	</div>	
 </p>
-<p>
-Textbox(maxsize = 10, mandatory field)<input name="input" loxiaType="input" value="abc" required="true" checkmaster="checkA"/><input name="input" loxiaType="input" value="abc" disabled="disabled" required="true" checkmaster="checkA"/><input name="input" loxiaType="input" value="abc" readonly="readonly" required="true" checkmaster="checkA"/>
-</p>
-<p>
-Number(decimal =2, max=20, mandatory field)<input name="input" loxiaType="number" value="" decimal="2" max="20" required="true" checkmaster="checkA"/>
-</p>
-<p>
-Textarea(optional field)<textarea name="input" loxiaType="input"></textarea><textarea name="input" disabled="disabled" loxiaType="input"></textarea>
-</p>
-<p>
-Datebox(mandatory field)<input name="date" loxiaType="date" required="true" min="2009-11-05" max="today"/>
-<input name="date" loxiaType="date" disabled="disabled" min="2009-11-05" max="today"/>
-<input name="date" loxiaType="date" readonly="readonly" min="2009-11-05" max="today"/>
-</p>
-<p>
-Select(mandatory field)<select name="select" loxiaType = "select" required="true"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
-<select name="select" loxiaType = "select" required="true" disabled="disabled"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
-<select name="select" loxiaType = "select" required="true" readonly="readonly"><option value="">Please Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
-</p>
-<p>
-Auto complete(mandatory field)<span id="ac"><input loxiaType="input" required="true" checkmaster="checkB"/><input name="input" type="hidden"/></span>
-</p>
-</form>
-<p>1</p>
-<p>2</p>
-<p>3</p>
-<p>4</p>
-<p>5</p>
-<p>6</p>
-<p>7</p>
-<p>8</p>
-<p>9</p>
-<p>10</p>
-<p>11</p>
-<p>12</p>
-<p>13</p>
-<p>14</p>
-<p>15</p>
-<p>16</p>
-<p>17</p>
-<p>18</p>
-<p>19</p>
-<p>20</p>
-<input type="button" loxiaType="button" value="heh" onclick="loxia.lockPage();"/>
+
+<script class="javascript" src="scripts/syntaxhighlighter/shCore.js"></script> 
+<script class="javascript" src="scripts/syntaxhighlighter/shBrushJScript.js"></script> 
+<script class="javascript" src="scripts/syntaxhighlighter/shBrushJava.js"></script> 
+<script class="javascript" src="scripts/syntaxhighlighter/shBrushSql.js"></script> 
+<script class="javascript" src="scripts/syntaxhighlighter/shBrushXml.js"></script> 
+<script class="javascript" src="scripts/syntaxhighlighter/shBrushCss.js"></script> 
+<script class="javascript"> 
+dp.SyntaxHighlighter.HighlightAll('code'); 
+</script> 
 </body>
 </html>
