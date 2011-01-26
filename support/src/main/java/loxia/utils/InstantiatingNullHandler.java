@@ -8,6 +8,7 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ognl.NullHandler;
@@ -21,7 +22,17 @@ public class InstantiatingNullHandler implements NullHandler {
 
     private static final Log LOG = LogFactory.getLog(InstantiatingNullHandler.class);
     
-    @SuppressWarnings("unchecked")
+    private List<String> ignoreList = new ArrayList<String>();
+        
+    public List<String> getIgnoreList() {
+		return ignoreList;
+	}
+
+	public void setIgnoreList(List<String> ignoreList) {
+		this.ignoreList = ignoreList;
+	}
+
+	@SuppressWarnings("unchecked")
 	public Object nullMethodResult(Map context, Object target, String methodName, Object[] args) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Entering nullMethodResult ");
@@ -58,6 +69,10 @@ public class InstantiatingNullHandler implements NullHandler {
                 return null;
             }
 
+            //ignore those class in ignored package
+            if(ignoreClass(clazz))
+            	return null;
+            
             Object param = createObject(clazz, target, propName, context);
 
             Ognl.setValue(propName, context, target, param);
@@ -68,6 +83,15 @@ public class InstantiatingNullHandler implements NullHandler {
         }
 
         return null;
+    }
+    
+    private boolean ignoreClass(Class<?> clazz){
+    	if(clazz.isPrimitive() || clazz.isArray()) return true;
+    	String clazzFullName = clazz.getName();
+    	for(String name: ignoreList){
+    		if(clazzFullName.startsWith(name)) return true;
+    	}
+    	return false;
     }
 
     @SuppressWarnings("unchecked")
