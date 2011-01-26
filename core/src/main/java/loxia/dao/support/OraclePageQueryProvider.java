@@ -8,8 +8,8 @@ public class OraclePageQueryProvider implements PageQueryProvider {
 		StringBuffer sb = new StringBuffer();
 		sb.append("select * from (select pagequery.*, rownum rowno from(");
 		sb.append(sql);
-		sb.append(") pagequery where rownum <" + (begin + count));
-		sb.append(") where rowno >= " + begin);
+		sb.append(") pagequery where rownum <=" + (begin + count));
+		sb.append(") where rowno > " + begin);
 		return sb.toString();
 	}
 

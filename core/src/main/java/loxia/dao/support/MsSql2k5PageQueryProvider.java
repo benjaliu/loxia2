@@ -14,7 +14,7 @@ public class MsSql2k5PageQueryProvider implements PageQueryProvider {
 		sb.append("select top " + count + " p.* from (select ");
 		sb.append("ROW_NUMBER() over(" + sql.substring(delim) + ") as rownum,");
 		sb.append(sql.substring(pdelim+6,delim));
-		sb.append(") p where rownum >= " + begin);
+		sb.append(") p where rownum > " + begin);
 		return sb.toString();
 	}
 
