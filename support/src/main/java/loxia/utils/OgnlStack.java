@@ -1,6 +1,7 @@
 package loxia.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ import ognl.OgnlRuntime;
 
 public class OgnlStack{
 	static{
-		OgnlRuntime.setNullHandler(Object.class, new InstantiatingNullHandler());
+		OgnlRuntime.setNullHandler(Object.class, new InstantiatingNullHandler(Arrays.asList("java")));
 	}
 	
 	private List<Object> stack = new ArrayList<Object>();

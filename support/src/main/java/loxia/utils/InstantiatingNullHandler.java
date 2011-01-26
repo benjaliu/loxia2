@@ -20,9 +20,15 @@ import org.apache.commons.logging.LogFactory;
 
 public class InstantiatingNullHandler implements NullHandler {
 
-    private static final Log LOG = LogFactory.getLog(InstantiatingNullHandler.class);
+    private static final Log LOG = LogFactory.getLog(InstantiatingNullHandler.class);    
     
     private List<String> ignoreList = new ArrayList<String>();
+    
+    public InstantiatingNullHandler(){}
+    
+    public InstantiatingNullHandler(List<String> ignoreList){
+    	this.ignoreList.addAll(ignoreList);
+    }
         
     public List<String> getIgnoreList() {
 		return ignoreList;
