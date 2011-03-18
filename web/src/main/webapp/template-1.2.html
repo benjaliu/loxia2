@@ -10,16 +10,17 @@
 <style>
 	body, .ui-widget { font:10pt Verdana, Arail,"Trebuchet MS", sans-serif;}	
 	body { margin: 50px;}
+	td.decimal { text-align: right;	padding-right: 4px;}
 	/* div.ui-datepicker{ font-size: 11px;} */
 </style>
 <script type="text/javascript" src="scripts/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="scripts/jquery-ui-1.8.7.custom.min.js"></script>
-<script type="text/javascript" src="scripts/jquery.livequery.js"></script>
 <script type="text/javascript" src="scripts/jquery.bgiframe.min.js"></script>
 
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiacore-1.2.js"></script>
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiainput-1.2.js"></script>
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiaselect-1.2.js"></script>
+<script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiatable-1.2.js"></script>
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxia.locale-zh-CN.js"></script>
 <script type="text/javascript" src="scripts/jquery.ui.datepicker-zh-CN.js"></script>
 
@@ -76,23 +77,9 @@ $j(document).ready(function(){
 			loxia.byId("input4").min(value);
 	});
 	
-	var $input = $j("select").data("loxiaselect");
-
-	$j("#ac input:first").autocomplete({
-		source : s2,
-		minLength : 0,
-		focus : function(event, ui) {
-			$j(this).val(ui.item.label);
-			$j(this).next().val(ui.item.value);
-			return false;
-		},
-		select : function(event, ui) {
-			var input = $j(this).data("loxiainput");
-			input.val(ui.item.label);
-			$j(this).next().val(ui.item.value);
-			return false;
-		}
-		});
+	$j("#edittable").bind("rowchanged", function(event,data){
+		console.log("rowchanged");
+	});
 });
 
 function checkFieldLength(value, obj){
@@ -290,7 +277,47 @@ function setInput5(value, obj){
 	</textarea>
 	</div>	
 </p>
-
+<p>
+表格
+</p>
+<table id="edittable" loxiaType="edittable" operation="add,delete" append="1">
+	<thead>
+		<tr>
+			<th rowspan="2" width="5%"><input type="checkbox"/></th>
+			<th rowspan="2" width="20%">姓名</th>
+			<th rowspan="2" width="15%">性别</th>
+			<th rowspan="2" width="15%">部门</th>
+			<th colspan="3">工作情况</th>
+		</tr>
+		<tr>			
+			<th width="15%">本月工作时间（h）</th>
+			<th width="15%">人工单价</th>
+			<th width="15%">总价</th>
+		</tr>
+		<tr style="display:none;"><th></th><th></th><th></th><th></th><th></th><th></th><th formula="$4*$5:2"></th></tr>
+	</thead>
+	<tbody>
+	</tbody>
+	<tbody>
+		<tr>
+			<td><input type="checkbox"/></td>
+			<td><input type="text" loxiaType="input" name="name(#)" style="width:95%" mandatory="true"/></td>
+			<td><input type="radio" name="gender(#)" value="male"/>男<input type="radio" name="gender(#)" value="female"/>女</td>
+			<td><select name="department(#)" loxiaType="select" style="width:95%"><option value="">请选择</option><option value="sales">销售部</option><option value="it">IT技术部</option><option value="marketing">市场部</option><option value="hr">人事部</option></select></td>
+			<td class="decimal"><input type="text" loxiaType="number" style="width:95%" name="workHours(#)" decimal="1"/></td>
+			<td class="decimal">20</td>
+			<td class="decimal">&nbsp;</td>
+		</tr>
+	</tbody>
+	<tbody>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td class="decimal" colspan="6">总计:</td>
+			<td class="decimal" decimal="2">&nbsp;</td>
+		</tr>
+	</tfoot>
+</table>
 <script class="javascript" src="scripts/syntaxhighlighter/shCore.js"></script> 
 <script class="javascript" src="scripts/syntaxhighlighter/shBrushJScript.js"></script> 
 <script class="javascript" src="scripts/syntaxhighlighter/shBrushJava.js"></script> 

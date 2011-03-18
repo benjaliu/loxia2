@@ -43,6 +43,15 @@
 					return $obj.data($obj.data("loxiaType"));
 				return null;
 			},
+			byCss : function(cssSelector,context){
+				var rtnObj = [];
+				if(context === undefined) context = document.body;
+				$(cssSelector,context).each(function(){
+					if($(this).data("loxiaType"))
+						rtnObj.push($(this).data($(this).data("loxiaType")));
+				});
+				return rtnObj;
+			},
 			_initButton : function(context){
 				$(context).removeAttr("loxiaType");					
 				$(context).button();
@@ -350,15 +359,14 @@
 			val : function(obj, value){
 				if(obj === undefined) return null;
 				var inputObj = $(obj).is("input,select,textarea") ? obj : $(obj).find("input,select,textarea").get(0);
-				
 				if(inputObj){
 					if(this.isWidget(inputObj)){
-						var baseClass = $(obj).data("loxiaType");
+						var baseClass = $(inputObj).data("loxiaType");
 						if(baseClass){
 							if(value)
-								$(obj).data(baseClass).val(value);
+								$(inputObj).data(baseClass).val(value);
 							else
-								return $(obj).data(baseClass).val();
+								return $(inputObj).data(baseClass).val();
 						}
 					}else{
 						if(value)
@@ -377,14 +385,11 @@
 			validateForm : function(form){
 				form = this.isString(form) ? $("#" + form).get(0) : form;
 				var errorMsg = [],fieldErrorNums = 0;
-				$("input.loxia:enabled,select.loxia:enabled,textarea.loxia:enabled", form).
-					each(function(){
-						if($(this).data("loxiaType")){
-							var widget = $(this).data($(this).data("loxiaType"));
-							if(widget.state() === null) widget.check();
-							fieldErrorNums += (widget.state()?0:1);
-						}							
-					});
+				
+				$.each(this.byCss("input:enabled,select:enabled,textarea:enabled", form),function(index,widget){
+					if(widget.state() === null) widget.check();
+					fieldErrorNums += (widget.state()?0:1);
+				});				
 				
 				if(fieldErrorNums > 0){
 					errorMsg.push(this.getLocaleMsg("VALIDATE_FORM_ERROR"));
@@ -510,27 +515,27 @@
 					return this.option("state");
 				}else if(st === null || !!st){
 					//clear state or set state to true
-					this._setOption("state", st === null? null : !!st);
-					this._setOption("errorMessage", null);
+					this.option("state", st === null? null : !!st);
+					this.option("errorMessage", null);
 					this.element.removeClass("ui-loxia-error");
 					//clear state
 					if(st === null)
-						this._setOption("lastRightValue", null);
+						this.option("lastRightValue", null);
 				}else{
 					//set error state
-					this._setOption("state", false);
-					this._setOption("errorMessage", msg);
+					this.option("state", false);
+					this.option("errorMessage", msg);
 					this.element.addClass("ui-loxia-error");
 				}
 			},
 			check : function(){
-				this.state(null);
+				this.option("state", null);
+				this.option("errorMessage", null);
 				var value = this._getValue();
 				if(this.option("required") && value === ""){
 					this.state(false, loxia.getLocaleMsg("INVALID_EMPTY_DATA"));
 					return false;
 				}
-					
 				if(value === this.val()){
 					this.state(true);
 					return true;
@@ -555,7 +560,7 @@
 					}
 				}
 				this.state(true);
-				this._setOption("lastRightValue", value);
+				this.option("lastRightValue", value);
 				this.element.trigger("valuechanged", [value]);
 				return true;
 			}

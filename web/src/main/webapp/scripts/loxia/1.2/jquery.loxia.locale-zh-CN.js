@@ -10,6 +10,9 @@ loxia.regional['zh-CN'] = {
 			
 			VALIDATE_ERROR : "共发现{0} 处填写问题：",
 			
+			TABLE_BARBTN_ADD : "新增行",
+			TABLE_BARBTN_DELETE : "删除选定行",
+			
 			LABEL_OK : "确定",
 			LABEL_CANCEL : "取消",
 			LABEL_PAGE_FIRST: "首页",

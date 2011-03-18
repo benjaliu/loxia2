@@ -52,7 +52,7 @@
 			if(value == undefined) return this.option("decimal");
 			value = "0"||value;
 			value = parseInt(value,10);
-			if(isNaN(value)) throw "decimal is not a valid number";
+			if(isNaN(value)) throw new Error("decimal is not a valid number");
 			this.option("decimal", value);
 			this.state(null);
 		},
@@ -61,7 +61,7 @@
 			if(value == undefined) return this.option("min");
 			if(value != undefined && value != null){
 				value = loxia.isString(value)?parseFloat(value):value;
-				if(isNaN(value)) throw "min is not a valid number";
+				if(isNaN(value)) throw new Error("min is not a valid number");
 				this.option("min", value);
 				this.state(null);				
 			}
@@ -71,7 +71,7 @@
 			if(value == undefined) return this.option("max");
 			if(value != undefined && value != null){
 				value = loxia.isString(value)?parseFloat(value):value;
-				if(isNaN(value)) throw "max is not a valid number";
+				if(isNaN(value)) throw new Error("max is not a valid number");
 				this.option("max", value);
 				this.state(null);				
 			}
@@ -131,7 +131,7 @@
 			if(value == undefined) return this.option("min");
 			if(value != undefined && value != null){
 				value = loxia.isString(value)? this._parseDate(value):value;
-				if(!value) throw "min is not a valid date";
+				if(!value) throw new Error("min is not a valid date");
 				this.option("min", value);
 				this.element.datepicker("option","minDate",value);
 				this.state(null);				
@@ -142,7 +142,7 @@
 			if(value == undefined) return this.option("max");
 			if(value != undefined && value != null){
 				value = loxia.isString(value)? this._parseDate(value):value;
-				if(!value) throw "max is not a valid date";
+				if(!value) throw new Error("max is not a valid date");
 				this.option("max", value);
 				this.element.datepicker("option","maxDate",value);
 				this.state(null);				

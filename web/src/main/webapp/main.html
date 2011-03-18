@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Main Frame Container</title>
+<link rel="stylesheet" type="text/css" href="css/redmond/jquery-ui-1.8.7.custom.css"/>
+<link rel="stylesheet" type="text/css" href="css/redmond/loxia-ui-1.2.custom.css"/>
+<link rel="stylesheet" type="text/css" href="css/layout-default-latest.css"></link> 
+<style>
+	body, .ui-widget { font:10pt Verdana, Arail,"Trebuchet MS", sans-serif;}	
+	html,body {height: 100%; overflow: hidden;}
+	#main-container {min-height: 300px; min-width: 600px; height: 95%;}
+	td.decimal { text-align: right;	padding-right: 4px;}
+	/* div.ui-datepicker{ font-size: 11px;} */
+	
+</style>
+<script type="text/javascript" src="scripts/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="scripts/jquery-ui-1.8.7.custom.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.layout-latest.js"></script>
+<script type="text/javascript" src="scripts/jquery.bgiframe.min.js"></script>
+
+<script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiacore-1.2.js"></script>
+<script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiainput-1.2.js"></script>
+<script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiaselect-1.2.js"></script>
+<script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiatable-1.2.js"></script>
+<script type="text/javascript" src="scripts/loxia/1.2/jquery.loxia.locale-zh-CN.js"></script>
+<script type="text/javascript" src="scripts/jquery.ui.datepicker-zh-CN.js"></script>
+
+<script type="text/javascript"><!--
+var $j = jQuery.noConflict();
+
+$j(document).ready(function (){
+	var mainLayout = $j("#main-container").layout({
+		north__spacing_open: 0,
+		north__spacing_closed: 8,
+		north__closable: false,
+		north__resizable: false,
+		south__spacing_open: 0,
+		south__spacing_closed: 8,
+		south__closable: false,
+		south__resizable: false,
+		west__size: 250,
+		west__spacing_open: 8,
+		west__spacing_closed: 22,
+		west__togglerLength_closed: 140,
+		west__togglerAlign_closed: "top",
+		west__togglerContent_closed: "M<BR>E<BR>N<BR>U",
+		west__togglerTip_closed: "Open & Pin Menu",
+		west__sliderTip: "Slide Open Menu",
+		west__slideTrigger_open: "mouseover"
+	});	
+});
+
+--></script>
+</head>
+<body style="background-color: #f2f2f2;">
+<div id="main-container">
+	<div class="ui-layout-center">Center</div>
+	<div class="ui-layout-north">
+		North Block
+	</div>
+	<div class="ui-layout-south">South</div>
+	<div class="ui-layout-west">West</div>
+</div>
+</body>
+</html>
