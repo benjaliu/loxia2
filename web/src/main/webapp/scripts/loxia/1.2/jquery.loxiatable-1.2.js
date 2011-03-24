@@ -62,7 +62,7 @@
 			$t.find("tfoot tr:last").addClass("last");
 			
 			$("tbody:first .col-0 input:checked", $t).each(function(){
-				$(this).parents("tr").addClass("selected");
+				$(this).parents("tr").addClass("ui-state-highlight");
 			});
 			
 			this._adjustBodyStyle();			
@@ -92,12 +92,12 @@
 				if($(this).is(":checked")){
 					$("tbody:first .col-0 input:not(:checked)", $t).each(function(){
 						$(this).attr("checked", true);
-						$(this).parents("tr").addClass("selected");
+						$(this).parents("tr").addClass("ui-state-highlight");
 					});
 				}else{
 					$("tbody:first .col-0 input:checked", $t).each(function(){
 						$(this).attr("checked", false);
-						$(this).parents("tr").removeClass("selected");
+						$(this).parents("tr").removeClass("ui-state-highlight");
 					});
 				}
 			});
@@ -231,7 +231,8 @@
 		},
 		deleteRow: function(){
 			var $t = this.element.find("table")
-			$t.find("tbody:first tr.selected").remove();
+			$t.find("tbody:first tr.ui-state-highlight").remove();
+			$("thead tr", $t).find("th:eq(0) input[type='checkbox']").attr("checked",false);
 			$t.trigger("rowdeleted");
 		}
 	};
