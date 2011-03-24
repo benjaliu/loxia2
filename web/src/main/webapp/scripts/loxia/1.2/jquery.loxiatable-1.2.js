@@ -58,8 +58,8 @@
 				}
 			}
 			
-			$t.find("tbody tr:last").addClass("last");
-			$t.find("tfoot tr:last").addClass("last");
+			//$t.find("tbody tr:last").addClass("last");
+			//$t.find("tfoot tr:last").addClass("last");
 			
 			$("tbody:first .col-0 input:checked", $t).each(function(){
 				$(this).parents("tr").addClass("ui-state-highlight");
@@ -224,8 +224,10 @@
 			$t.find("tbody:first").append(row);
 			var $tr = $t.find("tbody:first tr:last");
 			loxia.initContext($tr);
-			
+			var index = $tr.parents("tbody").find("tr").index($tr[0]);
+			$tr.addClass(index%2 == 0 ? "even":"odd");
 			this._initRowAction($tr.get(0));
+			
 			
 			$t.trigger("rowappended", [$tr]);
 		},
@@ -233,6 +235,7 @@
 			var $t = this.element.find("table")
 			$t.find("tbody:first tr.ui-state-highlight").remove();
 			$("thead tr", $t).find("th:eq(0) input[type='checkbox']").attr("checked",false);
+			this._adjustBodyStyle();
 			$t.trigger("rowdeleted");
 		}
 	};

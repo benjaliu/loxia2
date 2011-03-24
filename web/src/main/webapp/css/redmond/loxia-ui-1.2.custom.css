@@ -41,3 +41,4 @@ div.ui-datepicker, .ui-button{ font-size: 0.8em;}
 .ui-loxia-table th, .ui-loxia-table td {overflow: hidden;white-space: nowrap;border-left : 0px none;border-top : 0px none;}
 .ui-loxia-table th {text-align:center;}
 .ui-loxia-table td {border-right: 1px solid #C5DBEC; border-bottom: 1px solid #C5DBEC; padding: 2px;}
+.ui-loxia-table tr.odd {background-color: #fff;}
