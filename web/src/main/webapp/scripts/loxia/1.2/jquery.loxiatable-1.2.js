@@ -8,20 +8,25 @@
 		},
 		
 		_initTable: function(){
-			var $t = this.element;
+			var $t = this.element.find("table");
+			$('<div class="tbl-container"></div>').prependTo(this.element);
+			$("div.tbl-container", this.element).append($t);
+			$t.attr("cellpadding",0).attr("cellspacing",0);
 			var formulas = [];
 			var cols = $t.find("thead tr:last").find("th").each(function(i){
 				$(this).html("<div class='col-" + i + "'>" + $(this).html() + "</div>");
-				$t.find("tbody:first tr,tbody:eq(1) tr").find("td:eq(" + i + ")").addClass("col-" + i);
+				$t.find("tbody tr").find("td:eq(" + i + ")").addClass("col-" + i);
 				formulas.push($(this).attr("formula")||"");
 				
 				$(this).hover(function(){
-					$(this).addClass("hover");
+					$(this).addClass("ui-state-hover");
 				},function(){
-					$(this).removeClass("hover");
+					$(this).removeClass("ui-state-hover");
 				});
 			}).length;
-						
+			
+			$("tbody", $t).find("td.col-0:has(input[type='checkbox'])").css({"text-align":"center"});
+								
 			$t.find("tfoot tr").each(function(){
 				var index = 0;
 				$(this).find("td").each(function(){
@@ -39,7 +44,7 @@
 			$("tbody:eq(1)", $t).find("tr").remove();
 			
 			loxia.initContext($t.find("tbody:first"));
-			
+						
 			var _this = this;
 			$("tbody:first tr", $t).each(function(){
 				_this._initRowAction(this);
@@ -60,14 +65,15 @@
 				$(this).parents("tr").addClass("selected");
 			});
 			
-			this._adjustBodyStyle();
+			this._adjustBodyStyle();			
 			
-			this._initActionBar();
+			this._initActionBar();		
 			
 			this._calculateRow();
 			this._calculateFoot();
 			//event handler
 			//head selector
+			
 			$t.bind("rowchanged", function(event, data){
 				var row = data[0];
 				if(row)
@@ -81,6 +87,7 @@
 				_this._calculateFoot();
 			});
 			
+			$("thead th",$t).addClass("ui-state-default");
 			$("thead tr", $t).find("th:eq(0) input[type='checkbox']").bind("click", function(){				
 				if($(this).is(":checked")){
 					$("tbody:first .col-0 input:not(:checked)", $t).each(function(){
@@ -94,52 +101,57 @@
 					});
 				}
 			});
-			//line selector
-			$("tbody:first").find("td.col-0 input[type='checkbox']").live("click", function(){
+			//line selector			
+			$("tbody:first", $t).find("td.col-0 input[type='checkbox']").live("click", function(){
 				if($(this).is(":checked")){
-					$(this).parents("tr").addClass("selected");
+					$(this).parents("tr").addClass("ui-state-highlight");
 				}else{
-					$(this).parents("tr").removeClass("selected");
+					$(this).parents("tr").removeClass("ui-state-highlight");
 				}
+			});
+			$("tbody:first", $t).find("tr").live('mouseover mouseout', function(event) {
+				  if (event.type == 'mouseover') {
+					  $(this).addClass("ui-state-hover");
+				  } else {
+					  $(this).removeClass("ui-state-hover");
+				  }
 			});
 		},
 		_create: function(){
 			$.Widget.prototype._create.apply( this, arguments );
 			var $t = this.element;
-			if($("tbody", $t).length != 3)
-				throw new Error("Current table need at least and only 3 tbodies.");
-			$t.removeAttr("loxiaType").addClass("ui-loxia-table");
+			if($("tbody", $t).length != 2)
+				throw new Error("Current table need at least and only 2 tbodies.");
+			$t.removeAttr("loxiaType").addClass("ui-loxia-table").addClass("ui-corner-all");
 			
 			this._initTable();
 		},
 		_adjustBodyStyle: function(){
-			$("tbody:first tr:odd", this.element).removeClass("even").addClass("odd");
-			$("tbody:first tr:even", this.element).removeClass("odd").addClass("even");
+			var $t = this.element.find("table");
+			$("tbody:first tr:odd", $t).removeClass("even").addClass("odd");
+			$("tbody:first tr:even", $t).removeClass("odd").addClass("even");
 		},
 		_initActionBar: function(){
-			var bar = '', $t = this.element, opstr = $t.attr("operation")||"";			
+			var bar = '', $t = this.element.find("table"), opstr = $t.attr("operation")||"";			
 			if(opstr.indexOf("add") >=0)
-				bar += '<button type="button" loxiaType="button" action="add" title="' + loxia.getLocaleMsg("TABLE_BARBTN_ADD") + '">' + loxia.getLocaleMsg("TABLE_BARBTN_ADD") + '</button>';
+				bar += '<button type="button" icons="ui-icon-plusthick" loxiaType="button" action="add" title="' + loxia.getLocaleMsg("TABLE_BARBTN_ADD") + '">' + loxia.getLocaleMsg("TABLE_BARBTN_ADD") + '</button>';
 			if(opstr.indexOf("delete") >=0)
-				bar += '<button type="button" loxiaType="button" action="delete" title="' + loxia.getLocaleMsg("TABLE_BARBTN_DELETE") + '">' + loxia.getLocaleMsg("TABLE_BARBTN_DELETE") + '</button>';
+				bar += '<button type="button" icons="ui-icon-minusthick" loxiaType="button" action="delete" title="' + loxia.getLocaleMsg("TABLE_BARBTN_DELETE") + '">' + loxia.getLocaleMsg("TABLE_BARBTN_DELETE") + '</button>';
 			
-			var $td = $t.find("tbody:last").find("td:first");
-			if($td.get(0))
-				$(bar).appendTo($td);
-			else
-				$t.find("tbody:last").append('<tr class="last"><td colspan="' + this.option("cols") + '">'
-					+ bar + '</td></tr>');
+			$('<div class="tbl-action-bar">' + bar + '</div>').prependTo(this.element);
 			
 			var _this = this;
-			$t.find("tbody:last button[action='add']").live("click", function(){
+			var $actionbar = this.element.find("div.tbl-action-bar");
+			loxia.initContext($actionbar[0]);
+			$actionbar.find("button[action='add']").live("click", function(){
 				_this.appendRow();
-			});
-			$t.find("tbody:last button[action='delete']").live("click", function(){
+			});			
+			$actionbar.find("button[action='delete']").live("click", function(){
 				_this.deleteRow();
 			});
 		},
 		_initRowAction: function(row){
-			var $t = this.element;
+			var $t = this.element.find("table");
 			var $tr = $(row);
 			$("input,select,textarea", $tr).each(function(){
 				if($(this).is(":checkbox") || $(this).is(":radio") || $(this).is(":hidden")) return;
@@ -193,7 +205,7 @@
 			}
 		},
 		_calculateFoot: function(){
-			var $t = this.element;
+			var $t = this.element.find("table");
 			$t.find("tfoot td[decimal]").each(function(){
 				var decimal = parseInt($(this).attr("decimal")), result = 0;
 				$t.find("tbody:first tr").find("td:eq(" + $(this).data("col") + ")").each(function(){
@@ -206,7 +218,7 @@
 			$t.trigger("calculated");
 		},
 		appendRow: function(){
-			var $t = this.element,
+			var $t = this.element.find("table"),
 				rowIndex = "" + (--_rowIndex),
 				row = this.option("template").replace(/\(#\)/ig, "(" + rowIndex + ")");
 			$t.find("tbody:first").append(row);
@@ -218,8 +230,9 @@
 			$t.trigger("rowappended", [$tr]);
 		},
 		deleteRow: function(){
-			$(this.element).find("tbody:first tr.selected").remove();
-			$(this.element).trigger("rowdeleted");
+			var $t = this.element.find("table")
+			$t.find("tbody:first tr.selected").remove();
+			$t.trigger("rowdeleted");
 		}
 	};
 	

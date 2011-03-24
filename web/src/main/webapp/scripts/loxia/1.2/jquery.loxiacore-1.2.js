@@ -23,7 +23,7 @@
 				if(context === undefined) context = document.body;
 				if($(context).attr("loxiaType")) this.initLoxiaWidget(context);
 				else{
-					$(context).find("> table[loxiaType]").each(function(){
+					$(context).find("> div[loxiaType]").each(function(){
 						loxia.initLoxiaWidget(this);
 					});
 					$(context).find("[loxiaType]").each(function(){
@@ -383,10 +383,10 @@
 			},
 			/*check form's validity*/
 			validateForm : function(form){
-				form = this.isString(form) ? $("#" + form).get(0) : form;
+				form = this.isString(form) ? $("#" + form)[0] : form;
 				var errorMsg = [],fieldErrorNums = 0;
 				
-				$.each(this.byCss("input:enabled,select:enabled,textarea:enabled", form),function(index,widget){
+				$.each(this.byCss("input:enabled,select:enabled,textarea:enabled", form),function(index,widget){					
 					if(widget.state() === null) widget.check();
 					fieldErrorNums += (widget.state()?0:1);
 				});				
@@ -465,7 +465,6 @@
 			_getValue : function(){return this.element.val()},
 			_setOption: function( key, value ) {
 				$.Widget.prototype._setOption.apply( this, arguments );				
-
 				if(key === "readonly"){
 					if(value)
 						this.element.attr("readonly","readonly");
@@ -512,6 +511,7 @@
 			},
 			state : function(st, msg){
 				if(st === undefined){
+					if(this.option("state") === undefined) return null;
 					return this.option("state");
 				}else if(st === null || !!st){
 					//clear state or set state to true

@@ -5,19 +5,32 @@
 <title>Main Frame Container</title>
 <link rel="stylesheet" type="text/css" href="css/redmond/jquery-ui-1.8.7.custom.css"/>
 <link rel="stylesheet" type="text/css" href="css/redmond/loxia-ui-1.2.custom.css"/>
-<link rel="stylesheet" type="text/css" href="css/layout-default-latest.css"></link> 
+<link rel="stylesheet" type="text/css" href="css/layout-default-latest.css"/>
+<link rel="stylesheet" type="text/css" href="css/ui.jqgrid.css"/> 
 <style>
-	body, .ui-widget { font:10pt Verdana, Arail,"Trebuchet MS", sans-serif;}	
+	body, .ui-widget { font:9pt Verdana, Arail,"Trebuchet MS", sans-serif;}	
 	html,body {height: 100%; overflow: hidden;}
-	#main-container {min-height: 300px; min-width: 600px; height: 95%;}
+	#main-container {min-height: 300px; min-width: 600px; height: 95%;}	
 	td.decimal { text-align: right;	padding-right: 4px;}
 	/* div.ui-datepicker{ font-size: 11px;} */
 	
+	.ui-layout-pane-west {padding: 1px;} 
+	
+	#frame-container { height: 95%}
+	#frame-container li .ui-icon-close { float: left; margin: 0.4em 0.2em 0 0; cursor: pointer; }
+	#frame-container .ui-tabs-panel {padding: 5px;}
+	#frame-container iframe {width: 100%; overflow: auto;}
+	
+	.frame-control {width: 100%; height: 20px;}
 </style>
 <script type="text/javascript" src="scripts/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="scripts/jquery-ui-1.8.7.custom.min.js"></script>
 <script type="text/javascript" src="scripts/jquery.layout-latest.js"></script>
 <script type="text/javascript" src="scripts/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="scripts/main-content-frame.js"></script>
+
+<script type="text/javascript" src="scripts/grid.locale-cn.js"></script>
+<script type="text/javascript" src="scripts/jquery.jqGrid.min.js"></script>
 
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiacore-1.2.js"></script>
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiainput-1.2.js"></script>
@@ -30,6 +43,8 @@
 var $j = jQuery.noConflict();
 
 $j(document).ready(function (){
+	loxia.init({debug: true, region: 'zh-CN'});
+	
 	var mainLayout = $j("#main-container").layout({
 		north__spacing_open: 0,
 		north__spacing_closed: 8,
@@ -47,20 +62,92 @@ $j(document).ready(function (){
 		west__togglerContent_closed: "M<BR>E<BR>N<BR>U",
 		west__togglerTip_closed: "Open & Pin Menu",
 		west__sliderTip: "Slide Open Menu",
-		west__slideTrigger_open: "mouseover"
+		west__slideTrigger_open: "mouseover",
+		onresize : function(pname,pe,ps,po,ln){
+			if(pname != "center") return;			
+			$j("> .ui-tabs-panel iframe", $j("#frame-container")).height($j("#frame-container").height() - $j("> ul.ui-tabs-nav", $j("#frame-container")).height() - 30);			
+		}
 	});	
+	
+	$j("#left-menu").accordion();
+	
+	$j("#left-menu li a").click(function(evt){
+		evt.preventDefault();
+		if($j(this).attr("frameId")){
+			var frameId = $j(this).attr("frameId"),
+				li = $j("#frame-container").find("li[frameId='" + frameId + "']").get(0);
+			if(li){
+				var $titleContainer = $j(li).parent();
+				var index = $j( "li", $titleContainer ).index(li);
+				//console.log("frameId:" + frameId + "| index:" + index);
+				$j("#frame-container").tabs("select", index);
+				return;
+			}else{
+				//clear
+				//$j(this).removeAttr("frameId");
+			}
+		}
+		
+		//console.log("openFrame('" + $j(this).attr("href") + "','" + $j(this).text() + "')");
+		openFrame(this);		
+		return false;
+	});
+	
+	$j(".frame-control span.refresh a").live("click",function(evt){
+		evt.preventDefault();
+		$j(this).parents(".ui-tabs-panel").find("iframe").get(0).contentDocument.location.reload(true);
+		return false;
+	});
+	
+	$j("#main-container > .ui-layout-north").load("common/top.html", function(){
+		loxia.initContext($j("#dialog-chgrole"));
+	});
 });
 
 --></script>
 </head>
 <body style="background-color: #f2f2f2;">
 <div id="main-container">
-	<div class="ui-layout-center">Center</div>
+	<div class="ui-layout-center">
+		<div id="frame-container">
+			<ul>
+				<!-- -->
+			</ul>			
+			<!-- -->
+		</div>		
+	</div>
 	<div class="ui-layout-north">
 		North Block
 	</div>
 	<div class="ui-layout-south">South</div>
-	<div class="ui-layout-west">West</div>
+	<div class="ui-layout-west">
+		<div id="left-menu">
+			<h3><a href="#">菜单1</a></h3>
+			<div>
+			<ul>
+				<li><a href="frame/op-create-opb.html">创建仓库作业单</a></li>
+				<li><a href="template-1.2.html">功能2</a></li>
+				<li>
+				<dl>
+					<dt><a href="#">功能3</a></dt>
+					<dd>
+						<ul>
+							<li><a href="#">功能3.1</a></li>
+							<li><a href="#">功能3.2</a></li>
+						</ul>
+					</dd>
+				</dl>
+				</li>
+				<li><a href="#">功能4</a></li>
+			</ul>
+			
+			</div>
+			<h3><a href="#">菜单2</a></h3>
+			<div>菜单2</div>
+			<h3><a href="#">菜单3</a></h3>
+			<div>菜单3</div>
+		</div>
+	</div>
 </div>
 </body>
 </html>

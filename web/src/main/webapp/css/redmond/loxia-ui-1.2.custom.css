@@ -6,10 +6,10 @@
 	padding: 14px 0px 0px 40px;
 }
 .loxiaTip {
-	position: absolute;
+	position: absolute; z-index: 1000;
 }
 
-.loxiaTip .arrow{position: absolute; z-index: 2;}
+.loxiaTip .arrow{position: absolute; z-index: 2000;}
 .loxiaTip-l .arrow{right:0px; top:5px; background: url(images/ui-tip-arrow-l.gif) transparent no-repeat; width: 11px; height: 17px;}
 .loxiaTip-r .arrow{left:0px; top:9px; background: url(images/ui-tip-arrow-r.gif) transparent no-repeat; width: 5px; height: 8px;}
 .loxiaTip-t .arrow{left:5px; bottom:0px; background: url(images/ui-tip-arrow-t.gif) transparent no-repeat; width: 17px; height: 11px;}
@@ -30,3 +30,14 @@
 .ui-loxia-number-active {text-align: left;}
 
 div.ui-datepicker, .ui-button{ font-size: 0.8em;}
+
+.confirm.ui-state-default { background: url("images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #DFEFFC; color: #fff;}
+
+.ui-loxia-table, .ui-loxia-table div{overflow: hidden;}
+.ui-loxia-table div.tbl-container { width: 100%; overflow-x: auto;}
+.ui-loxia-table { border: 1px solid #C5DBEC;}
+.ui-loxia-table > div{ border: 1px solid; border-color: #fff #ccc #ccc #fff;}
+.ui-loxia-table .tbl-action-bar {padding: 4px;}
+.ui-loxia-table th, .ui-loxia-table td {overflow: hidden;white-space: nowrap;border-left : 0px none;border-top : 0px none;}
+.ui-loxia-table th {text-align:center;}
+.ui-loxia-table td {border-right: 1px solid #C5DBEC; border-bottom: 1px solid #C5DBEC; padding: 2px;}

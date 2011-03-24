@@ -6,7 +6,7 @@
 		_blur : function(){},
 		_create : function(){
 			$.Widget.prototype._create.apply( this, arguments );
-			
+
 			if(this.element.is("input") || this.element.is("textarea")){
 				this._initWidget();
 				this.option("trim", (this.element.attr("trim") === "true"));

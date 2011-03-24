@@ -1,0 +1,66 @@
+<link rel="stylesheet" type="text/css" href="../css/redmond/loxia-ui-1.2.custom.css"/>
+<style>
+	.label { text-align: right; padding-right: 4px; min-width: 100px; font-weight: bold}
+	.field1{ padding-left: 4px; min-width: 200px;}
+</style>
+<script><!--
+$j("#dialog-chgrole").dialog({title: "选择角色", modal:true, autoOpen: false, width: 400});
+
+function setRole(role){
+	$j("#role-inf").text(role.name);
+	$j("#role-inf").next("input[type='hidden']").val(role.id);
+}
+
+$j(document).ready(function(){
+	$j("#tbl-rolelist").jqGrid({
+		//url:"data/rolelist.json",
+		datatype: "json",
+		colNames: ["ID","角色名称","单位简称"],
+		colModel: [{name: "id", index: "id", hidden: true},
+		           {name: "name", index: "name asc", width: 120, resizable: true},
+		           {name: "org", index: "org", width: 240, resizable: true}],
+		caption: "角色列表",
+		jsonReader : {
+			repeatitems: false,
+			id:"id"
+		},
+		loadComplete: function(data){
+			var roleId = $j("#role-inf").next("input[type='hidden']").val();
+			if(roleId){
+				$j("#tbl-rolelist").jqGrid("setSelection", parseInt(roleId,10));	
+			}		
+		},
+		height: 100
+	});
+	
+	$j("#chg-role a").click(function(evt){
+		evt.preventDefault();
+		$j("#tbl-rolelist").jqGrid().setGridParam({url : 'data/rolelist.json'}).trigger("reloadGrid");		
+		$j("#dialog-chgrole").dialog("open");		
+		return false;
+	});
+	
+	$j("#dialog-chgrole button.confirm").click(function(evt){
+		var id = $j("#tbl-rolelist").jqGrid("getGridParam","selrow");
+		if(id){
+			setRole($j("#tbl-rolelist").jqGrid("getRowData",id));
+			$j("#dialog-chgrole").dialog("close");
+		}else{
+			alert("Please select row");
+		}
+	});
+});
+--></script>
+<span id="role-inf">公司--超级管理员</span><input type="hidden" value="1"/><span id="chg-role"><a href="#">选择角色</a></span>
+<div id="dialog-chgrole">
+<h3>用户信息</h3>
+<span class="label">用户名</span><span class="field1">junhua.wu_jm</span>
+<span class="label">真实姓名</span><span class="field1">吴骏华</span>
+<h3>选择角色</h3>
+<table id="tbl-rolelist"></table>
+<p></p>
+<div class="buttonlist">
+<button type="button" loxiaType="button" class="confirm">确定</button>
+<button type="button" loxiaType="button" class="cancel" onclick='$j("#dialog-chgrole").dialog("close");'>取消</button>
+</div>
+</div>

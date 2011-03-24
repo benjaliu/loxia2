@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>创建仓库作业单</title>
+<link rel="stylesheet" type="text/css" href="../css/redmond/jquery-ui-1.8.7.custom.css"/>
+<link rel="stylesheet" type="text/css" href="../css/redmond/loxia-ui-1.2.custom.css"/>
+<link rel="stylesheet" type="text/css" href="../css/ui.jqgrid.css"/> 
+<style>
+	body, .ui-widget { font:9pt Verdana, Arail,"Trebuchet MS", sans-serif;}		
+	td.decimal { text-align: right;	padding-right: 4px;}
+	/* div.ui-datepicker{ font-size: 11px;} */
+	
+	.label { text-align: right; padding-right: 4px; font-weight: bold; background-color: #efefef;}
+	select.ui-loxia-default, input.ui-loxia-default, textarea.ui-loxia-default { width: 95%; }
+</style>
+<script type="text/javascript" src="../scripts/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery-ui-1.8.7.custom.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery.bgiframe.min.js"></script>
+
+<script type="text/javascript" src="../scripts/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../scripts/jquery.jqGrid.min.js"></script>
+
+<script type="text/javascript" src="../scripts/loxia/1.2/jquery.loxiacore-1.2.js"></script>
+<script type="text/javascript" src="../scripts/loxia/1.2/jquery.loxiainput-1.2.js"></script>
+<script type="text/javascript" src="../scripts/loxia/1.2/jquery.loxiaselect-1.2.js"></script>
+<script type="text/javascript" src="../scripts/loxia/1.2/jquery.loxiatable-1.2.js"></script>
+<script type="text/javascript" src="../scripts/loxia/1.2/jquery.loxia.locale-zh-CN.js"></script>
+<script type="text/javascript" src="../scripts/jquery.ui.datepicker-zh-CN.js"></script>
+
+<script type="text/javascript"><!--
+var $j = jQuery.noConflict();
+
+
+function checkcode(value, obj){
+	if(value === "abc"){
+		var $sel = obj.element.parents("tr").find("td:eq(7) select");
+		$j("option",$sel).remove();
+		if(!$j.browser.msie){
+			$j('<option value="">请选择</option>').appendTo($sel);
+			$j('<option value="1">@a-b-c</option>').appendTo($sel);
+		}else{
+			var o = document.createElement('option');
+			o.text = "请选择";
+			o.value = "";
+			$sel[0].add(o);
+			o = document.createElement('option');
+			o.text = "@a-b-c";
+			o.value = "1";
+			$sel[0].add(o);
+		}
+		return loxia.SUCCESS;
+	}else
+		return "商品不存在";
+}
+
+function checkinvcode(value,obj){
+	var $tr = obj.element.parents("tr");
+	if(value){		
+		$j("td:eq(8)", $tr).text("2");
+		$j("td:eq(9)", $tr).text("3");
+	}else{
+		$j("td:eq(8)", $tr).text("&nbsp;");
+		$j("td:eq(9)", $tr).text("&nbsp;");
+	}
+	return loxia.SUCCESS;
+}
+
+function showErrorMsg(msg, infodiv){
+	if(infodiv === undefined) infodiv = $j("#msg")[0];
+	var $info = loxia.isString(infodiv)? $j("#" + infodiv) : $j(infodiv);
+	
+	if(msg){
+		var innerInfo = '<span class="ui-icon ui-icon-alert" style="float:left; margin-right:0.3em;"></span><span class="inner">';
+		if(loxia.isString(msg))
+			innerInfo += msg;
+		else if($j.isArray(msg)){
+			for(var i=0; i< msg.length; i++)
+				innerInfo += msg[i] + "<br/>";
+		}
+		innerInfo += '</span></span>';
+		$info.html(innerInfo);
+		$info.show();
+	}else
+		$info.hide();
+}
+
+function showAlert(caption,msg){
+	console.log("showAlert");
+	$j("#dialog-alert").dialog("option","title",caption);
+	$j("#dialog-alert").prepend(document.createTextNode(msg));
+	$j("#dialog-alert").dialog("open");
+}
+
+function opcreateFormValidate(oForm){
+	return loxia.SUCCESS;
+	//return "这里有个错误";
+}
+
+$j(document).ready(function (){
+	loxia.init({debug: true, region: 'zh-CN'});
+	
+	$j("#dialog-sku-query").dialog({modal:true, autoOpen: false, width: 400});
+	$j("#dialog-alert").dialog({modal:true, autoOpen: false, width: 400});
+	
+	$j("#create").click(function(){
+		var errMsg = loxia.validateForm("opcreateForm");
+		if(errMsg.length ===0){
+			//do submit job
+			showAlert("确认","单据创建成功");
+		}else{
+			//show error msg
+			showErrorMsg(errMsg);
+		}
+	});
+	
+	$j("input[dialog]").live("dblclick", function(){
+		$j("#" + $j(this).attr("dialog")).dialog("option", "parent", this);
+		$j("#" + $j(this).attr("dialog")).dialog("open");
+	});
+});
+
+--></script>
+</head>
+<body style="background-color: #f2f2f2;">
+	<form id="opcreateForm" name="opcreateForm">
+	<table>
+		<tr>
+			<td class="label" width="20%">操作日期：</td>
+			<td width="30%"><input loxiaType="date" mandatory="true"/></td>
+			<td class="label" width="20%">作业类型：</td>
+			<td width="30%"><select loxiaType="select" mandatory="true"><option value="">请选择</option><option value="1">采购入库</option>
+					<option value="2">销售出库</option><option value="3">退货入库</option></select></td>
+		</tr>
+		<tr>
+			<td class="label" width="20%">仓库：</td>
+			<td width="30%"><select loxiaType="select" mandatory="true">
+					<option value="">请选择</option>
+					<option value="1">自营仓</option>
+					<option value="2">第三方仓库</option></select></td>
+			<td class="label" width="20%">相关单据号：</td>
+			<td width="30%"><input loxiaType="input" /></td>
+		</tr>
+		<tr>
+			<td class="label" width="20%">相关店铺：</td>
+			<td width="30%"><select loxiaType="select">
+						<option value="">请选择</option>
+						<option value="1">店铺1</option>
+					</select></td>
+			<td class="label" width="20%">移库目的地：</td>
+			<td width="30%"><input loxiaType="input" /></td>
+		</tr>
+		<tr>
+			<td class="label">备注：</td>
+			<td colspan="3"><textarea loxiaType="input"></textarea></td>
+		</tr>
+	</table>
+	<p></p>
+	<div id="tbl-opb-line" loxiaType="edittable">
+	<table operation="add,delete" append="1" width="1130">
+		<thead>
+			<tr>
+				<th width="30"><input type="checkbox"/></th>
+				<th width="100">条形码</th>
+				<th width="100">商品编码[...]</th>
+				<th width="200">商品名称</th>
+				<th width="100">关键属性[...]</th>
+				<th width="100">建议库位</th>
+				<th width="100">库存状态名称</th>
+				<th width="100">库位编码</th>
+				<th width="100">实际库存量</th>
+				<th width="100">可用库存量</th>
+				<th width="100">计划执行数量</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+		<tbody>
+			<tr>
+				<td><input type="checkbox"/></td>
+				<td><input loxiaType="input" /></td>
+				<td><input loxiaType="input" name="sku(#).code" mandatory="true" checkmaster="checkcode" dialog="dialog-sku-query"/></td>
+				<td>&nbsp;</td>
+				<td><input loxiaType="input" /></td>
+				<td><input type="checkbox"/></td>
+				<td>&nbsp;</td>
+				<td><select loxiaType="select" mandatory="true" checkmaster="checkinvcode"><option value="">请选择</option></select></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td><input loxiaType="number" mandatory="true"/></td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="10">&nbsp;</td>
+				<td decimal="0">&nbsp;</td>
+			</tr>
+		</tfoot>
+	</table>
+	</div>
+	<p></p>
+	<div class="buttonlist">
+		<button type="button" loxiaType="button" class="confirm" id="create">确定</button>
+	</div>
+	</form>
+	<p id="msg" class="ui-state-highlight" style="padding:0.7em; display:none;"></p>
+	
+	<!-- dialog -->
+	<div id="dialog-sku-query">
+		
+	</div>
+	<!-- common dialog -->
+	<div id="dialog-alert">
+	
+	<div class="buttonlist">
+	<button type="button" loxiaType="button" class="confirm" onclick='$j("#dialog-alert").dialog("close");'>确定</button>
+	</div>
+	</div>
+</body>
+</html>

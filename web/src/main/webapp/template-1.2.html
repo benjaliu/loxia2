@@ -280,7 +280,8 @@ function setInput5(value, obj){
 <p>
 表格
 </p>
-<table id="edittable" loxiaType="edittable" operation="add,delete" append="1">
+<div id="edittable" loxiaType="edittable" >
+<table operation="add,delete" append="1" width="2000">
 	<thead>
 		<tr>
 			<th rowspan="2" width="5%"><input type="checkbox"/></th>
@@ -309,8 +310,6 @@ function setInput5(value, obj){
 			<td class="decimal">&nbsp;</td>
 		</tr>
 	</tbody>
-	<tbody>
-	</tbody>
 	<tfoot>
 		<tr>
 			<td class="decimal" colspan="6">总计:</td>
@@ -318,6 +317,7 @@ function setInput5(value, obj){
 		</tr>
 	</tfoot>
 </table>
+</div>
 <script class="javascript" src="scripts/syntaxhighlighter/shCore.js"></script> 
 <script class="javascript" src="scripts/syntaxhighlighter/shBrushJScript.js"></script> 
 <script class="javascript" src="scripts/syntaxhighlighter/shBrushJava.js"></script> 
