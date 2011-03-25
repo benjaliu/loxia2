@@ -96,11 +96,26 @@ function opcreateFormValidate(oForm){
 	return loxia.SUCCESS;
 	//return "这里有个错误";
 }
+/**
+* Reset prodInfoForm when click reset button or load the dialog.
+*/
+function resetProdInfoForm(){
+ //todo
+ document.prodInfoForm.reset();
+}
+/**
+* Reset tagInfoForm when click reset button or load the dialog.
+*/
+function resetTagInfoForm(){
+ //todo
+ document.tagInfoForm.reset();
+}
 
 $j(document).ready(function (){
 	loxia.init({debug: true, region: 'zh-CN'});
 	
-	$j("#dialog-sku-query").dialog({modal:true, autoOpen: false, width: 400});
+	$j("#dialog-sku-query").dialog({modal:true, autoOpen: false, width: 900,title:"商品基本信息查询"});
+    $j("#dialog-tag-query").dialog({modal:true, autoOpen: false, width: 700,title:"标签查询"});
 	$j("#dialog-alert").dialog({modal:true, autoOpen: false, width: 400});
 	
 	$j("#create").click(function(){
@@ -118,6 +133,23 @@ $j(document).ready(function (){
 		$j("#" + $j(this).attr("dialog")).dialog("option", "parent", this);
 		$j("#" + $j(this).attr("dialog")).dialog("open");
 	});
+    
+    $j("#allProduct").bind("click", function(){	
+		if($j(this).is(":checked")){
+			$j("#productInfoTable input:not(:checked)").each(function(){
+				$j(this).attr("checked", true);
+				$j(this).parents("tr").addClass("ui-state-highlight");
+				});
+		}else{
+			$j("#productInfoTable input:checked").each(function(){
+				$j(this).attr("checked", false);
+				$j(this).parents("tr").removeClass("ui-state-highlight");
+				});
+			}
+		});
+   
+	
+   
 });
 
 --></script>
@@ -206,8 +238,154 @@ $j(document).ready(function (){
 	
 	<!-- dialog -->
 	<div id="dialog-sku-query">
-		
+        <!-- [start]商品基本信息dialog -->
+		<form id="prodInfoForm" name="prodInfoForm">
+            <table>
+                <tr>
+                    <td class="label" width="14%">创建时间从</td>
+                    <td width="18%"><input loxiaType="date" name="startDate" id="startDate"/></td>
+                    <td class="label" width="18%">到</td>
+                    <td width="18%"><input loxiaType="date" name="endDate" id="endDate"/></td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="label" width="14%">商品名称</td>
+                    <td width="18%"><input loxiaType="input" name="productName" id="productName" /></td>
+                    <td class="label" width="18%">JUMBOMART的商品编码</td>
+                    <td width="18%"><input loxiaType="input" name="productCode" id="productCode" /></td>
+                    <td class="label" width="18%">供应商简称</td>
+                    <td width="18%">
+                        <select loxiaType="select" name="privoderCodeName" id="privoderCodeName" >
+                            <option value="">请选择</option>
+                            <option value="V_AOSEN" title="傲森视听设备">V_AOSEN</option>
+                            <option value="V_BAICHEN" title="浙江百城">V_BAICHEN</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label" width="14%">标签名称</td>
+                    <td width="18%"><input loxiaType="input" name="tagName" id="tagName" dialog="dialog-tag-query"/></td>
+                    <td class="label" width="18%">供应商的商品编码</td>
+                    <td width="18%"><input loxiaType="input" name="productCodeFromPrivoder" id="productCodeFromPrivoder"/></td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+            </table>
+            <div class="tbl-action-bar">
+                <table style="width:500px;padding-left:300px">
+                    <tr>
+                        <td><button title="查询" action="search" type="button"  role="button" aria-disabled="false"><span class="ui-button-text">查询</span></button></td>
+                        <td><button title="重设" action="reset" onclick="resetProdInfoForm()" type="button"  role="button" aria-disabled="false"><span class="ui-button-text">重设</span></button></td>
+                        <td><button title="确定" action="submit" type="button"  role="button" aria-disabled="false"><span class="ui-button-text">确定</span></button></td>
+                    </tr>
+                </table>
+            </div>
+            <p></p>
+            <div class="ui-loxia-table ui-corner-all">
+                <div class="tbl-container">
+                    <table width="930" id="productInfoTable">
+                        <thead>
+                            <tr>
+                                <th width="30" class="ui-state-default"><input type="checkbox" id="allProduct"/></th>
+                                <th width="100" class="ui-state-default">商品生命周期</th>
+                                <th width="100" class="ui-state-default">JUMBOMART的商品编码*</th>
+                                <th width="200" class="ui-state-default">商品名称*</th>
+                                <th width="100" class="ui-state-default">供应商的商品编码*</th>
+                                <th width="100" class="ui-state-default">最后编辑时间*</th>
+                                <th width="100" class="ui-state-default">供应商编码</th>
+                                <th width="100" class="ui-state-default">供应商简称</th>
+                                <th width="100" class="ui-state-default">商品物流方式</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="even">
+                                <td style="padding:0px 0 0 4px"><input type="checkbox"/></td>
+                                <td class="productState">已上架</td>
+                                <td>ACC001</td>
+                                <td>飞利浦HQ64刀头</td>
+                                <td>422203614020</td>
+                                <td>2010-01-24</td>
+                                <td>V_PHILIPS</td>
+                                <td>飞利浦中国</td>
+                                <td>商城快递（1～5天）</td>
+                            </tr>
+                            <tr class="odd">
+                                <td style="padding:0px 0 0 4px"><input type="checkbox"/></td>
+                                <td class="productState">已上架</td>
+                                <td>ACC001</td>
+                                <td>飞利浦HQ64刀头</td>
+                                <td>422203614020</td>
+                                <td>2010-01-24</td>
+                                <td>V_PHILIPS</td>
+                                <td>飞利浦中国</td>
+                                <td>商城快递（1～5天）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div><!--[end]tbl-container-->
+            </div><!--[end]ui-loxia-table ui-corner-all-->
+        </form>
+        <!-- [end]商品基本信息dialog -->
 	</div>
+    <!-- tagDialog -->
+	<div id="dialog-tag-query">
+        <!-- [start]标签dialog -->
+        <form id="tagInfoForm" name="tagInfoForm">
+            <table>
+                <tr>
+                    <td class="label" width="14%">标签编码</td>
+                    <td width="18%"><input loxiaType="input" name="tagCode" id="tagCode"/></td>
+                    <td class="label" width="18%">标签名称</td>
+                    <td width="18%"><input loxiaType="input" name="tagName" id="tagName"/></td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                
+                
+            </table>
+            <div class="tbl-action-bar">
+                <table style="width:400px;padding-left:200px">
+                    <tr>
+                        <td><button title="查询" action="search" type="button"  role="button" aria-disabled="false"><span class="ui-button-text">查询</span></button></td>
+                        <td><button title="重设" action="reset" onclick="resetTagInfoForm()" type="button"  role="button" aria-disabled="false"><span class="ui-button-text">重设</span></button></td>
+                        <td><button title="确定" action="submit" type="button"  role="button" aria-disabled="false"><span class="ui-button-text">确定</span></button></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="ui-loxia-table ui-corner-all">
+                <div class="tbl-container">
+                    <table width="540">
+                        <thead>
+                            <tr>
+                                <th width="100" class="ui-state-default">标签编码</th>
+                                <th width="200" class="ui-state-default">标签名称</th>
+                                <th width="80" class="ui-state-default">是否入口</th>
+                                <th width="80" class="ui-state-default">是否关键字</th>
+                                <th width="80" class="ui-state-default">是否员工店标签</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="even">
+                                <td>ACC001</td>
+                                <td>飞利浦HQ64刀头</td>
+                                <td style="text-align: center;"><input type="checkbox"/></td>
+                                <td style="text-align: center;"><input type="checkbox"/></td>
+                                <td style="text-align: center;"><input type="checkbox"/></td>
+                               
+                            </tr>
+                            <tr class="odd">
+                                <td>ACC001</td>
+                                <td>飞利浦HQ64刀头</td>
+                                <td style="text-align: center;"><input type="checkbox"/></td>
+                                <td style="text-align: center;"><input type="checkbox"/></td>
+                                <td style="text-align: center;"><input type="checkbox"/></td>
+                               
+                            </tr>
+                        </tbody>
+                    </table>
+                </div><!--[end]tbl-container-->
+            </div><!--[end]ui-loxia-table ui-corner-all-->
+        </form>
+        <!-- [end]标签dialog -->
+    </div>
 	<!-- common dialog -->
 	<div id="dialog-alert">
 	
