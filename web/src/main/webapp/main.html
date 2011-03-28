@@ -93,8 +93,11 @@ $j(document).ready(function (){
 		return false;
 	});
 	$j("#left-menu dl dd").hide();
+	$j("#left-menu dl dt").addClass("hide");
 	$j("#left-menu dl dt").click(function(){
-		$j(this).parent().find("dd").toggle();
+		$j(this).find("~ dd").toggle();
+		$j(this).find("~ dd").find("dd").hide();
+		
 	});
 	$j(".frame-control span.refresh a").live("click",function(evt){
 		evt.preventDefault();
