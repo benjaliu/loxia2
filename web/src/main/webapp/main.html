@@ -38,7 +38,7 @@
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiatable-1.2.js"></script>
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxia.locale-zh-CN.js"></script>
 <script type="text/javascript" src="scripts/jquery.ui.datepicker-zh-CN.js"></script>
-
+<script type="text/javascript" src="scripts/leftMenu.js"></script>
 <script type="text/javascript"><!--
 var $j = jQuery.noConflict();
 
@@ -68,10 +68,10 @@ $j(document).ready(function (){
 			$j("> .ui-tabs-panel iframe", $j("#frame-container")).height($j("#frame-container").height() - $j("> ul.ui-tabs-nav", $j("#frame-container")).height() - 30);			
 		}
 	});	
-	
+	createTree("left-menu",data);
 	$j("#left-menu").accordion();
 	
-	$j("#left-menu li a").click(function(evt){
+	$j("#left-menu li > a").click(function(evt){
 		evt.preventDefault();
 		if($j(this).attr("frameId")){
 			var frameId = $j(this).attr("frameId"),
@@ -92,7 +92,10 @@ $j(document).ready(function (){
 		openFrame(this);		
 		return false;
 	});
-	
+	$j("#left-menu dl dd").hide();
+	$j("#left-menu dl dt").click(function(){
+		$j(this).parent().find("dd").toggle();
+	});
 	$j(".frame-control span.refresh a").live("click",function(evt){
 		evt.preventDefault();
 		$j(this).parents(".ui-tabs-panel").find("iframe").get(0).contentDocument.location.reload(true);
@@ -122,30 +125,35 @@ $j(document).ready(function (){
 	<div class="ui-layout-south">South</div>
 	<div class="ui-layout-west">
 		<div id="left-menu">
-			<h3><a href="#">菜单1</a></h3>
+			<!--<h3><a href="#">菜单1</a></h3>
 			<div>
-			<ul>
-				<li><a href="frame/op-create-opb.html">创建仓库作业单</a></li>
-				<li><a href="template-1.2.html">功能2</a></li>
-				<li>
-				<dl>
-					<dt><a href="#">功能3</a></dt>
-					<dd>
-						<ul>
-							<li><a href="#">功能3.1</a></li>
-							<li><a href="#">功能3.2</a></li>
-						</ul>
-					</dd>
-				</dl>
-				</li>
-				<li><a href="#">功能4</a></li>
-			</ul>
+				<ul>
+					<li><a href="frame/op-create-opb.html">创建仓库作业单</a></li>
+					<li><a href="template-1.2.html">功能2</a></li>
+					<li>
+					<dl>
+						<dt><a href="#">功能3</a></dt>
+						<dd>
+							<ul>
+								<li><a href="#">功能3.1</a></li>
+								<li><a href="#">功能3.2</a></li>
+								
+							</ul>
+						</dd>
+					</dl>
+					</li>
+					
+					</li>
+					<li><a href="#">功能4</a></li>
+				</ul>
 			
 			</div>
 			<h3><a href="#">菜单2</a></h3>
 			<div>菜单2</div>
 			<h3><a href="#">菜单3</a></h3>
 			<div>菜单3</div>
+			-->
+			
 		</div>
 	</div>
 </div>
