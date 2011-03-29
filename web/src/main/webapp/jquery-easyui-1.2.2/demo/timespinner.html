@@ -1,0 +1,29 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jQuery EasyUI</title>
+	<link rel="stylesheet" type="text/css" href="../themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../themes/icon.css">
+	<script type="text/javascript" src="../jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../jquery.easyui.min.js"></script>
+	<script>
+		function enable(){
+			$('#ss').timespinner('enable');
+		}
+		function disable(){
+			$('#ss').timespinner('disable');
+		}
+	</script>
+</head>
+<body>
+	<h1>TimeSpinner</h1>
+	<div style="margin-bottom:10px;">
+		<a href="#" onclick="enable()">enable</a>
+		<a href="#" onclick="disable()">disable</a>
+	</div>
+	<span>Begin Time: </span>
+	<input id="ss" class="easyui-timespinner" min="08:30" showSeconds="true" style="width:120px;"></input>
+	<span>End Time: </span>
+	<input class="easyui-timespinner" required="true" style="width:80px;"></input>
+</body>
+</html>

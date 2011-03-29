@@ -1,0 +1,29 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jQuery EasyUI</title>
+	<link rel="stylesheet" type="text/css" href="../themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../themes/icon.css">
+	<script type="text/javascript" src="../jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../jquery.easyui.min.js"></script>
+	<script>
+		function enable(){
+			$('#ss').numberspinner('enable');
+		}
+		function disable(){
+			$('#ss').numberspinner('disable');
+		}
+	</script>
+</head>
+<body>
+	<h1>NumberSpinner</h1>
+	<div style="margin-bottom:10px;">
+		<a href="#" onclick="enable()">enable</a>
+		<a href="#" onclick="disable()">disable</a>
+	</div>
+	<span>Age: </span>
+	<input id="ss" class="easyui-numberspinner" min="10" max="100" required="true" style="width:80px;"></input>
+	<span>Salary: </span>
+	<input class="easyui-numberspinner" value="1000" increment="100" style="width:120px;"></input>
+</body>
+</html>

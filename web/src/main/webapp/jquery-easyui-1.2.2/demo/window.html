@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html style="height:100%;width:100%;">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jQuery EasyUI</title>
+	<link rel="stylesheet" type="text/css" href="../themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../themes/icon.css">
+	<script type="text/javascript" src="../jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../jquery.easyui.min.js"></script>
+	<script>
+		function resize(){
+			$('#w').window({
+				title: 'New Title',
+				width: 600,
+				modal: true,
+				shadow: false,
+				closed: false,
+				height: 300
+			});
+		}
+		function open1(){
+			$('#w').window('open');
+		}
+		function close1(){
+			$('#w').window('close');
+		}
+		function test(){
+			$('#test').window('open');
+		}
+	</script>
+</head>
+<body style="height:100%;width:100%;overflow:hidden;border:none;" >
+	<h1>Window</h1>
+	<div style="margin-bottom:10px">
+		<a href="javascript:void(0)" onclick="resize()">resize</a>
+		<a href="javascript:void(0)" onclick="open1()">open</a>
+		<a href="javascript:void(0)" onclick="close1()">close</a>
+	</div>
+	<div style="position:relative;width:400px;height:400px;border:1px solid #ccc;overflow:auto;">
+		<div class="easyui-window" title="Inline Window" inline="true" modal="true" style="width:250px;height:150px;padding:10px">
+			This window stay inside its parent
+		</div>
+	</div>
+	<div id="w" class="easyui-window" title="My Window" iconCls="icon-save" style="width:500px;height:200px;padding:5px;background: #fafafa;">
+		<div class="easyui-layout" fit="true">
+			<div region="center" border="false" style="padding:10px;background:#fff;border:1px solid #ccc;">
+				jQuery EasyUI framework help you build your web page easily.
+				<br/><br/>
+				click <a href="#" onclick="test()">here</a> to popup another window.
+			</div>
+			<div region="south" border="false" style="text-align:right;height:30px;line-height:30px;">
+				<a class="easyui-linkbutton" iconCls="icon-ok" href="javascript:void(0)" onclick="resize()">Ok</a>
+				<a class="easyui-linkbutton" iconCls="icon-cancel" href="javascript:void(0)" onclick="resize()">Cancel</a>
+			</div>
+		</div>
+	</div>
+	<div id="test" class="easyui-window" closed="true" modal="true" title="Test Window" style="width:300px;height:100px;"></div>
+</body>
+</html>

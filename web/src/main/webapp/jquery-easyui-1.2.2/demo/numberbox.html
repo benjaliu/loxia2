@@ -1,0 +1,27 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jQuery EasyUI</title>
+	<link rel="stylesheet" type="text/css" href="../themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../themes/icon.css">
+	<script type="text/javascript" src="../jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../jquery.easyui.min.js"></script>
+	<script>
+		function disable(){
+			$('#nn').numberbox('disable');
+		}
+		function enable(){
+			$('#nn').numberbox('enable');
+		}
+	</script>
+</head>
+<body>
+	<h1>NumberBox</h1>
+	<p>The Box can only input number.</p>
+	<div style="margin-bottom:10px;">
+		<a href="#" onclick="disable()">disable</a>
+		<a href="#" onclick="enable()">enable</a>
+	</div>
+	<input id="nn" class="easyui-numberbox" min="5.5" max="20" precision="2" required="true"/>
+</body>
+</html>

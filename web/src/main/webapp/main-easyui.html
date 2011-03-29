@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Main Frame Container</title>
+
+
+	<link rel="stylesheet" type="text/css" href="jquery-easyui-1.2.2/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="jquery-easyui-1.2.2/themes/icon.css">
+
+	<script type="text/javascript" src="scripts/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="jquery-easyui-1.2.2/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="scripts/main-easyui.js"></script>
+
+
+
+</head>
+<body class="easyui-layout">
+	
+		<div region="north" title="North Title" style="height:80px;padding:10px;">
+			<p><span id="role-inf">公司--超级管理员</span><span id="chg-role"><a href="#">选择角色</a></span></p>
+			
+		</div>
+		<div region="south" title="South Title" split="true" style="height:100px;padding:10px;background:#efefef;">
+			<div class="easyui-layout" fit="true" style="background:#ccc;">
+				<div region="center">sub center</div>
+				<div region="east" split="true" style="width:200px;">sub center</div>
+			</div>
+		</div>
+		
+		<div region="west" split="true" title="功能菜单" style="width:280px;padding1:1px;overflow:hidden;">
+			<div class="easyui-accordion" fit="true" border="false">
+				<div title="菜单1" style="overflow:auto;">
+					<ul id="menu-tree-1"></ul>
+				</div>
+				<div title="菜单2" selected="true" style="padding:10px;">
+					content2
+					<a href="#" onclick="addmenu()">addmenu</a>
+				</div>
+				<div title="菜单3">
+					content3
+				</div>
+			</div>
+		</div>
+		<div region="center" title="Main Title" style="overflow:hidden;">
+			
+			<div id="tabs-nav" fit="true" border="false">
+				<!--<div title="Tab1" style="padding:20px;overflow:hidden;"> 
+					<div style="margin-top:20px;">
+						<h3>jQuery EasyUI framework help you build your web page easily.</h3>
+						<li>easyui is a collection of user-interface plugin based on jQuery.</li> 
+						<li>using easyui you don't write many javascript code, instead you defines user-interface by writing some HTML markup.</li> 
+						<li>easyui is very easy but powerful.</li> 
+					</div>
+				</div>
+				<div title="Tab2" closable="true" style="padding:20px;">This is Tab2 width close button.</div>
+				<div title="Tab3" icon="icon-reload" closable="true" style="overflow:hidden;padding:5px;">
+					<table id="tt2"></table> 
+				</div>
+				<div title="Tab2" closable="true" style="padding:20px;">This is Tab2 width close button.</div>-->
+			</div>
+		</div>
+</body>
+</html>

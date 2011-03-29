@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+	<script type="text/javascript" src="../jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../jquery.easyui.min.js"></script>
+	<script>
+		$(function(){
+			$('#rr').resizable();
+			
+			$('#dd').draggable({handle:'#mytitle'});
+			$('#rd').draggable({edge:5}).resizable({
+				minWidth:50,
+				maxWidth:150,
+				minHeight: 100,
+				maxHeight: 200,
+				onStartResize: function(e){
+					$('#info').html('start'+$(this).css('width'));
+				},
+				onResize: function(e){
+					$('#info').html($(this).css('width'));
+				},
+				onStopResize: function(e){
+					$('#info').html('stop:'+$(this).css('width'));
+				}
+			});
+			$('div.mcc').draggable({edge:5}).resizable();
+		});
+
+		function stop(){
+			$('div.mcc').draggable({disabled:true});
+		}
+	</script>
+</head>
+<body>
+	<div id="info" style="top:300px;height:20px;border:1px solid #ccc;">info</div>
+	<div id="rr" style="width:100px;height:100px;background:#bbb;">只改变大小</div>
+	<div id="dd" style="left:100px;top:100px;width:100px;height:100px;background:#ccc;">
+		<div id="mytitle" style="background:red;">title</div>
+		只拖动
+	</div>
+	<div id="rd" style="margin:10px;padding:10px;width:100px;height:100px;background:#ddd;border:1px solid red;">拖动并改变大小</div>
+	<div class="mcc" style="-moz-border-radius:5px;left:300px;top:100px;width:100px;height:100px;background:#eee;border:2px solid red;">
+		<a href="#" onclick="stop()">stopdrag</a>
+	</div>
+</body>
+</html>

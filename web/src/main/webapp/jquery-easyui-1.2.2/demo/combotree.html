@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jQuery EasyUI</title>
+	<link rel="stylesheet" type="text/css" href="../themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../themes/icon.css">
+	<script type="text/javascript" src="../jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../jquery.easyui.min.js"></script>
+	<script>
+		function reload(){
+			$('#cc').combotree('reload');
+		}
+		function setValue(){
+			$('#cc').combotree('setValue', 2);
+		}
+		function getValue(){
+			var val = $('#cc').combotree('getValue');
+			alert(val);
+		}
+		function disable(){
+			$('#cc').combotree('disable');
+		}
+		function enable(){
+			$('#cc').combotree('enable');
+		}
+	</script>
+</head>
+<body>
+	<h1>ComboTree</h1>
+	<div style="margin-bottom:10px;">
+		<a href="#" onclick="reload()">reload</a>
+		<a href="#" onclick="setValue()">setValue</a>
+		<a href="#" onclick="getValue()">getValue</a>
+		<a href="#" onclick="disable()">disable</a>
+		<a href="#" onclick="enable()">enable</a>
+	</div>
+	<span>Select:</span>
+	<input id="cc" class="easyui-combotree" url="tree_data.json" value="2" required="true" style="width:200px;">
+	<select class="easyui-combotree" name="language" url="tree_data.json" multiple="true" cascadeCheck="false" style="width:200px;"></select>
+</body>
+</html>

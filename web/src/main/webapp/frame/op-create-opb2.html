@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>创建仓库作业单</title>
+	<link rel="stylesheet" type="text/css" href="../jquery-easyui-1.2.2/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../jquery-easyui-1.2.2/themes/icon.css">
+
+	<script type="text/javascript" src="../scripts/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../jquery-easyui-1.2.2/jquery.easyui.min.js"></script>
+	<script>
+		var products = [
+		    {productid:'FI-SW-01',name:'Koi'},
+		    {productid:'K9-DL-01',name:'Dalmation'},
+		    {productid:'RP-SN-01',name:'Rattlesnake'},
+		    {productid:'RP-LI-02',name:'Iguana'},
+		    {productid:'FL-DSH-01',name:'Manx'},
+		    {productid:'FL-DLH-02',name:'Persian'},
+		    {productid:'AV-CB-01',name:'Amazon Parrot'}
+		];
+		function productFormatter(value){
+			for(var i=0; i<products.length; i++){
+				if (products[i].productid == value) return products[i].name;
+			}
+			return value;
+		}
+		$(function(){
+			var lastIndex;
+			$('#tt').datagrid({
+			
+				frozenColumns:[[
+	                {field:'ck',checkbox:true}
+				]],
+				toolbar:[{
+					text:'append',
+					iconCls:'icon-add',
+					handler:function(){
+					$('#tt').datagrid('endEdit', lastIndex);
+						$('#tt').datagrid('appendRow',{
+							itemid:'',
+							productid:'',
+							listprice:'',
+							unitprice:'',
+							attr1:'',
+							status:'P'
+						});
+						var lastIndex = $('#tt').datagrid('getRows').length-1;
+						$('#tt').datagrid('beginEdit', lastIndex);
+					}
+				},'-',{
+					text:'delete',
+					iconCls:'icon-remove',
+					handler:function(){
+						var row = $('#tt').datagrid('getSelected');
+						if (row){
+							var index = $('#tt').datagrid('getRowIndex', row);
+							$('#tt').datagrid('deleteRow', index);
+						}
+					}
+				}],
+				onBeforeLoad:function(){
+					$(this).datagrid('rejectChanges');
+				},
+				onClickRow:function(rowIndex){
+					if (lastIndex != rowIndex){
+						$('#tt').datagrid('endEdit', lastIndex);
+						$('#tt').datagrid('beginEdit', rowIndex);
+					}
+					lastIndex = rowIndex;
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+	<form id="ff" method="post">
+		<table>
+		<tr>
+			<td class="label" width="20%"><label>操作日期：</label></td>
+			<td width="30%"><input id="opDate" class="easyui-datebox" /></td>
+			<td class="label" width="20%"><label>作业类型：</label></td>
+			<td width="30%">
+				<input class="easyui-combobox" 
+					name="opModel"
+					url="opModel_data.json" 
+					valueField="id" 
+					textField="text" 
+					panelHeight="auto" />
+			</td>
+		</tr>
+		<tr> 
+			<td class="label" width="20%"><label>仓库：</label></td>
+			<td width="30%">
+				<input class="easyui-combobox" 
+					name="warehouse"
+					url="warehouse_data.json" 
+					valueField="id" 
+					textField="text" 
+					panelHeight="auto" />
+			</td>
+			<td class="label" width="20%"><label>相关单据号：</label></td>
+			<td width="30%"><input type="text" name="name" /></td>
+		</tr>
+		<tr>
+			<td class="label" width="20%"><label>相关店铺：</label></td>
+			<td width="30%">
+				<input class="easyui-combobox" 
+					name="store"
+					url="store_data.json" 
+					valueField="id" 
+					textField="text" 
+					panelHeight="auto" />
+			</td>
+			<td class="label" width="20%"><label>移库目的地：</label></td>
+			<td width="30%"><input type="text" name="destination" /></td>
+		</tr>
+		<tr>
+			<td class="label"><label>备注：</td>
+			<td colspan="3"><textarea name="remark"></textarea></td>
+		</tr>
+	</table>
+        
+    </form>
+	<div>
+	
+		<table id="tt" style="width:800px;height:auto"
+				title="Editable DataGrid" iconCls="icon-edit" singleSelect="true"
+				idField="itemid" url="/frame/datagrid_data2.json">
+			<thead>
+				<tr>
+					<th field="itemid" width="80" editor="text">条形码</th>
+					<th field="productid" width="100" formatter="productFormatter" editor="{type:'combobox',options:{valueField:'productid',textField:'name',data:products,required:true}}">商品编码[...]</th>
+					<th field="productName" width="80" editor="text">商品名称</th>
+					<th field="keyProperties" width="80" align="right" editor="numberbox">关键属性[...]</th>
+					<th field="suggentLocation" width="150" align="center" editor="{type:'checkbox',options:{on:'Y',off:'N'}}">建议库位</th>
+					<th field="inventoryStatus" width="60" editor="text">库存状态名称</th>
+					<th field="inventoryCode" width="60" editor="text">库位编码</th>
+					<th field="realInventory " width="60"  align="right" editor="{type:'numberbox',options:{precision:1}}">实际库存量</th>
+					<th field="availableInventory" width="60"  align="right" editor="{type:'numberbox',options:{precision:1}}">可用库存量</th>
+					<th field="scheduleExecute" width="60"  align="right" editor="{type:'numberbox',options:{precision:1}}">计划执行数量</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jQuery EasyUI</title>
+	<link rel="stylesheet" type="text/css" href="../themes/default/easyui.css">
+	<script type="text/javascript" src="../jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../jquery.easyui.min.js"></script>
+	<script>
+		$(function(){
+			var p = $('body').layout('panel','west').panel({
+				onCollapse:function(){
+					alert('collapse');
+				}
+			});
+			setTimeout(function(){
+				$('body').layout('collapse','east');
+			},0);
+		});
+	</script>
+</head>
+<body class="easyui-layout">
+	<div region="north" border="false" style="height:60px;background:#B3DFDA;">north region</div>
+	<div region="west" split="true" title="West" style="width:150px;padding:10px;">west content</div>
+	<div region="east" split="true" title="East" style="width:100px;padding:10px;">east region</div>
+	<div region="south" border="false" style="height:50px;background:#A9FACD;padding:10px;">south region</div>
+	<div region="center" title="Main Title">
+	</div>
+</body>
+</html>

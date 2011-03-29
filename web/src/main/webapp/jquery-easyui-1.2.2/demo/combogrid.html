@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jQuery EasyUI</title>
+	<link rel="stylesheet" type="text/css" href="../themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../themes/default/combo.css">
+	<link rel="stylesheet" type="text/css" href="../themes/icon.css">
+	<script type="text/javascript" src="../jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../jquery.easyui.min.js"></script>
+	<script>
+		$(function(){
+			$('#cc').combogrid({
+				panelWidth:450,
+				value:'006',
+
+				idField:'code',
+				textField:'name',
+				url:'datagrid_data.json',
+				columns:[[
+					{field:'code',title:'Code',width:60},
+					{field:'name',title:'Name',width:100},
+					{field:'addr',title:'Address',width:120},
+					{field:'col4',title:'Col41',width:100}
+				]]
+			});
+		});
+		function reload(){
+			$('#cc').combogrid('grid').datagrid('reload');
+		}
+		function setValue(){
+			$('#cc').combogrid('setValue', '002');
+		}
+		function getValue(){
+			var val = $('#cc').combogrid('getValue');
+			alert(val);
+		}
+		function disable(){
+			$('#cc').combogrid('disable');
+		}
+		function enable(){
+			$('#cc').combogrid('enable');
+		}
+	</script>
+</head>
+<body>
+	<h1>ComboGrid</h1>
+	<div style="margin-bottom:10px;">
+		<a href="#" onclick="reload()">reload</a>
+		<a href="#" onclick="setValue()">setValue</a>
+		<a href="#" onclick="getValue()">getValue</a>
+		<a href="#" onclick="disable()">disable</a>
+		<a href="#" onclick="enable()">enable</a>
+	</div>
+	<select id="cc" name="dept" style="width:250px;"></select>
+</body>
+</html>
