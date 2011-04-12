@@ -13,6 +13,7 @@ import java.util.Map;
 import loxia.annotation.DynamicQuery;
 import loxia.annotation.NamedQuery;
 import loxia.annotation.NativeQuery;
+import loxia.annotation.NativeUpdate;
 import loxia.annotation.Query;
 import loxia.annotation.QueryParam;
 import loxia.dao.DaoService;
@@ -315,6 +316,27 @@ public class QueryAspect implements Ordered {
 		}else
 			return daoService.findOneByNativeQuery(queryString, conditions.toArray(), rowMapper, sorts);
 	}
+	
+	private int handleNativeUpdate(NativeUpdate nativeUpdate, ProceedingJoinPoint pjp){
+		MethodSignature ms = (MethodSignature)pjp.getSignature();
+		Map<String, Object> params = getParams(ms.getMethod(), pjp.getArgs());		
+		
+		String queryName = nativeUpdate.value();
+		if(queryName.equals("")){
+			if(!(pjp.getThis() instanceof ModelClassSupport)) 
+				throw new RuntimeException("QueryName can not be empty");
+			ModelClassSupport mcs = (ModelClassSupport)pjp.getThis();
+			queryName += mcs.getModelClass().getSimpleName();
+			queryName += "." + ms.getMethod().getName();				
+		}
+		
+		String queryStringWithName = getDynamicQuery(queryName, params);		
+		List<Object> conditions = new ArrayList<Object>();
+		String queryString = getNativeQuery(queryStringWithName, params, conditions);
+		
+		logger.debug("Update[{}] will be executed.",queryString);
+		return daoService.batchUpdateByNativeQuery(queryString, conditions.toArray());		
+	}
 
 	@Around("this(loxia.dao.GenericEntityDao)")
 	public Object doQuery(ProceedingJoinPoint pjp) throws Throwable{
@@ -323,6 +345,7 @@ public class QueryAspect implements Ordered {
 		NamedQuery namedQuery = ms.getMethod().getAnnotation(NamedQuery.class);
 		DynamicQuery dynamicQuery = ms.getMethod().getAnnotation(DynamicQuery.class);
 		NativeQuery nativeQuery = ms.getMethod().getAnnotation(NativeQuery.class);
+		NativeUpdate nativeUpdate = ms.getMethod().getAnnotation(NativeUpdate.class);
 		
 		if(namedQuery !=null){
 			return handleNamedQuery(namedQuery, pjp);
@@ -332,6 +355,8 @@ public class QueryAspect implements Ordered {
 			return handleDynamicQuery(dynamicQuery, pjp);
 		}else if(nativeQuery != null){
 			return handleNativeQuery(nativeQuery, pjp);
+		}else if(nativeUpdate != null){
+			return handleNativeUpdate(nativeUpdate, pjp);
 		}else
 			return pjp.proceed(pjp.getArgs());
 	}
@@ -346,7 +371,7 @@ public class QueryAspect implements Ordered {
 				if(inParamName) throw new RuntimeException("Wrong query.");
 				inParamName = true;
 			}else{
-				if(c == ' ' || c == '\t' || c == '\n' || c == '\r'){
+				if(c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == ')'){
 					if(inParamName){
 						inParamName = false;
 						sb.append('?');
