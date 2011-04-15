@@ -36,13 +36,24 @@
 		
 		_initSelect : function(){
 			var _this = this;
-			this.element.focus(function(){	
-				if(_this.option("disabled") || _this.option("readonly")) return;
-				$(this).addClass("ui-loxia-active");
-				if(_this.option("errorMessage")){
-					loxia.tip(this,_this.option("errorMessage"));
-				}
-			});
+			
+			if($.browser.msie){
+				this.element.focusin(function(){	
+					if(_this.option("disabled") || _this.option("readonly")) return;
+					$(this).addClass("ui-loxia-active");
+					if(_this.option("errorMessage")){
+						loxia.tip(this,_this.option("errorMessage"));
+					}
+				});
+			}else{
+				this.element.focus(function(){	
+					if(_this.option("disabled") || _this.option("readonly")) return;
+					$(this).addClass("ui-loxia-active");
+					if(_this.option("errorMessage")){
+						loxia.tip(this,_this.option("errorMessage"));
+					}
+				});
+			}
 			
 			this.element.blur(function(){
 				$(this).removeClass("ui-loxia-active");
