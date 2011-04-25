@@ -229,7 +229,7 @@
 			this._initRowAction($tr.get(0));
 			
 			
-			$t.trigger("rowappended", [$tr]);
+			$t.trigger("rowappended", [[$tr[0],this]]);
 		},
 		deleteRow: function(){
 			var $t = this.element.find("table")
