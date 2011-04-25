@@ -165,7 +165,7 @@
 					});
 				}else{
 					$(this).bind("blur", function(event,data){
-						$t.trigger("blur",[[row,this]]);
+						$t.trigger("rowchanged",[[row,this]]);
 					});
 				}
 			});
