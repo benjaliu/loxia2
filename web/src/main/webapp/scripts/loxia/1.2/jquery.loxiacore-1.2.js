@@ -23,10 +23,11 @@
 				if(context === undefined) context = document.body;
 				if($(context).attr("loxiaType")) this.initLoxiaWidget(context);
 				else{
-					$(context).find("> div[loxiaType]").each(function(){
+					$(context).find("div[loxiaType]").each(function(){
+						if($(this).parents("div[loxiaType]").length > 0) return;
 						loxia.initLoxiaWidget(this);
 					});
-					$(context).find("[loxiaType]").each(function(){
+					$(context).find("[loxiaType]").each(function(){						
 						loxia.initLoxiaWidget(this);
 					});
 				}				
