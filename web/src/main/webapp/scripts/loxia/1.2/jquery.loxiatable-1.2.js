@@ -215,7 +215,7 @@
 				})
 				$(this).text(result.toFixed(decimal));
 			});
-			$t.trigger("calculated",[[this]]);
+			$t.trigger("calculated",[this]);
 		},
 		appendRow: function(){
 			var $t = this.element.find("table"),
@@ -236,7 +236,7 @@
 			$t.find("tbody:first tr.ui-state-highlight").remove();
 			$("thead tr", $t).find("th:eq(0) input[type='checkbox']").attr("checked",false);
 			this._adjustBodyStyle();
-			$t.trigger("rowdeleted",[[this]]);
+			$t.trigger("rowdeleted",[this]);
 		}
 	};
 	
