@@ -104,9 +104,9 @@
 			//line selector			
 			$("tbody:first", $t).find("td.col-0 input[type='checkbox']").live("click", function(){
 				if($(this).is(":checked")){
-					$(this).parents("tr").addClass("ui-state-highlight");
+					$(this).parentsUntil("tr").parent().addClass("ui-state-highlight");
 				}else{
-					$(this).parents("tr").removeClass("ui-state-highlight");
+					$(this).parentsUntil("tr").parent().removeClass("ui-state-highlight");
 				}
 			});
 			$("tbody:first", $t).find("tr").live('mouseover mouseout', function(event) {
