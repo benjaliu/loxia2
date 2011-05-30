@@ -62,7 +62,7 @@
 			//$t.find("tfoot tr:last").addClass("last");
 			
 			$("tbody:first .col-0 input:checked", $t).each(function(){
-				$(this).parents("tr").addClass("ui-state-highlight");
+				$(this).parentsUntil("tr").parent().addClass("ui-state-highlight");
 			});
 			
 			this._adjustBodyStyle();			
@@ -92,12 +92,12 @@
 				if($(this).is(":checked")){
 					$("tbody:first .col-0 input:not(:checked)", $t).each(function(){
 						$(this).attr("checked", true);
-						$(this).parents("tr").addClass("ui-state-highlight");
+						$(this).parentsUntil("tr").parent().addClass("ui-state-highlight");
 					});
 				}else{
 					$("tbody:first .col-0 input:checked", $t).each(function(){
 						$(this).attr("checked", false);
-						$(this).parents("tr").removeClass("ui-state-highlight");
+						$(this).parentsUntil("tr").parent().removeClass("ui-state-highlight");
 					});
 				}
 			});
