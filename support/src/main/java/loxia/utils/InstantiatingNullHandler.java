@@ -21,12 +21,18 @@ import org.apache.commons.logging.LogFactory;
 public class InstantiatingNullHandler implements NullHandler {
 
     private static final Log LOG = LogFactory.getLog(InstantiatingNullHandler.class);    
+    public static final String USING_LOXIA_NULL_HANDLER = "loxia.useingLoxiaNullHandler";
     
     private List<String> ignoreList = new ArrayList<String>();
     
-    public InstantiatingNullHandler(){}
+    private NullHandler handlerWrapper;
     
-    public InstantiatingNullHandler(List<String> ignoreList){
+    public InstantiatingNullHandler(NullHandler nullHandler){
+    		this.handlerWrapper = nullHandler;
+    }
+    
+    public InstantiatingNullHandler(NullHandler nullHandler, List<String> ignoreList){
+    	this(nullHandler);
     	this.ignoreList.addAll(ignoreList);
     }
         
@@ -40,6 +46,9 @@ public class InstantiatingNullHandler implements NullHandler {
 
 	@SuppressWarnings("unchecked")
 	public Object nullMethodResult(Map context, Object target, String methodName, Object[] args) {
+		Boolean flag = (Boolean)context.get(USING_LOXIA_NULL_HANDLER);		
+		if(handlerWrapper != null && ((flag == null) || !flag))
+			return handlerWrapper.nullMethodResult(context, target, methodName, args);
         if (LOG.isDebugEnabled()) {
             LOG.debug("Entering nullMethodResult ");
         }
@@ -49,6 +58,9 @@ public class InstantiatingNullHandler implements NullHandler {
 
     @SuppressWarnings("unchecked")
 	public Object nullPropertyValue(Map context, Object target, Object property) {
+    	Boolean flag = (Boolean)context.get(USING_LOXIA_NULL_HANDLER);		
+    	if(handlerWrapper != null && ((flag == null) || !flag))
+    		return handlerWrapper.nullPropertyValue(context, target, property);
         if (LOG.isDebugEnabled()) {
             LOG.debug("Entering nullPropertyValue [target="+target+", property="+property+"]");
         }

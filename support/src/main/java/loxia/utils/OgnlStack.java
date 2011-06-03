@@ -6,14 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ognl.NullHandler;
 import ognl.Ognl;
 import ognl.OgnlException;
 import ognl.OgnlRuntime;
 
-public class OgnlStack{
-	static{
-		OgnlRuntime.setNullHandler(Object.class, new InstantiatingNullHandler(Arrays.asList("java")));
-	}
+public class OgnlStack{	
 	
 	private List<Object> stack = new ArrayList<Object>();
 	private Map<String,Object> context;
@@ -54,13 +52,24 @@ public class OgnlStack{
 	}
 	
 	public OgnlStack(Object obj){
-		stack.add(obj);
-		context = new HashMap<String, Object>();
+		this(obj,new HashMap<String, Object>());
 	}
 	
 	public OgnlStack(Object obj, Map<String,Object> context){
+		NullHandler nullHandler = null;
+		synchronized (nullHandler) {
+			try {
+				nullHandler = OgnlRuntime.getNullHandler(Object.class);
+				if(nullHandler == null || !(nullHandler instanceof InstantiatingNullHandler))
+					OgnlRuntime.setNullHandler(Object.class, new InstantiatingNullHandler(nullHandler, Arrays.asList("java")));
+			} catch (OgnlException e) {
+				e.printStackTrace();
+			}		
+		}
+		
 		stack.add(obj);
-		this.context = context;
+		this.context = context == null ? new HashMap<String, Object>(): context;
+		this.context.put(InstantiatingNullHandler.USING_LOXIA_NULL_HANDLER, true);
 	}
 	
 	public void push(Object obj){
