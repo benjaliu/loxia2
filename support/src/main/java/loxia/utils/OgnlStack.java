@@ -57,7 +57,7 @@ public class OgnlStack{
 	
 	public OgnlStack(Object obj, Map<String,Object> context){
 		NullHandler nullHandler = null;
-		synchronized (nullHandler) {
+		synchronized (OgnlStack.class) {
 			try {
 				nullHandler = OgnlRuntime.getNullHandler(Object.class);
 				if(nullHandler == null || !(nullHandler instanceof InstantiatingNullHandler))
