@@ -276,7 +276,7 @@ public abstract class AbstractHibernateDaoServiceImpl implements DaoService, Ini
 		if(params != null && params.length > 0){
 			for(int i=0; i< params.length; i++){
 				logger.debug("{}) : {}", i+1, params[i]);
-				query.setParameter(i+1, params[i]);
+				query.setParameter(i, params[i]);
 			}
 		}		
 		return query.executeUpdate();

@@ -371,7 +371,7 @@ public class QueryAspect implements Ordered {
 				if(inParamName) throw new RuntimeException("Wrong query.");
 				inParamName = true;
 			}else{
-				if(c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == ')'){
+				if(c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == ',' || c == ')'){
 					if(inParamName){
 						inParamName = false;
 						sb.append('?');
