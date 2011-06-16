@@ -71,4 +71,7 @@ public interface DaoService {
 	
 	Map<String,Object> executeSP(String spName);
 	Map<String,Object> executeSp(String spName, SqlParameter[] sqlParameters, Map<String,Object> params);
+	
+	void flush();
+	<T> void evict(T model);
 }

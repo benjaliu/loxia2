@@ -129,4 +129,11 @@ public class GenericEntityDaoImpl<T, PK extends Serializable> implements Generic
 		return daoService.executeSp(spName, sqlParameters, params);
 	}
 	
+	public void flush(){
+		daoService.flush();
+	}
+	
+	public void evict(T model){
+		
+	}
 }

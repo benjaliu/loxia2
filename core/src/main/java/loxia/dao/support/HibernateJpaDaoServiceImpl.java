@@ -251,4 +251,15 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 			return null;
 		return list.get(0);
 	}
+	
+	public void flush(){
+		entityManager.flush();
+	}
+	
+	public <T> void evict(T model){
+		if(model != null)
+			getSession().evict(model);
+		else
+			getSession().clear();
+	}
 }

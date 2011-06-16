@@ -24,6 +24,12 @@ public interface GenericEntityDao<T, PK extends Serializable> {
 
 	@Transactional
 	void deleteAllByPrimaryKey(List<PK> ids);
+	
+	@Transactional(propagation=Propagation.SUPPORTS)
+	void flush();
+	
+	@Transactional(propagation=Propagation.SUPPORTS)
+	void evict(T model);
 
 	@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 	T getByPrimaryKey(PK id);
