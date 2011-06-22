@@ -16,45 +16,46 @@ public abstract class BaseRowMapper<T> implements RowMapper<T> {
 		if(clazz == null)
 			return (K) rs.getObject(alias);
 		else{
-			if(rs.getObject(alias) == null) return null;
+			K value = null;			
 			if(clazz.equals(String.class))
-				return (K) rs.getString(alias);
+				value = (K) rs.getString(alias);
 			else if(clazz.equals(java.math.BigDecimal.class))
-				return (K) rs.getBigDecimal(alias);
+				value = (K) rs.getBigDecimal(alias);
 			else if(clazz.equals(java.io.InputStream.class))
-				return (K) rs.getBinaryStream(alias);
+				value = (K) rs.getBinaryStream(alias);
 			else if(clazz.equals(java.sql.Blob.class))
-				return (K) rs.getBlob(alias);
+				value = (K) rs.getBlob(alias);
 			else if(clazz.equals(Boolean.class))
-				return (K) new Boolean(rs.getBoolean(alias));
+				value = (K) new Boolean(rs.getBoolean(alias));
 			else if(clazz.equals(Byte.class))
-				return (K) new Byte(rs.getByte(alias));
+				value = (K) new Byte(rs.getByte(alias));
 			else if(clazz.equals(Byte[].class))
-				return (K) rs.getBytes(alias);
+				value = (K) rs.getBytes(alias);
 			else if(clazz.equals(java.io.Reader.class))
-				return (K) rs.getCharacterStream(alias);
+				value = (K) rs.getCharacterStream(alias);
 			else if(clazz.equals(java.sql.Clob.class))
-				return (K) rs.getClob(alias);
+				value = (K) rs.getClob(alias);
 			else if(clazz.equals(java.sql.Date.class))
-				return (K) rs.getDate(alias);
+				value = (K) rs.getDate(alias);
 			else if(clazz.equals(Double.class))
-				return (K) new Double(rs.getDouble(alias));
+				value = (K) new Double(rs.getDouble(alias));
 			else if(clazz.equals(Float.class))
-				return (K) new Float(rs.getFloat(alias));
+				value = (K) new Float(rs.getFloat(alias));
 			else if(clazz.equals(Integer.class))
-				return (K) new Integer(rs.getInt(alias));
+				value = (K) new Integer(rs.getInt(alias));
 			else if(clazz.equals(Long.class))
-				return (K) new Long(rs.getLong(alias));
+				value = (K) new Long(rs.getLong(alias));
 			else if(clazz.equals(Short.class))
-				return (K) new Short(rs.getShort(alias));
+				value = (K) new Short(rs.getShort(alias));
 			else if(clazz.equals(java.sql.Time.class))
-				return (K) rs.getTime(alias);
+				value = (K) rs.getTime(alias);
 			else if(clazz.equals(java.sql.Timestamp.class))
-				return (K) rs.getTimestamp(alias);
+				value = (K) rs.getTimestamp(alias);
 			else if(clazz.equals(java.util.Date.class))
-				return (K) (rs.getTimestamp(alias) == null ? null :new java.util.Date(rs.getTimestamp(alias).getTime()));
+				value = (K) (rs.getTimestamp(alias) == null ? null :new java.util.Date(rs.getTimestamp(alias).getTime()));
 			else
-				return (K) rs.getObject(alias);
+				value = (K) rs.getObject(alias);
+			return (value == null ||rs.wasNull()) ? null : value;
 		}
 	}
 
@@ -64,45 +65,46 @@ public abstract class BaseRowMapper<T> implements RowMapper<T> {
 		if(clazz == null)
 			return (K) rs.getObject(icolumn);
 		else{
-			if(rs.getObject(icolumn) == null) return null;
+			K value = null;
 			if(clazz.equals(String.class))
-				return (K) rs.getString(icolumn);
+				value = (K) rs.getString(icolumn);
 			else if(clazz.equals(java.math.BigDecimal.class))
-				return (K) rs.getBigDecimal(icolumn);
+				value = (K) rs.getBigDecimal(icolumn);
 			else if(clazz.equals(java.io.InputStream.class))
-				return (K) rs.getBinaryStream(icolumn);
+				value = (K) rs.getBinaryStream(icolumn);
 			else if(clazz.equals(java.sql.Blob.class))
-				return (K) rs.getBlob(icolumn);
+				value = (K) rs.getBlob(icolumn);
 			else if(clazz.equals(Boolean.class))
-				return (K) new Boolean(rs.getBoolean(icolumn));
+				value = (K) new Boolean(rs.getBoolean(icolumn));
 			else if(clazz.equals(Byte.class))
-				return (K) new Byte(rs.getByte(icolumn));
+				value = (K) new Byte(rs.getByte(icolumn));
 			else if(clazz.equals(Byte[].class))
-				return (K) rs.getBytes(icolumn);
+				value = (K) rs.getBytes(icolumn);
 			else if(clazz.equals(java.io.Reader.class))
-				return (K) rs.getCharacterStream(icolumn);
+				value = (K) rs.getCharacterStream(icolumn);
 			else if(clazz.equals(java.sql.Clob.class))
-				return (K) rs.getClob(icolumn);
+				value = (K) rs.getClob(icolumn);
 			else if(clazz.equals(java.sql.Date.class))
-				return (K) rs.getDate(icolumn);
+				value = (K) rs.getDate(icolumn);
 			else if(clazz.equals(Double.class))
-				return (K) new Double(rs.getDouble(icolumn));
+				value = (K) new Double(rs.getDouble(icolumn));
 			else if(clazz.equals(Float.class))
-				return (K) new Float(rs.getFloat(icolumn));
+				value = (K) new Float(rs.getFloat(icolumn));
 			else if(clazz.equals(Integer.class))
-				return (K) new Integer(rs.getInt(icolumn));
+				value = (K) new Integer(rs.getInt(icolumn));
 			else if(clazz.equals(Long.class))
-				return (K) new Long(rs.getLong(icolumn));
+				value = (K) new Long(rs.getLong(icolumn));
 			else if(clazz.equals(Short.class))
-				return (K) new Short(rs.getShort(icolumn));
+				value = (K) new Short(rs.getShort(icolumn));
 			else if(clazz.equals(java.sql.Time.class))
-				return (K) rs.getTime(icolumn);
+				value = (K) rs.getTime(icolumn);
 			else if(clazz.equals(java.sql.Timestamp.class))
-				return (K) rs.getTimestamp(icolumn);
+				value = (K) rs.getTimestamp(icolumn);
 			else if(clazz.equals(java.util.Date.class))
-				return (K) (rs.getTimestamp(icolumn) == null ? null :new java.util.Date(rs.getTimestamp(icolumn).getTime()));
+				value = (K) (rs.getTimestamp(icolumn) == null ? null :new java.util.Date(rs.getTimestamp(icolumn).getTime()));
 			else
-				return (K) rs.getObject(icolumn);
+				value = (K) rs.getObject(icolumn);
+			return (value == null ||rs.wasNull()) ? null : value;
 		}
 	}
 }
