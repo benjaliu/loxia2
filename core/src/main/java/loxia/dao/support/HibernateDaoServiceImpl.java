@@ -20,6 +20,7 @@ import org.hibernate.engine.ForeignKeys;
 import org.hibernate.engine.Status;
 import org.hibernate.impl.SessionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
 public class HibernateDaoServiceImpl extends AbstractHibernateDaoServiceImpl {
 
@@ -63,7 +64,8 @@ public class HibernateDaoServiceImpl extends AbstractHibernateDaoServiceImpl {
 	}
 	
 	protected Session getSession() {
-		return sessionFactory.getCurrentSession();
+		return SessionFactoryUtils.getSession(sessionFactory, true);
+		//return sessionFactory.getCurrentSession();
 	}
 	
 	private EntityStatus getStatus(Object model){
