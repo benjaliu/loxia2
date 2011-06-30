@@ -64,8 +64,8 @@ public class HibernateDaoServiceImpl extends AbstractHibernateDaoServiceImpl {
 	}
 	
 	protected Session getSession() {
-		return SessionFactoryUtils.getSession(sessionFactory, true);
-		//return sessionFactory.getCurrentSession();
+		//return SessionFactoryUtils.getSession(sessionFactory, true);
+		return sessionFactory.getCurrentSession();
 	}
 	
 	private EntityStatus getStatus(Object model){
