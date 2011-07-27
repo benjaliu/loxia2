@@ -8,6 +8,7 @@
 			debug : false, //debug mode switch
 			region : '', //default region info
 			dateFormat: "yy-mm-dd", //default date format
+			timeFormat: "hh:mm:ss",
 			pageLock : true, //default page locking after submitting	
 			onionPage : undefined, //customer onion page
 			windowFeatures : "toolbar=no, menubar=no,scrollbars=yes, resizable=no,location=no, status=no", //default window features
@@ -609,16 +610,24 @@
 	/*need jquery ui datepicker*/
 	checkLoxiaDate = function(value,obj){		
 		try{
+			var inst = $.datepicker._getInst(obj.element[0]),
+			tp_inst = $.datepicker._get(inst, 'timepicker');
 			var currDate = $.datepicker.parseDate(loxia.dateFormat,value),
-				minDate = obj.option("min"),
-				maxDate = obj.option("max");
+			minDate = obj.option("min"),
+			maxDate = obj.option("max"),
+			timeStr = '';
+			if(tp_inst){
+				currDate.setHours(tp_inst.hour, tp_inst.minute, tp_inst.second);
+				tp_inst._formatTime();
+				timeStr = tp_inst._defaults.separator + tp_inst.formattedTime;
+			}		
 			if((minDate && currDate < minDate) ||
 					(maxDate && currDate > maxDate))
 				return loxia.getLocaleMsg("DATA_EXCEED_RANGE");
 		}catch(e){
 			return loxia.getLocaleMsg("INVALID_DATE");
 		}				
-		return loxia.SUCCESS + "^" + $.datepicker.formatDate(loxia.dateFormat,currDate);
+		return loxia.SUCCESS + "^" + $.datepicker.formatDate(loxia.dateFormat,currDate) + timeStr;
 	};
 		
 	var onion = {

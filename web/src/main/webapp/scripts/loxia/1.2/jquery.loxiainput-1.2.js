@@ -150,11 +150,15 @@
 		},
 		
 		_parseDate : function(dateStr){
-			if(dateStr){
-				if(dateStr === "today")	return new Date();
+			if(dateStr){				
+				if(dateStr === "today" || dateStr === "now"){
+					var date = new Date();
+					date.setHours(0,0,0);
+					return date;
+				}
 				try{
-					return $.datepicker.parseDate(loxia.dateFormat,dateStr);
-				}catch(e){}
+					return $.datepicker.parseDate(loxia.dateFormat,dateStr);			
+				}catch(e){ alert(e);}
 			}
 			return null;
 		},
@@ -164,26 +168,33 @@
 		},
 		
 		_initInput : function(){
+			var needtime = ("true" == this.element.attr("showtime"));
+			this.option("needtime", needtime);
+			
 			if(this.option("checkmaster"))
 				this.option("checkmaster","checkLoxiaDate," + this.option("checkmaster"));
 			else
 				this.option("checkmaster","checkLoxiaDate");
 			
 			var minDate = this._parseDate(this.element.attr("min")),
-				maxDate = this._parseDate(this.element.attr("max")),
-				dpSettings = {changeYear: true, changeMonth: true, dateFormat: loxia.dateFormat,
-					showMonthAfterYear : true,
-					minDate : minDate === null ? undefined : minDate,
-					maxDate : maxDate === null ? undefined : maxDate,
-					onSelect: function(dateText, inst) {
-							var _t = $(this).data("loxiadate");
-							_t.val(dateText);
-						}
-				};
+			maxDate = this._parseDate(this.element.attr("max")),
+			dpSettings = {changeYear: true, changeMonth: true, dateFormat: loxia.dateFormat,
+				timeFormat: loxia.timeFormat,
+				showMonthAfterYear : true,
+				minDate : minDate === null ? undefined : minDate,
+				maxDate : maxDate === null ? undefined : maxDate,
+				onSelect: function(dateText, inst) {
+						var _t = $(this).data("loxiadate");
+						_t.val(dateText);
+					}
+			};
 			if(minDate != null) this.option("min", minDate);
 			if(maxDate != null) this.option("max", maxDate);
 			
-			this.element.datepicker(dpSettings);
+			if(needtime)
+				this.element.datetimepicker(dpSettings);
+			else
+				this.element.datepicker(dpSettings);
 		}
 	});
 	
