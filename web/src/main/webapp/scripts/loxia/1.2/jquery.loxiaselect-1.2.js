@@ -60,6 +60,7 @@
 				loxia.tip();
 			});
 		
+			/*Please change to focusout event if onchange event is need to be used outside*/
 			this.element.change(function(){			
 				_this.val($(this).val());
 				if(_this.state()){
