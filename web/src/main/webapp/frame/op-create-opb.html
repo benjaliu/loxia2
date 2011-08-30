@@ -81,8 +81,17 @@ function showErrorMsg(msg, infodiv){
 		innerInfo += '</span></span>';
 		$info.html(innerInfo);
 		$info.show();
-	}else
+		
+		window.parent.$j("#msg").html(innerInfo);
+	}else{
 		$info.hide();
+		
+		window.parent.$j("#msg").html("");
+	}
+	window.parent.$j("span.showmsg a", window.parent.$j("div.ui-tabs-panel:not(.ui-tabs-hide)")).trigger("click");
+	setTimeout(function() {        
+        window.parent.$j.powerFloat.hide();
+    }, 2000);
 }
 
 function showAlert(caption,msg){
@@ -146,9 +155,7 @@ $j(document).ready(function (){
 				$j(this).parents("tr").removeClass("ui-state-highlight");
 				});
 			}
-		});
-   
-	
+		});	
    
 });
 
@@ -235,6 +242,7 @@ $j(document).ready(function (){
 	</div>
 	</form>
 	<p id="msg" class="ui-state-highlight" style="padding:0.7em; display:none;"></p>
+	<div id="info" style="display:none;"></div>
 	
 	<!-- dialog -->
 	<div id="dialog-sku-query">

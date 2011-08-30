@@ -7,6 +7,7 @@
 <link rel="stylesheet" type="text/css" href="css/redmond/loxia-ui-1.2.custom.css"/>
 <link rel="stylesheet" type="text/css" href="css/layout-default-latest.css"/>
 <link rel="stylesheet" type="text/css" href="css/ui.jqgrid.css"/> 
+<link rel="stylesheet" type="text/css" href="css/powerFloat.css"/>
 <style>
 	body, .ui-widget { font:9pt Verdana, Arail,"Trebuchet MS", sans-serif;}	
 	html,body {height: 100%; overflow: hidden;}
@@ -22,11 +23,14 @@
 	#frame-container iframe {width: 100%; overflow: auto;}
 	
 	.frame-control {width: 100%; height: 20px;}
+	
+	#msg{background-color: #fff;}
 </style>
 <script type="text/javascript" src="scripts/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="scripts/jquery-ui-1.8.7.custom.min.js"></script>
 <script type="text/javascript" src="scripts/jquery.layout-latest.js"></script>
 <script type="text/javascript" src="scripts/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="scripts/jquery-powerFloat-min.js"></script>
 <script type="text/javascript" src="scripts/main-content-frame.js"></script>
 
 <script type="text/javascript" src="scripts/grid.locale-cn.js"></script>
@@ -39,6 +43,7 @@
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxia.locale-zh-CN.js"></script>
 <script type="text/javascript" src="scripts/jquery.ui.datepicker-zh-CN.js"></script>
 <script type="text/javascript" src="scripts/leftMenu.js"></script>
+
 <script type="text/javascript"><!--
 var $j = jQuery.noConflict();
 
@@ -108,6 +113,7 @@ $j(document).ready(function (){
 	$j("#main-container > .ui-layout-north").load("common/top.html", function(){
 		loxia.initContext($j("#dialog-chgrole"));
 	});
+	
 });
 
 --></script>
@@ -159,6 +165,10 @@ $j(document).ready(function (){
 			
 		</div>
 	</div>
+</div>
+<div id='msg' style='display:none;'>
+	这里描述各种需要描述的信息，具体格式待定<br/>
+	目前居中下拉
 </div>
 </body>
 </html>

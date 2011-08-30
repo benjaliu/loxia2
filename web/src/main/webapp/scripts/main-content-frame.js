@@ -27,8 +27,12 @@
 				var frameId = $(ui.panel).attr("id");		
 				var url = $("a[frameId='" + frameId + "']").attr("href");
 				$(ui.panel).append("<div class='frame-control'><span class='refresh'><a href='#'>刷新</a></span>"
-						+ "<span class='print'><a href='#'>打印</a></span></div>" + 
+						+ "<span class='print'><a href='#'>打印</a></span><span class='showmsg'><a href='#'>显示信息</a></span></div>" + 
 						"<iframe src='" + url + "' scrolling=auto frameborder='0'></iframe>");
+				
+				$("span.showmsg a", ui.panel).powerFloat({
+					eventType: "click",
+					target: $j("#msg")});
 				/*$.ajax({
 					url: url,
 					success: function(data, textStatus, jqXHR){
