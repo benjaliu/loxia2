@@ -31,6 +31,4 @@
 	<bean id="daoService" class="loxia.dao.support.HibernateJpaDaoServiceImpl"/>
 	
 	<bean class="loxia.dao.support.SpringBeanDynamicNamedQueryProvider"/>
-	
-	<bean class="loxia.spring.GenericDaoBeanFactoryPostProcessor"/>	
 </beans>

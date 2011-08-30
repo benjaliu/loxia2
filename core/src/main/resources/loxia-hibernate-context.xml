@@ -34,5 +34,5 @@
 	
 	<bean class="loxia.dao.support.SpringBeanDynamicNamedQueryProvider"/>
 	
-	<bean class="loxia.spring.GenericDaoBeanFactoryPostProcessor"/>	
+	<!-- <bean class="loxia.spring.GenericDaoBeanFactoryPostProcessor"/> -->	
 </beans>

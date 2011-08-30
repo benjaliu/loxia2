@@ -12,10 +12,17 @@
 	body { margin: 50px;}
 	td.decimal { text-align: right;	padding-right: 4px;}
 	/* div.ui-datepicker{ font-size: 11px;} */
+	
+	.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+	.ui-timepicker-div dl{ text-align: left; }
+	.ui-timepicker-div dl dt{ height: 25px; }
+	.ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
+	.ui-timepicker-div td { font-size: 90%; }
 </style>
 <script type="text/javascript" src="scripts/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="scripts/jquery-ui-1.8.7.custom.min.js"></script>
 <script type="text/javascript" src="scripts/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="scripts/jquery-ui-timepicker-addon.js"></script>
 
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiacore-1.2.js"></script>
 <script type="text/javascript" src="scripts/loxia/1.2/jquery.loxiainput-1.2.js"></script>
@@ -89,6 +96,7 @@ function checkFieldLength(value, obj){
 }
 
 function setInput5(value, obj){
+	alert("value:" + value);
 	if(value === "date"){
 		loxia.byId($j(obj.element).next("input").get(0)).val("2010-12-10");
 	}else if(value === "number"){
@@ -240,6 +248,8 @@ function setInput5(value, obj){
 	<b>示例4：</b>创建一个数值输入框，非必填，最小值是当前日期，通过代码设置最小值<br></br>
 	<input name="input4" id="input4" loxiaType="date" value="" min="today"/>
 	<button type="button" loxiaType="button" id="btn_setmin" title="修改最小值">修改最小值至:</button><input name="input4" loxiaType="date"/>
+	<br/>
+	<input name="input4" loxiaType="date" showtime="true" value="" min="today"/>
 	<div style="padding: 6px; width: 80%;">
     <div class="ui-widget-header ui-corner-all">页面代码</div>
     <textarea name="code" class="xml" rows="15" cols="100"> 

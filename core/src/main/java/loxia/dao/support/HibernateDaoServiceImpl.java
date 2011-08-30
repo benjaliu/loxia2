@@ -20,7 +20,6 @@ import org.hibernate.engine.ForeignKeys;
 import org.hibernate.engine.Status;
 import org.hibernate.impl.SessionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
 public class HibernateDaoServiceImpl extends AbstractHibernateDaoServiceImpl {
 
