@@ -124,7 +124,7 @@ public class JSONObject extends AbstractJSONObject{
      * @throws JSONException If there is a syntax error in the source string.
      */
     public JSONObject(JSONTokener x) throws JSONException {
-    	super();
+    	this();
         char c;
         String key;
 
