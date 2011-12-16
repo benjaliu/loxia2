@@ -112,8 +112,8 @@ public class GenericEntityDaoImpl<T, PK extends Serializable> implements Generic
 		return daoService.batchUpdateByQuery(query, params);
 	}
 	
-	public int updateByNativeQuery(String query, Object[] params){
-		return daoService.batchUpdateByNativeQuery(query, params);
+	public int updateByNativeQuery(String query, Object[] params, org.hibernate.type.Type[] types){
+		return daoService.batchUpdateByNativeQuery(query, params, types);
 	}
 
 	public void executeDDL(String ddl) {
