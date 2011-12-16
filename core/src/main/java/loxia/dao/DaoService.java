@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.type.Type;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlParameter;
 
@@ -65,7 +66,7 @@ public interface DaoService {
 	
 	<T> T findOneByNativeQuery(String queryString, Object[] params, RowMapper<T> rowMapper, Sort[] sorts);
 		
-	int batchUpdateByNativeQuery(String queryString, Object[] params);
+	int batchUpdateByNativeQuery(String queryString, Object[] params, Type[] types);
 	
 	void executeDDL(String queryString);
 	

@@ -8,10 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.jdbc.core.RowMapper;
-
 import loxia.annotation.NativeQuery;
 import loxia.annotation.NativeUpdate;
 import loxia.dao.DaoService;
@@ -21,6 +17,11 @@ import loxia.dao.Pagination;
 import loxia.dao.Sort;
 import loxia.dao.support.BaseRowMapper;
 import loxia.service.VelocityTemplateService;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.hibernate.type.Type;
+import org.springframework.jdbc.core.RowMapper;
 
 public class 
 NativeQueryHandler extends DynamicQueryHandler {
@@ -98,6 +99,7 @@ NativeQueryHandler extends DynamicQueryHandler {
 	public int handleNativeUpdate(NativeUpdate nativeUpdate, ProceedingJoinPoint pjp){
 		MethodSignature ms = (MethodSignature)pjp.getSignature();
 		Map<String, Object> params = getParams(ms.getMethod(), pjp.getArgs());		
+		Map<String, Type> paramClazzes = getParamClazzes(ms.getMethod(), pjp.getArgs());
 		
 		String queryName = nativeUpdate.value();
 		if(queryName.equals("")){
@@ -110,10 +112,14 @@ NativeQueryHandler extends DynamicQueryHandler {
 		
 		String queryStringWithName = getDynamicQuery(queryName, params);		
 		List<Object> conditions = new ArrayList<Object>();
-		String queryString = getNativeQuery(queryStringWithName, params, conditions);
+		List<Type> types = new ArrayList<Type>();
+		String queryString = getNativeUpdateQuery(queryStringWithName, params, paramClazzes, 
+				conditions,types);
+		
+		
 		
 		logger.debug("Update[{}] will be executed.",queryString);
-		return daoService.batchUpdateByNativeQuery(queryString, conditions.toArray());		
+		return daoService.batchUpdateByNativeQuery(queryString, conditions.toArray(), types.toArray(new Type[]{}));		
 	}
 	
 	private String getNativeQuery(String queryName, Map<String, Object> params,
@@ -131,6 +137,36 @@ NativeQueryHandler extends DynamicQueryHandler {
 						inParamName = false;
 						sb.append('?');
 						conditions.add(params.get(paramNameSb.toString()));
+						paramNameSb = new StringBuffer();
+					}
+					sb.append(c);
+				}else{
+					if(inParamName){
+						paramNameSb.append(c);
+					}else
+						sb.append(c);
+				}
+			}
+		}
+		return sb.toString();
+	}
+	
+	private String getNativeUpdateQuery(String queryName, Map<String, Object> params,
+			Map<String,Type> typeParams, List<Object> conditions, List<Type> types) {
+		StringBuffer sb = new StringBuffer();
+		boolean inParamName = false;
+		StringBuffer paramNameSb = new StringBuffer();
+		for(char c: queryName.toCharArray()){
+			if(c == ':'){
+				if(inParamName) throw new RuntimeException("Wrong query.");
+				inParamName = true;
+			}else{
+				if(c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == ',' || c == ')'){
+					if(inParamName){
+						inParamName = false;
+						sb.append('?');
+						conditions.add(params.get(paramNameSb.toString()));
+						types.add(typeParams.get(paramNameSb.toString()));
 						paramNameSb = new StringBuffer();
 					}
 					sb.append(c);

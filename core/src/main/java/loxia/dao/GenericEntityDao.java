@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.type.Type;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ public interface GenericEntityDao<T, PK extends Serializable> {
 	int updateByQuery(String query, Map<String,Object> params);
 	
 	@Transactional
-	int updateByNativeQuery(String query, Object[] params);
+	int updateByNativeQuery(String query, Object[] params, Type[] types);
 	
 	@Transactional
 	void executeDDL(String ddl);
