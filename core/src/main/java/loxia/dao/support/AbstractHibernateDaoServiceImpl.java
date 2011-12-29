@@ -218,6 +218,23 @@ public abstract class AbstractHibernateDaoServiceImpl implements DaoService, Ini
 				rowMapper);		
 	}
 	
+	protected <T> Pagination<T> setPagination(Pagination<T> p, int start, int pageSize, Sort[] sorts){
+		if(pageSize == 0) throw new IllegalArgumentException();
+		p.setCurrentPage((start/pageSize) + 1);
+		p.setTotalPages((int)p.getCount()/pageSize + (p.getCount()%pageSize == 0 ? 0 : 1));
+		p.setStart(start);
+		p.setSize(pageSize);
+		StringBuilder sortStr = new StringBuilder();
+		if(sorts != null){
+			for(Sort sort: sorts){
+				sortStr.append("," + sort.getField() + " " + sort.getType());
+			}			
+		}
+		String s = sortStr.toString();
+		p.setSortStr(s.length() == 0 ? null : s.substring(1));
+		return p;
+	}
+	
 	protected <T> Pagination<T> findByNativeQueryNative(String queryString, Object[] params,
 			Sort[] sorts, int start, int pageSize, boolean withGroupby, RowMapper<T> rowMapper) {
 		Pagination<T> p = new Pagination<T>();
@@ -231,7 +248,7 @@ public abstract class AbstractHibernateDaoServiceImpl implements DaoService, Ini
 						return rs.getInt(1);
 					}
 				}).iterator().next());
-		return p;
+		return setPagination(p, start, pageSize, sorts);
 	}	
 	
 	public <T> List<T> findByNativeQuery(String queryString, Object[] params, RowMapper<T> rowMapper) {

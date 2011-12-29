@@ -173,7 +173,7 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 				p.setCount((long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).size());
 			else
 				p.setCount((Long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).iterator().next());
-			return p;
+			return setPagination(p, start, pageSize, sorts);
 		}else{
 			return findByQueryNative(queryString, params, sorts, start, pageSize, withGroupby);
 		}		
@@ -189,7 +189,7 @@ public class HibernateJpaDaoServiceImpl extends AbstractHibernateDaoServiceImpl 
 			p.setCount((long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).size());
 		else
 			p.setCount((Long)findByQueryNative(entityManager.createQuery(countQueryString), params, -1, -1).iterator().next());
-		return p;
+		return setPagination(p, start, pageSize, sorts);
 	}	
 		
 	@SuppressWarnings("unchecked")

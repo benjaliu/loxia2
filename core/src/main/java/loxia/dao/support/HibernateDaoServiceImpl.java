@@ -178,7 +178,7 @@ public class HibernateDaoServiceImpl extends AbstractHibernateDaoServiceImpl {
 				p.setCount((long)findByQueryNative(session.createQuery(countQueryString), params, -1, -1).size());
 			else
 				p.setCount((Long)findByQueryNative(session.createQuery(countQueryString), params, -1, -1).iterator().next());
-			return p;
+			return setPagination(p, start, pageSize, sorts);
 		}else{
 			return findByQueryNative(queryString, params, sorts, start, pageSize, withGroupby);
 		}		
@@ -195,7 +195,7 @@ public class HibernateDaoServiceImpl extends AbstractHibernateDaoServiceImpl {
 			p.setCount((long)findByQueryNative(session.createQuery(countQueryString), params, -1, -1).size());
 		else
 			p.setCount((Long)findByQueryNative(session.createQuery(countQueryString), params, -1, -1).iterator().next());
-		return p;
+		return setPagination(p, start, pageSize, sorts);
 	}	
 	
 	@SuppressWarnings("unchecked")
@@ -247,8 +247,8 @@ public class HibernateDaoServiceImpl extends AbstractHibernateDaoServiceImpl {
 		if(withGroupby)
 			p.setCount((long)findByQueryNative(query, paramsNew, -1, -1).size());
 		else
-			p.setCount((Long)findByQueryNative(query, paramsNew, -1, -1).iterator().next());
-		return p;
+			p.setCount((Long)findByQueryNative(query, paramsNew, -1, -1).iterator().next());		
+		return setPagination(p, start, pageSize, sorts);
 	}
 	
 	public <T> T findOneByQueryEx(String queryString, Map<String,Object> params, Sort[] sorts){
