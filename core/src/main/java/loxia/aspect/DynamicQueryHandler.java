@@ -11,6 +11,7 @@ import loxia.annotation.DynamicQuery;
 import loxia.dao.DaoService;
 import loxia.dao.DynamicNamedQueryProvider;
 import loxia.dao.ModelClassSupport;
+import loxia.dao.Page;
 import loxia.dao.Pagination;
 import loxia.dao.Sort;
 import loxia.service.VelocityTemplateService;
@@ -32,7 +33,8 @@ public class DynamicQueryHandler extends AbstractQueryHandler {
 		MethodSignature ms = (MethodSignature)pjp.getSignature();
 		Map<String, Object> params = getParams(ms.getMethod(), pjp.getArgs());
 		
-		boolean pagable = dynamicQuery.pagable();		
+		Page page = getPage(pjp.getArgs());
+		boolean pagable = (page != null) ||dynamicQuery.pagable();		
 		
 		String queryName = dynamicQuery.value();
 		if(queryName.equals("")){
@@ -54,9 +56,11 @@ public class DynamicQueryHandler extends AbstractQueryHandler {
 		
 		if(List.class.isAssignableFrom(ms.getMethod().getReturnType())){
 			if(pagable){
-				if(pjp.getArgs()[0] instanceof Integer &&
+				if(page != null)
+					return daoService.findByQueryEx(queryString, params, sorts, page.getStart(), page.getSize());
+				else if(pjp.getArgs()[0] instanceof Integer &&
 						pjp.getArgs()[1] instanceof Integer)				
-					return daoService.findByQueryEx(queryString, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1]);
+					return daoService.findByQueryEx(queryString, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1]); 
 				else
 					throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
 			}else{
@@ -64,7 +68,9 @@ public class DynamicQueryHandler extends AbstractQueryHandler {
 			}
 		}else if(Pagination.class.isAssignableFrom(ms.getMethod().getReturnType())){
 			if(pagable){
-				if(pjp.getArgs()[0] instanceof Integer &&
+				if(page != null)
+					return daoService.findByQueryEx(queryString, params, sorts, page.getStart(), page.getSize(), dynamicQuery.withGroupby());
+				else if(pjp.getArgs()[0] instanceof Integer &&
 						pjp.getArgs()[1] instanceof Integer)				
 					return daoService.findByQueryEx(queryString, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], dynamicQuery.withGroupby());
 				else

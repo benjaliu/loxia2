@@ -1,6 +1,8 @@
 package loxia.dao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Sort implements Serializable{
 	/**
@@ -79,4 +81,18 @@ public class Sort implements Serializable{
 	public String toString() {
 		return field + " " + type;
 	}		
+	
+	public static Sort[] parse(String sortStr){
+		if(sortStr == null || sortStr.trim().length() == 0) return null;
+		String[] sorts = sortStr.split(",");
+		List<Sort> list = new ArrayList<Sort>();
+		for(String s: sorts){
+			String[] strs = s.trim().split(" ");
+			String order = strs.length > 1? strs[1] : ASC;
+			if((!order.equals(ASC)) && (!order.equals(DESC)))
+				throw new InvalidSortException();
+			list.add(new Sort(strs[0],order));
+		}
+		return list.toArray(new Sort[0]);
+	}
 }

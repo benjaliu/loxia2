@@ -13,6 +13,7 @@ import loxia.annotation.NativeUpdate;
 import loxia.dao.DaoService;
 import loxia.dao.DynamicNamedQueryProvider;
 import loxia.dao.ModelClassSupport;
+import loxia.dao.Page;
 import loxia.dao.Pagination;
 import loxia.dao.Sort;
 import loxia.dao.support.BaseRowMapper;
@@ -35,7 +36,8 @@ NativeQueryHandler extends DynamicQueryHandler {
 		MethodSignature ms = (MethodSignature)pjp.getSignature();
 		Map<String, Object> params = getParams(ms.getMethod(), pjp.getArgs());
 		
-		boolean pagable = nativeQuery.pagable();		
+		Page page = getPage(pjp.getArgs());
+		boolean pagable = (page != null) ||nativeQuery.pagable();		
 		
 		String queryName = nativeQuery.value();
 		if(queryName.equals("")){
@@ -71,7 +73,10 @@ NativeQueryHandler extends DynamicQueryHandler {
 		
 		if(List.class.isAssignableFrom(ms.getMethod().getReturnType())){
 			if(pagable){
-				if(pjp.getArgs()[0] instanceof Integer &&
+				if(page != null)
+					return daoService.findByNativeQuery(queryString, conditions.toArray(), sorts, 
+							page.getStart(), page.getSize(), rowMapper);
+				else if(pjp.getArgs()[0] instanceof Integer &&
 						pjp.getArgs()[1] instanceof Integer)				
 					return daoService.findByNativeQuery(queryString, conditions.toArray(), sorts, 
 							(Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], rowMapper);
@@ -83,7 +88,10 @@ NativeQueryHandler extends DynamicQueryHandler {
 			}
 		}else if(Pagination.class.isAssignableFrom(ms.getMethod().getReturnType())){
 			if(pagable){
-				if(pjp.getArgs()[0] instanceof Integer &&
+				if(page != null)
+					return daoService.findByNativeQuery(queryString, conditions.toArray(), sorts, 
+							page.getStart(), page.getSize(), nativeQuery.withGroupby(), rowMapper);
+				else if(pjp.getArgs()[0] instanceof Integer &&
 						pjp.getArgs()[1] instanceof Integer)				
 					return daoService.findByNativeQuery(queryString, conditions.toArray(), sorts, 
 							(Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], nativeQuery.withGroupby(), rowMapper);

@@ -1,8 +1,14 @@
 package loxia.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Pagination<T> {
+public class Pagination<T> implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 520741651051423364L;
+
 	public Pagination(){}
 	public Pagination(List<T> items, long count){
 		this.items = items;

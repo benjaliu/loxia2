@@ -6,6 +6,7 @@ public class LoxiaNamespaceHandler extends NamespaceHandlerSupport {
 
 	public void init() {
 		registerBeanDefinitionParser("dao", new GenericDaoBeanDefinitionParser());
+		registerBeanDefinitionParser("dao-config", new GenericDaoConfigBeanDefinitionParser());
 	}
 
 }

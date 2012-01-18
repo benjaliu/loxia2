@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import loxia.annotation.QueryParam;
 import loxia.core.utils.HibernateUtil;
 import loxia.dao.DaoService;
+import loxia.dao.Page;
 import loxia.dao.Sort;
 
 public abstract class AbstractQueryHandler {
@@ -62,6 +63,19 @@ public abstract class AbstractQueryHandler {
 			}
 		}
 		return params;
+	}
+	
+	protected Page getPage(Object[] args){
+		Page page = null;
+		for(Object arg: args){
+			if(arg instanceof Page){
+				if(page == null)
+					page = (Page)arg;
+				else
+					throw new IllegalArgumentException("More than one definitions found for Page.");
+			}
+		}
+		return page;
 	}
 	
 	protected Sort[] getSorts(Object[] args){

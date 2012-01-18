@@ -9,6 +9,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 import loxia.annotation.Query;
 import loxia.dao.DaoService;
+import loxia.dao.Page;
 import loxia.dao.Pagination;
 import loxia.dao.Sort;
 
@@ -22,7 +23,9 @@ public class QueryHandler extends AbstractQueryHandler {
 		MethodSignature ms = (MethodSignature)pjp.getSignature();
 		Map<String, Object> params = getParams(ms.getMethod(), pjp.getArgs());
 		
-		boolean pagable = query.pagable();		
+		Page page = getPage(pjp.getArgs());
+		boolean pagable = (page != null) || query.pagable();		
+		
 		String queryString = query.value();			
 		logger.debug("Query[{}] will be executed.",queryString);
 		
@@ -34,7 +37,9 @@ public class QueryHandler extends AbstractQueryHandler {
 		
 		if(List.class.isAssignableFrom(ms.getMethod().getReturnType())){
 			if(pagable){
-				if(pjp.getArgs()[0] instanceof Integer &&
+				if(page != null)
+					return daoService.findByQuery(queryString, params, sorts, page.getStart(), page.getSize());
+				else if(pjp.getArgs()[0] instanceof Integer &&
 						pjp.getArgs()[1] instanceof Integer)				
 					return daoService.findByQuery(queryString, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1]);
 				else
@@ -44,7 +49,9 @@ public class QueryHandler extends AbstractQueryHandler {
 			}
 		}else if(Pagination.class.isAssignableFrom(ms.getMethod().getReturnType())){
 			if(pagable){
-				if(pjp.getArgs()[0] instanceof Integer &&
+				if(page != null)
+					return daoService.findByQuery(queryString, params, sorts, page.getStart(), page.getSize(), query.withGroupby());
+				else if(pjp.getArgs()[0] instanceof Integer &&
 						pjp.getArgs()[1] instanceof Integer)				
 					return daoService.findByQuery(queryString, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], query.withGroupby());
 				else

@@ -9,6 +9,11 @@
 	<xsd:import namespace="http://www.springframework.org/schema/beans"
 	 	schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>	
 	
+	<xsd:element name="dao-config">
+		<xsd:complexType>
+			<xsd:attribute name="base-package" type="xsd:string"/>
+		</xsd:complexType>
+	</xsd:element>
 	<xsd:element name="dao">
 		<xsd:complexType>
 			<xsd:complexContent>

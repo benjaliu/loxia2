@@ -7,6 +7,7 @@ import java.util.Map;
 import loxia.annotation.NamedQuery;
 import loxia.dao.DaoService;
 import loxia.dao.ModelClassSupport;
+import loxia.dao.Page;
 import loxia.dao.Pagination;
 import loxia.dao.Sort;
 
@@ -23,7 +24,8 @@ public class NamedQueryHandler extends AbstractQueryHandler{
 		MethodSignature ms = (MethodSignature)pjp.getSignature();
 		Map<String, Object> params = getParams(ms.getMethod(), pjp.getArgs());
 		
-		boolean pagable = namedQuery.pagable();		
+		Page page = getPage(pjp.getArgs());
+		boolean pagable = (page!= null) || namedQuery.pagable();		
 		String queryName = namedQuery.value();
 		if(queryName.equals("")){
 			if(!(pjp.getThis() instanceof ModelClassSupport)) 
@@ -42,10 +44,12 @@ public class NamedQueryHandler extends AbstractQueryHandler{
 		
 		if(List.class.isAssignableFrom(ms.getMethod().getReturnType())){
 			if(pagable){
-				if(pjp.getArgs()[0] instanceof Integer &&
+				if(page != null)
+					return daoService.findByNamedQuery(queryName, params, sorts, page.getStart(), page.getSize());
+				else if(pjp.getArgs()[0] instanceof Integer &&
 						pjp.getArgs()[1] instanceof Integer)				
 					return daoService.findByNamedQuery(queryName, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1]);
-				else
+				else 
 					throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
 			}else{
 				if(sorts == null)
@@ -55,7 +59,9 @@ public class NamedQueryHandler extends AbstractQueryHandler{
 			}
 		}else if(Pagination.class.isAssignableFrom(ms.getMethod().getReturnType())){
 			if(pagable){
-				if(pjp.getArgs()[0] instanceof Integer &&
+				if(page != null)
+					return daoService.findByNamedQuery(queryName, params, sorts, page.getStart(), page.getSize(), namedQuery.withGroupby());
+				else if(pjp.getArgs()[0] instanceof Integer &&
 						pjp.getArgs()[1] instanceof Integer)				
 					return daoService.findByNamedQuery(queryName, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], namedQuery.withGroupby());
 				else
