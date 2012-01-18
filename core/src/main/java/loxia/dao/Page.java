@@ -14,7 +14,7 @@ public class Page implements Serializable{
 	
 	public Page(){}
 	
-	public Page(int startPage, int size, String sortStr){
+	public Page(int startPage, int size){
 		this.start = (startPage - 1)*size;
 		this.size = size;
 	}
