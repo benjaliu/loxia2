@@ -25,9 +25,9 @@ public abstract class BaseRowMapper<T> implements RowMapper<T> {
 				value = (K) rs.getBinaryStream(alias);
 			else if(clazz.equals(java.sql.Blob.class))
 				value = (K) rs.getBlob(alias);
-			else if(clazz.equals(Boolean.class))
+			else if(clazz.equals(Boolean.class) || clazz.equals(boolean.class))
 				value = (K) new Boolean(rs.getBoolean(alias));
-			else if(clazz.equals(Byte.class))
+			else if(clazz.equals(Byte.class) || clazz.equals(byte.class))
 				value = (K) new Byte(rs.getByte(alias));
 			else if(clazz.equals(Byte[].class))
 				value = (K) rs.getBytes(alias);
@@ -37,15 +37,15 @@ public abstract class BaseRowMapper<T> implements RowMapper<T> {
 				value = (K) rs.getClob(alias);
 			else if(clazz.equals(java.sql.Date.class))
 				value = (K) rs.getDate(alias);
-			else if(clazz.equals(Double.class))
+			else if(clazz.equals(Double.class) || clazz.equals(double.class))
 				value = (K) new Double(rs.getDouble(alias));
-			else if(clazz.equals(Float.class))
+			else if(clazz.equals(Float.class) || clazz.equals(float.class))
 				value = (K) new Float(rs.getFloat(alias));
-			else if(clazz.equals(Integer.class))
+			else if(clazz.equals(Integer.class) || clazz.equals(int.class))
 				value = (K) new Integer(rs.getInt(alias));
-			else if(clazz.equals(Long.class))
+			else if(clazz.equals(Long.class) || clazz.equals(long.class))
 				value = (K) new Long(rs.getLong(alias));
-			else if(clazz.equals(Short.class))
+			else if(clazz.equals(Short.class) || clazz.equals(short.class))
 				value = (K) new Short(rs.getShort(alias));
 			else if(clazz.equals(java.sql.Time.class))
 				value = (K) rs.getTime(alias);
@@ -74,9 +74,9 @@ public abstract class BaseRowMapper<T> implements RowMapper<T> {
 				value = (K) rs.getBinaryStream(icolumn);
 			else if(clazz.equals(java.sql.Blob.class))
 				value = (K) rs.getBlob(icolumn);
-			else if(clazz.equals(Boolean.class))
+			else if(clazz.equals(Boolean.class) || clazz.equals(boolean.class))
 				value = (K) new Boolean(rs.getBoolean(icolumn));
-			else if(clazz.equals(Byte.class))
+			else if(clazz.equals(Byte.class) || clazz.equals(byte.class))
 				value = (K) new Byte(rs.getByte(icolumn));
 			else if(clazz.equals(Byte[].class))
 				value = (K) rs.getBytes(icolumn);
@@ -86,15 +86,15 @@ public abstract class BaseRowMapper<T> implements RowMapper<T> {
 				value = (K) rs.getClob(icolumn);
 			else if(clazz.equals(java.sql.Date.class))
 				value = (K) rs.getDate(icolumn);
-			else if(clazz.equals(Double.class))
+			else if(clazz.equals(Double.class) || clazz.equals(double.class))
 				value = (K) new Double(rs.getDouble(icolumn));
-			else if(clazz.equals(Float.class))
+			else if(clazz.equals(Float.class) || clazz.equals(float.class))
 				value = (K) new Float(rs.getFloat(icolumn));
-			else if(clazz.equals(Integer.class))
+			else if(clazz.equals(Integer.class) || clazz.equals(int.class))
 				value = (K) new Integer(rs.getInt(icolumn));
-			else if(clazz.equals(Long.class))
+			else if(clazz.equals(Long.class) || clazz.equals(long.class))
 				value = (K) new Long(rs.getLong(icolumn));
-			else if(clazz.equals(Short.class))
+			else if(clazz.equals(Short.class) || clazz.equals(short.class))
 				value = (K) new Short(rs.getShort(icolumn));
 			else if(clazz.equals(java.sql.Time.class))
 				value = (K) rs.getTime(icolumn);

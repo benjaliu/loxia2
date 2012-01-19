@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 import loxia.annotation.NativeQuery;
+import loxia.annotation.NativeQuery.DEFAULT;
 import loxia.annotation.NativeUpdate;
+import loxia.dao.ColumnTranslator;
 import loxia.dao.DaoService;
 import loxia.dao.DynamicNamedQueryProvider;
 import loxia.dao.ModelClassSupport;
@@ -17,6 +19,8 @@ import loxia.dao.Page;
 import loxia.dao.Pagination;
 import loxia.dao.Sort;
 import loxia.dao.support.BaseRowMapper;
+import loxia.dao.support.CommonBeanRowMapper;
+import loxia.dao.support.DummyColumnTranslator;
 import loxia.service.VelocityTemplateService;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -24,8 +28,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.hibernate.type.Type;
 import org.springframework.jdbc.core.RowMapper;
 
-public class 
-NativeQueryHandler extends DynamicQueryHandler {
+public class NativeQueryHandler extends DynamicQueryHandler {
 
 	public NativeQueryHandler(DaoService daoService, VelocityTemplateService templateService, 
 			DynamicNamedQueryProvider dnqProvider) {
@@ -56,6 +59,18 @@ NativeQueryHandler extends DynamicQueryHandler {
 		
 		Sort[] sorts = getSorts(pjp.getArgs());
 		RowMapper<?> rowMapper = getRowMapper(pjp.getArgs());
+		if(rowMapper == null && (!nativeQuery.model().equals(DEFAULT.class))){
+			ColumnTranslator t = null;
+			try {
+				if(!DummyColumnTranslator.class.equals(nativeQuery.translator())){
+					t = nativeQuery.translator().newInstance();
+					t.setModelClass(nativeQuery.model());
+				}
+			} catch (Exception e) {
+				//do nothing
+			}
+			rowMapper = new CommonBeanRowMapper(nativeQuery.model(), t, nativeQuery.alias());
+		}
 		if(rowMapper == null && (nativeQuery.alias() == null || nativeQuery.clazzes() == null
 				|| nativeQuery.alias().length == 0
 				|| nativeQuery.clazzes().length == 0))
