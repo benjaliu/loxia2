@@ -54,7 +54,7 @@ public class CommonBeanRowMapper<T> extends BaseRowMapper<T> {
 			ResultSetMetaData meta = rs.getMetaData();
 			
 			for(int i=1; i<= meta.getColumnCount(); i++){
-				String name = meta.getColumnName(i).toUpperCase();
+				String name = meta.getColumnLabel(i).toUpperCase();
 				if(columnDefinition.containsKey(name)){
 					String attribute = columnDefinition.get(name);
 					try {						
