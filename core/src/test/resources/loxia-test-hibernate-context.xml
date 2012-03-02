@@ -13,6 +13,6 @@
 		<property name="username" value="sa" />
 		<property name="password" value="" />
 	</bean>	
-	
-	<loxia:dao id="userDao" interface="loxia.dao.InnerUserDao"/>
+	<loxia:dao-config base-package="loxia.dao"/>
+	<!-- <loxia:dao id="userDao" interface="loxia.dao.InnerUserDao"/> -->
 </beans>

@@ -53,7 +53,7 @@ public class Pagination<T> implements Serializable{
 		this.sortStr = sortStr;
 	}
 	public boolean isFirstPage(){
-		return getCurrentPage() == 0;
+		return getCurrentPage() == 1;
 	}
 	public boolean isLastPage(){
 		return getCurrentPage() >= getTotalPages();

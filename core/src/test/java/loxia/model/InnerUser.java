@@ -1,5 +1,6 @@
 package loxia.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +21,8 @@ public class InnerUser {
 	@TableGenerator(name="tablegen", allocationSize=1, table="seqtable")
 	private Long id;
 	private String loginName;
+	
+	@Column(name="USERNAME")
 	private String userName;
 	private String password;
 	
