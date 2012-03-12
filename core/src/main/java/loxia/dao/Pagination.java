@@ -14,6 +14,14 @@ public class Pagination<T> implements Serializable{
 		this.items = items;
 		this.count = count;
 	}
+	public Pagination(List<T> items, long count, int currentPage, int totalPages, int start, int size){
+		this.items = items;
+		this.count = count;
+		this.currentPage = currentPage;
+		this.totalPages = totalPages;
+		this.start = start;
+		this.size = size;
+	}
 	private List<T> items;
 	private long count;
 	private int currentPage;
