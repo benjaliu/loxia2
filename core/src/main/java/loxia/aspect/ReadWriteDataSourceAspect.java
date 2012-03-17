@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionAttributeSource;
 
@@ -23,17 +24,22 @@ public class ReadWriteDataSourceAspect implements Ordered{
 	
 	@Around("this(loxia.dao.ReadWriteSupport)")
 	public Object doQuery(ProceedingJoinPoint pjp) throws Throwable{	
-		if(ReadWriteStatusHolder.getReadWriteStatus() != null){
+		MethodSignature ms = (MethodSignature)pjp.getSignature();
+		TransactionAttribute ta = transactionAttributeSouce.getTransactionAttribute(ms.getMethod(), pjp.getTarget().getClass());
+		if(ta == null || (ReadWriteStatusHolder.getReadWriteStatus() != null && ta.getPropagationBehavior() != TransactionDefinition.PROPAGATION_REQUIRES_NEW)){
 			return pjp.proceed(pjp.getArgs());
 		}
-		MethodSignature ms = (MethodSignature)pjp.getSignature();
-		logger.debug("determine datasource for query:{}.{}",ms.getDeclaringType().getName(),ms.getMethod().getName());
-		TransactionAttribute ta = transactionAttributeSouce.getTransactionAttribute(ms.getMethod(), pjp.getTarget().getClass());		
 		
+		logger.debug("determine datasource for query:{}.{}",ms.getDeclaringType().getName(),ms.getMethod().getName());		
 		logger.debug("Current operation's transaction status: {}", ta == null ? "null": ta.toString());
 		
+		String currentStatus = ReadWriteStatusHolder.getReadWriteStatus();
 		if(ta != null){
-			ReadWriteStatusHolder.setReadWriteStatus((ta != null && ta.isReadOnly()) ? ReadWriteSupport.READ: ReadWriteSupport.WRITE);
+			if(ta.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW){
+				logger.debug("New writable connection is required for new transaction.");
+				ReadWriteStatusHolder.setReadWriteStatus(ReadWriteSupport.WRITE);
+			}else
+				ReadWriteStatusHolder.setReadWriteStatus((ta != null && ta.isReadOnly()) ? ReadWriteSupport.READ: ReadWriteSupport.WRITE);
 		}
 		try {
 			Object rtn = pjp.proceed(pjp.getArgs());
@@ -42,8 +48,16 @@ public class ReadWriteDataSourceAspect implements Ordered{
 			throw e;
 		} finally {
 			if(ta != null){
-				ReadWriteStatusHolder.clearReadWriteStatus();
-				logger.debug("Clear Read/Write Status");
+				if(ta.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW){
+					logger.debug("Fallback to previous Read/Write Status: {}", currentStatus);
+					if(currentStatus == null)
+						ReadWriteStatusHolder.clearReadWriteStatus();
+					else
+						ReadWriteStatusHolder.setReadWriteStatus(currentStatus);
+				}else{
+					logger.debug("Clear Read/Write Status");
+					ReadWriteStatusHolder.clearReadWriteStatus();					
+				}				
 			}
 		}
 	}
