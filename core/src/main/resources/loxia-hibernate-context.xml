@@ -32,7 +32,7 @@
 	
 	<bean id="daoService" class="loxia.dao.support.HibernateDaoServiceImpl"/>
 	
-	<bean class="loxia.dao.support.SpringBeanDynamicNamedQueryProvider"/>
+	<!-- <bean class="loxia.dao.support.SpringBeanDynamicNamedQueryProvider"/> -->
 	
 	<!-- <bean class="loxia.spring.GenericDaoBeanFactoryPostProcessor"/> -->	
 </beans>

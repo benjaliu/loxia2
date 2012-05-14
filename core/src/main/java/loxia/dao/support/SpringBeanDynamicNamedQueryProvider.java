@@ -1,15 +1,17 @@
 package loxia.dao.support;
 
+import javax.annotation.Resource;
+
 import loxia.dao.DynamicNamedQueryProvider;
 
-import org.springframework.beans.BeansException;
+
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 
 public class SpringBeanDynamicNamedQueryProvider implements
-		DynamicNamedQueryProvider, ApplicationContextAware {
+		DynamicNamedQueryProvider {
 
+	@Resource
 	private ApplicationContext ac;
 	
 	public String getDynamicQueryByName(String queryName) {
@@ -19,10 +21,4 @@ public class SpringBeanDynamicNamedQueryProvider implements
 		DynamicQueryHolder holder = (DynamicQueryHolder)obj;
 		return holder.getDynamicQueryStr();
 	}
-
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		this.ac = applicationContext;
-	}
-
 }

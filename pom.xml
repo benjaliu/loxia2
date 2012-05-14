@@ -4,7 +4,7 @@
   <groupId>loxia2</groupId>
   <artifactId>parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.5</version>
+  <version>2.5.1</version>
   <name>Loxia2 Platform Parent</name>
   <url>http://code.google.com/p/loxia2/</url>
   
@@ -17,7 +17,7 @@
    </licenses>
 
    <properties>
-   		<loxia2.version>2.5</loxia2.version>
+   		<loxia2.version>2.5.1</loxia2.version>
    		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>3.0.1.RELEASE</spring.version>
         <hibernate.version>3.5.1-Final</hibernate.version>

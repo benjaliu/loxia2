@@ -15,4 +15,12 @@
 	</bean>	
 	<loxia:dao-config base-package="loxia.dao"/>
 	<!-- <loxia:dao id="userDao" interface="loxia.dao.InnerUserDao"/> -->
+	
+	<bean class="loxia.dao.support.XmlDynamicNamedQueryProvider">
+		<property name="configFileList">
+			<list>
+				<value>loxia-test-dynamic-nq-context.xml</value>
+			</list>
+		</property>
+	</bean>
 </beans>
