@@ -1,8 +1,6 @@
 package loxia.dao.support;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +9,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -18,11 +21,15 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class XmlDynamicNamedQueryProvider extends MappedDynamicNamedQueryProvider {
+	
+	private static final Logger logger = LoggerFactory.getLogger(XmlDynamicNamedQueryProvider.class);
 
 	private String[] configFileList;
 	
 	private DocumentBuilderFactory dbf;
 	private DocumentBuilder db;
+	
+	private final ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
 	public void setConfigFileList(String[] configFileList) {
 		this.configFileList = configFileList;
@@ -42,8 +49,14 @@ public class XmlDynamicNamedQueryProvider extends MappedDynamicNamedQueryProvide
 		//set query map
 		try {
 			if(configFileList != null && configFileList.length > 0)
-				for(int i=0; i< configFileList.length; i++)
-					initConfigFile(configFileList[i]);
+				for(int i=0; i< configFileList.length; i++){
+					Resource[] resources = resolver.getResources(configFileList[i]);
+					if(resources == null || resources.length == 0) continue;
+					for(int j=0; j< resources.length; j++){
+						initConfigFile(resources[j]);
+					}
+				}
+					
 		} catch (SAXException e) {
 			throw new RuntimeException("parse query xml error.");
 		} catch (IOException e) {
@@ -51,8 +64,9 @@ public class XmlDynamicNamedQueryProvider extends MappedDynamicNamedQueryProvide
 		}
 	}
 	
-	private void initConfigFile(String config) throws SAXException, IOException{
-		Document doc = db.parse(getResourceAsStream(config, XmlDynamicNamedQueryProvider.class));
+	private void initConfigFile(Resource resource) throws SAXException, IOException{
+		logger.debug("Read query config: {}", resource.getFilename());
+		Document doc = db.parse(resource.getInputStream());
 		NodeList nodeList = doc.getElementsByTagName("bean");
 		for (int s = 0; s < nodeList.getLength(); s++) {
 			Node node = nodeList.item(s);
@@ -70,24 +84,6 @@ public class XmlDynamicNamedQueryProvider extends MappedDynamicNamedQueryProvide
 			}
 		}
 	}
-	
-	private InputStream getResourceAsStream(String resourceName, Class<?> callingClass) {
-        URL url = getResource(resourceName, callingClass);
-        try {
-            return (url != null) ? url.openStream() : null;
-        } catch (IOException e) {
-            return null;
-        }
-    }
-		
-	private URL getResource(String resourceName, Class<?> callingClass) {
-        URL url = null;
-        url = Thread.currentThread().getContextClassLoader().getResource(resourceName);
-        if (url == null) {
-            url = callingClass.getClassLoader().getResource(resourceName);
-        }
-        return url;
-    }
 
 	@Override
 	public void setQueryMap(Map<String, String> queryMap) {

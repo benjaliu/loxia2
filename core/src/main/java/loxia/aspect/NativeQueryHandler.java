@@ -1,5 +1,6 @@
 package loxia.aspect;
 
+import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import loxia.dao.support.CommonBeanRowMapper;
 import loxia.dao.support.DummyColumnTranslator;
 import loxia.service.VelocityTemplateService;
 
+import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.hibernate.type.Type;
@@ -34,21 +36,29 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 			DynamicNamedQueryProvider dnqProvider) {
 		super(daoService, templateService, dnqProvider);
 	}
+	
+	public Object handleNativeQuery(NativeQuery nativeQuery, MethodInvocation invocation){
+		return handleNativeQueryNative(nativeQuery, invocation.getThis(), invocation.getMethod(), invocation.getArguments());
+	}
 
 	public Object handleNativeQuery(NativeQuery nativeQuery, ProceedingJoinPoint pjp){
 		MethodSignature ms = (MethodSignature)pjp.getSignature();
-		Map<String, Object> params = getParams(ms.getMethod(), pjp.getArgs());
+		return handleNativeQueryNative(nativeQuery, pjp.getThis(), ms.getMethod(), pjp.getArgs());
+	}
+	
+	private Object handleNativeQueryNative(NativeQuery nativeQuery, Object obj, Method m, Object[] args){
+		Map<String, Object> params = getParams(m, args);
 		
-		Page page = getPage(pjp.getArgs());
+		Page page = getPage(args);
 		boolean pagable = (page != null) ||nativeQuery.pagable();		
 		
 		String queryName = nativeQuery.value();
 		if(queryName.equals("")){
-			if(!(pjp.getThis() instanceof ModelClassSupport)) 
+			if(!(obj instanceof ModelClassSupport)) 
 				throw new RuntimeException("QueryName can not be empty");
-			ModelClassSupport mcs = (ModelClassSupport)pjp.getThis();
+			ModelClassSupport mcs = (ModelClassSupport)obj;
 			queryName += mcs.getModelClass().getSimpleName();
-			queryName += "." + ms.getMethod().getName();				
+			queryName += "." + m.getName();				
 		}
 		
 		String queryStringWithName = getDynamicQuery(queryName, params);		
@@ -57,8 +67,8 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 		
 		logger.debug("Query[{}] will be executed.",queryString);
 		
-		Sort[] sorts = getSorts(pjp.getArgs());
-		RowMapper<?> rowMapper = getRowMapper(pjp.getArgs());
+		Sort[] sorts = getSorts(args);
+		RowMapper<?> rowMapper = getRowMapper(args);
 		if(rowMapper == null && (!nativeQuery.model().equals(DEFAULT.class))){
 			ColumnTranslator t = null;
 			try {
@@ -86,30 +96,30 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 			logger.debug("Query need be sorted with :" + Arrays.asList(sorts));
 		}
 		
-		if(List.class.isAssignableFrom(ms.getMethod().getReturnType())){
+		if(List.class.isAssignableFrom(m.getReturnType())){
 			if(pagable){
 				if(page != null)
 					return daoService.findByNativeQuery(queryString, conditions.toArray(), sorts, 
 							page.getStart(), page.getSize(), rowMapper);
-				else if(pjp.getArgs()[0] instanceof Integer &&
-						pjp.getArgs()[1] instanceof Integer)				
+				else if(args[0] instanceof Integer &&
+						args[1] instanceof Integer)				
 					return daoService.findByNativeQuery(queryString, conditions.toArray(), sorts, 
-							(Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], rowMapper);
+							(Integer)args[0], (Integer)args[1], rowMapper);
 				else
 					throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
 			}else{
 				return daoService.findByNativeQuery(queryString, conditions.toArray(), sorts, 
 						-1, -1, rowMapper);
 			}
-		}else if(Pagination.class.isAssignableFrom(ms.getMethod().getReturnType())){
+		}else if(Pagination.class.isAssignableFrom(m.getReturnType())){
 			if(pagable){
 				if(page != null)
 					return daoService.findByNativeQuery(queryString, conditions.toArray(), sorts, 
 							page.getStart(), page.getSize(), nativeQuery.withGroupby(), rowMapper);
-				else if(pjp.getArgs()[0] instanceof Integer &&
-						pjp.getArgs()[1] instanceof Integer)				
+				else if(args[0] instanceof Integer &&
+						args[1] instanceof Integer)				
 					return daoService.findByNativeQuery(queryString, conditions.toArray(), sorts, 
-							(Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], nativeQuery.withGroupby(), rowMapper);
+							(Integer)args[0], (Integer)args[1], nativeQuery.withGroupby(), rowMapper);
 				else
 					throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
 			}else{
@@ -119,18 +129,26 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 			return daoService.findOneByNativeQuery(queryString, conditions.toArray(), rowMapper, sorts);
 	}
 	
+	public int handleNativeUpdate(NativeUpdate nativeUpdate, MethodInvocation invocation){
+		return handleNativeUpdateNative(nativeUpdate, invocation.getThis(), invocation.getMethod(), invocation.getArguments());
+	}
+	
 	public int handleNativeUpdate(NativeUpdate nativeUpdate, ProceedingJoinPoint pjp){
 		MethodSignature ms = (MethodSignature)pjp.getSignature();
-		Map<String, Object> params = getParams(ms.getMethod(), pjp.getArgs());		
-		Map<String, Type> paramClazzes = getParamClazzes(ms.getMethod(), pjp.getArgs());
+		return handleNativeUpdateNative(nativeUpdate, pjp.getThis(), ms.getMethod(), pjp.getArgs());
+	}
+	
+	private int handleNativeUpdateNative(NativeUpdate nativeUpdate, Object obj, Method m, Object[] args){
+		Map<String, Object> params = getParams(m, args);		
+		Map<String, Type> paramClazzes = getParamClazzes(m, args);
 		
 		String queryName = nativeUpdate.value();
 		if(queryName.equals("")){
-			if(!(pjp.getThis() instanceof ModelClassSupport)) 
+			if(!(obj instanceof ModelClassSupport)) 
 				throw new RuntimeException("QueryName can not be empty");
-			ModelClassSupport mcs = (ModelClassSupport)pjp.getThis();
+			ModelClassSupport mcs = (ModelClassSupport)obj;
 			queryName += mcs.getModelClass().getSimpleName();
-			queryName += "." + ms.getMethod().getName();				
+			queryName += "." + m.getName();				
 		}
 		
 		String queryStringWithName = getDynamicQuery(queryName, params);		
@@ -138,8 +156,6 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 		List<Type> types = new ArrayList<Type>();
 		String queryString = getNativeUpdateQuery(queryStringWithName, params, paramClazzes, 
 				conditions,types);
-		
-		
 		
 		logger.debug("Update[{}] will be executed.",queryString);
 		return daoService.batchUpdateByNativeQuery(queryString, conditions.toArray(), types.toArray(new Type[]{}));		

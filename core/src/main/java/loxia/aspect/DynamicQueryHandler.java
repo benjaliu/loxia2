@@ -1,9 +1,11 @@
 package loxia.aspect;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -28,51 +30,59 @@ public class DynamicQueryHandler extends AbstractQueryHandler {
 		this.templateService = templateService;
 		this.dnqProvider = dnqProvider;
 	}
+	
+	public Object handleDynamicQuery(DynamicQuery dynamicQuery, MethodInvocation invocation){
+		return handleDynamicQueryNative(dynamicQuery, invocation.getThis(), invocation.getMethod(), invocation.getArguments());
+	}
 
 	public Object handleDynamicQuery(DynamicQuery dynamicQuery, ProceedingJoinPoint pjp){
 		MethodSignature ms = (MethodSignature)pjp.getSignature();
-		Map<String, Object> params = getParams(ms.getMethod(), pjp.getArgs());
+		return handleDynamicQueryNative(dynamicQuery, pjp.getThis(), ms.getMethod(), pjp.getArgs());
+	}
+	
+	private Object handleDynamicQueryNative(DynamicQuery dynamicQuery, Object obj, Method m, Object[] args){
+		Map<String, Object> params = getParams(m, args);
 		
-		Page page = getPage(pjp.getArgs());
+		Page page = getPage(args);
 		boolean pagable = (page != null) ||dynamicQuery.pagable();		
 		
 		String queryName = dynamicQuery.value();
 		if(queryName.equals("")){
-			if(!(pjp.getThis() instanceof ModelClassSupport)) 
+			if(!(obj instanceof ModelClassSupport)) 
 				throw new RuntimeException("QueryName can not be empty");
-			ModelClassSupport mcs = (ModelClassSupport)pjp.getThis();
+			ModelClassSupport mcs = (ModelClassSupport)obj;
 			queryName += mcs.getModelClass().getSimpleName();
-			queryName += "." + ms.getMethod().getName();				
+			queryName += "." + m.getName();				
 		}
 		
 		String queryString = getDynamicQuery(queryName, params);			
 		logger.debug("Query[{}] will be executed.",queryString);
 		
-		Sort[] sorts = getSorts(pjp.getArgs());
+		Sort[] sorts = getSorts(args);
 		
 		if(sorts != null){
 			logger.debug("Query need be sorted with :" + Arrays.asList(sorts));
 		}
 		
-		if(List.class.isAssignableFrom(ms.getMethod().getReturnType())){
+		if(List.class.isAssignableFrom(m.getReturnType())){
 			if(pagable){
 				if(page != null)
 					return daoService.findByQueryEx(queryString, params, sorts, page.getStart(), page.getSize());
-				else if(pjp.getArgs()[0] instanceof Integer &&
-						pjp.getArgs()[1] instanceof Integer)				
-					return daoService.findByQueryEx(queryString, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1]); 
+				else if(args[0] instanceof Integer &&
+						args[1] instanceof Integer)				
+					return daoService.findByQueryEx(queryString, params, sorts, (Integer)args[0], (Integer)args[1]); 
 				else
 					throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
 			}else{
 				return daoService.findByQueryEx(queryString, params, sorts, -1, -1);
 			}
-		}else if(Pagination.class.isAssignableFrom(ms.getMethod().getReturnType())){
+		}else if(Pagination.class.isAssignableFrom(m.getReturnType())){
 			if(pagable){
 				if(page != null)
 					return daoService.findByQueryEx(queryString, params, sorts, page.getStart(), page.getSize(), dynamicQuery.withGroupby());
-				else if(pjp.getArgs()[0] instanceof Integer &&
-						pjp.getArgs()[1] instanceof Integer)				
-					return daoService.findByQueryEx(queryString, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], dynamicQuery.withGroupby());
+				else if(args[0] instanceof Integer &&
+						args[1] instanceof Integer)				
+					return daoService.findByQueryEx(queryString, params, sorts, (Integer)args[0], (Integer)args[1], dynamicQuery.withGroupby());
 				else
 					throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
 			}else{

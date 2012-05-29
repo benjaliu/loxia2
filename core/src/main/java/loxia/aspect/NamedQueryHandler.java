@@ -1,5 +1,6 @@
 package loxia.aspect;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import loxia.dao.Page;
 import loxia.dao.Pagination;
 import loxia.dao.Sort;
 
+import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
@@ -19,36 +21,44 @@ public class NamedQueryHandler extends AbstractQueryHandler{
 	public NamedQueryHandler(DaoService daoService){
 		super(daoService);
 	}
+	
+	public Object handleNamedQuery(NamedQuery namedQuery, MethodInvocation invocation){
+		return handleNamedQueryNative(namedQuery, invocation.getThis(), invocation.getMethod(), invocation.getArguments());
+	}
 
 	public Object handleNamedQuery(NamedQuery namedQuery, ProceedingJoinPoint pjp){
 		MethodSignature ms = (MethodSignature)pjp.getSignature();
-		Map<String, Object> params = getParams(ms.getMethod(), pjp.getArgs());
+		return handleNamedQueryNative(namedQuery, pjp.getThis(), ms.getMethod(), pjp.getArgs());		
+	}
+	
+	private Object handleNamedQueryNative(NamedQuery namedQuery, Object obj, Method m, Object[] args){
+		Map<String, Object> params = getParams(m, args);
 		
-		Page page = getPage(pjp.getArgs());
+		Page page = getPage(args);
 		boolean pagable = (page!= null) || namedQuery.pagable();		
 		String queryName = namedQuery.value();
 		if(queryName.equals("")){
-			if(!(pjp.getThis() instanceof ModelClassSupport)) 
+			if(!(obj instanceof ModelClassSupport)) 
 				throw new RuntimeException("QueryName can not be empty");
-			ModelClassSupport mcs = (ModelClassSupport)pjp.getThis();
+			ModelClassSupport mcs = (ModelClassSupport)obj;
 			queryName += mcs.getModelClass().getSimpleName();
-			queryName += "." + ms.getMethod().getName();				
+			queryName += "." + m.getName();				
 		}
 		logger.debug("Named Query[{}] will be executed.",queryName);
 					
-		Sort[] sorts = getSorts(pjp.getArgs());
+		Sort[] sorts = getSorts(args);
 		
 		if(sorts != null){
 			logger.debug("Query need be sorted with :" + Arrays.asList(sorts));
 		}
 		
-		if(List.class.isAssignableFrom(ms.getMethod().getReturnType())){
+		if(List.class.isAssignableFrom(m.getReturnType())){
 			if(pagable){
 				if(page != null)
 					return daoService.findByNamedQuery(queryName, params, sorts, page.getStart(), page.getSize());
-				else if(pjp.getArgs()[0] instanceof Integer &&
-						pjp.getArgs()[1] instanceof Integer)				
-					return daoService.findByNamedQuery(queryName, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1]);
+				else if(args[0] instanceof Integer &&
+						args[1] instanceof Integer)				
+					return daoService.findByNamedQuery(queryName, params, sorts, (Integer)args[0], (Integer)args[1]);
 				else 
 					throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
 			}else{
@@ -57,13 +67,13 @@ public class NamedQueryHandler extends AbstractQueryHandler{
 				else
 					return daoService.findByNamedQuery(queryName, params, sorts);
 			}
-		}else if(Pagination.class.isAssignableFrom(ms.getMethod().getReturnType())){
+		}else if(Pagination.class.isAssignableFrom(m.getReturnType())){
 			if(pagable){
 				if(page != null)
 					return daoService.findByNamedQuery(queryName, params, sorts, page.getStart(), page.getSize(), namedQuery.withGroupby());
-				else if(pjp.getArgs()[0] instanceof Integer &&
-						pjp.getArgs()[1] instanceof Integer)				
-					return daoService.findByNamedQuery(queryName, params, sorts, (Integer)pjp.getArgs()[0], (Integer)pjp.getArgs()[1], namedQuery.withGroupby());
+				else if(args[0] instanceof Integer &&
+						args[1] instanceof Integer)				
+					return daoService.findByNamedQuery(queryName, params, sorts, (Integer)args[0], (Integer)args[1], namedQuery.withGroupby());
 				else
 					throw new IllegalArgumentException("Startindex and pagesize must be set for pagable query.");
 			}else{

@@ -83,10 +83,11 @@ public class GenericDaoConfigBeanDefinitionParser implements BeanDefinitionParse
 			//bean.setAttribute(ID_ATTRIBUTE, beanName);
 			AbstractBeanDefinition rootDefinition = new RootBeanDefinition(
 					ProxyFactoryBean.class);
-			rootDefinition.getPropertyValues().addPropertyValue("interfaces",
+			rootDefinition.getPropertyValues().addPropertyValue("proxyInterfaces",
 					interfaces);
 			rootDefinition.getPropertyValues().addPropertyValue("target",
 					targetBean);
+			rootDefinition.getPropertyValues().addPropertyValue("interceptorNames", new String[]{"queryInterceptor"});
 			
 			BeanComponentDefinition definition =
                 new BeanComponentDefinition(rootDefinition, beanName);

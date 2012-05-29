@@ -33,15 +33,12 @@ public class GenericDaoBeanDefinitionParser extends
 		AbstractBeanDefinition beanDefinition = parserContext.getDelegate()
 			.parseBeanDefinitionElement(element, null, null);
 		Class<?>[] interfaces = null;
-		Class<?> targetType = null;
 		if(beanDefinition.getBeanClassName() != null){
 			//with CLASS_ATTRIBUTE
 			interfaces = beanDefinition.getBeanClass().getInterfaces();
 			
-			if(GenericEntityDao.class.isAssignableFrom(beanDefinition.getBeanClass()))
-				targetType = beanDefinition.getBeanClass();
-			else
-				if(targetType == null) throw new BeanCreationException("{} is not a valid GenericEntityDao bean.", element.getAttribute(ID_ATTRIBUTE));
+			if(! GenericEntityDao.class.isAssignableFrom(beanDefinition.getBeanClass()))
+				throw new BeanCreationException("{} is not a valid GenericEntityDao bean.", element.getAttribute(ID_ATTRIBUTE));
 			
 			//override abstract method
 			Method[] methods = beanDefinition.getBeanClass().getMethods();
@@ -55,6 +52,13 @@ public class GenericDaoBeanDefinitionParser extends
 				try {
 					Class<?> iClazz = ClassUtils.forName(element.getAttribute(INTERFACE_ATTRIBUTE), getClass().getClassLoader());				
 					interfaces = new Class<?>[]{iClazz, ModelClassSupport.class};
+					
+					if (GenericEntityDao.class.isAssignableFrom(iClazz)) {
+						beanDefinition.setBeanClass(GenericEntityDaoImpl.class);
+						beanDefinition.getPropertyValues().addPropertyValue("modelClass", getGenericModelClass(iClazz));
+					}else{
+						throw new BeanCreationException("{} is not a valid GenericEntityDao Interface.", element.getAttribute(ID_ATTRIBUTE));
+					}
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
 					throw new BeanCreationException("Loxia bean definition error with name:" + element.getAttribute(ID_ATTRIBUTE));
@@ -66,32 +70,13 @@ public class GenericDaoBeanDefinitionParser extends
 			throw new BeanCreationException("Loxia bean definition error with name:" + element.getAttribute(ID_ATTRIBUTE));
 		}
 		
-		if(targetType == null){
-			for (Class<?> targetInterface : interfaces) {
-				logger.debug("Add Interface '{}' to '{}'.",targetInterface,element.getAttribute(ID_ATTRIBUTE));
-				if (targetInterface == null) {
-					throw new NullPointerException(
-							"interfaces should not be null while class is not set");
-				}
-				if (GenericEntityDao.class.isAssignableFrom(targetInterface)
-						&& targetInterface != GenericEntityDao.class) {
-					targetType = getGenericModelClass(targetInterface);
-					break;
-				}
-			}
-			if(targetType == null) throw new BeanCreationException("{} is not a valid GenericEntityDao bean.", element.getAttribute(ID_ATTRIBUTE));
-			
-			beanDefinition.setBeanClass(GenericEntityDaoImpl.class);
-			beanDefinition.getPropertyValues().addPropertyValue("modelClass", targetType);
-		}
-		
 		AbstractBeanDefinition rootDefinition = new RootBeanDefinition(
 				ProxyFactoryBean.class);
-		rootDefinition.getPropertyValues().addPropertyValue("interfaces",
+		rootDefinition.getPropertyValues().addPropertyValue("proxyInterfaces",
 				interfaces);
 		rootDefinition.getPropertyValues().addPropertyValue("target",
 				beanDefinition);
-		
+		rootDefinition.getPropertyValues().addPropertyValue("interceptorNames", new String[]{"queryInterceptor"});
 		return rootDefinition;
 	}
 	

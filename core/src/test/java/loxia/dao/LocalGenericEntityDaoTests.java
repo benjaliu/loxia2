@@ -1,5 +1,6 @@
 package loxia.dao;
 
+import java.util.Arrays;
 import java.util.List;
 
 import loxia.dao.Pagination;
@@ -23,6 +24,7 @@ public class LocalGenericEntityDaoTests extends AbstractTestNGSpringContextTests
 	
 	@Test
 	public void testUserDaoAdd(){
+		System.out.println(Arrays.asList(userDao.getClass().getInterfaces()));
 		InnerUser user = new InnerUser();
 		user.setId(1l);
 		user.setLoginName("user");
