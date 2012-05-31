@@ -75,7 +75,7 @@ public class XmlDynamicNamedQueryProvider extends MappedDynamicNamedQueryProvide
 				String name = e.getAttribute("id");
 				if(name == null) name = e.getAttribute("name");
 				if(name == null) throw new RuntimeException("query xml file format is wrong: cannot file bean id/name");
-				System.out.println(name);
+				logger.debug("Query {} is registed.", name);
 				NodeList l = e.getElementsByTagName("value");
 				if(l.getLength() != 1)
 					throw new RuntimeException("query xml file format is wrong: no query string found for name:" + name);

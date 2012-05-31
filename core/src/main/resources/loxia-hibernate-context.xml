@@ -9,6 +9,14 @@
 	<context:annotation-config/>
 	<bean id="queryInterceptor" class="loxia.aspect.QueryInterceptor"/>
 	
+	<bean id="parentGenericDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean" abstract="true">
+	    <property name="interceptorNames">
+	        <list>
+	            <value>queryInterceptor</value>
+	        </list>
+	    </property>
+	</bean>
+	
 	<tx:annotation-driven order="10"/>
 	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
@@ -27,7 +35,10 @@
 		<constructor-arg ref="dataSource"/>
 	</bean>
 	
-	<bean id="daoService" class="loxia.dao.support.HibernateDaoServiceImpl"/>
+	<bean id="daoService" class="loxia.dao.support.HibernateDaoServiceImpl">
+		<property name="dataSource"><ref bean="dataSource"/></property>
+		<property name="jdbcTemplate"><ref bean="jdbcTemplate"/></property>
+	</bean>
 	
 	<!-- <bean class="loxia.dao.support.SpringBeanDynamicNamedQueryProvider"/> -->
 	

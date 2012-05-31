@@ -52,4 +52,8 @@ public interface GenericEntityDao<T, PK extends Serializable> {
 	
 	@Transactional
 	Map<String,Object> executeSp(String spName, SqlParameter[] sqlParameters, Map<String,Object> params);
+	
+	DaoService getDaoService();
+
+	void setDaoService(DaoService daoService);
 }

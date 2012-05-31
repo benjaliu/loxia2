@@ -136,4 +136,12 @@ public class GenericEntityDaoImpl<T, PK extends Serializable> implements Generic
 	public void evict(T model){
 		
 	}
+
+	public DaoService getDaoService() {
+		return daoService;
+	}
+
+	public void setDaoService(DaoService daoService) {
+		this.daoService = daoService;
+	}
 }

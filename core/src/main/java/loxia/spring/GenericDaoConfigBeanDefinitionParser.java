@@ -6,13 +6,12 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Set;
 
+import loxia.aspect.SimpleModelClassSupport;
 import loxia.dao.GenericEntityDao;
 import loxia.dao.ModelClassSupport;
-import loxia.dao.support.GenericEntityDaoImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -59,19 +58,19 @@ public class GenericDaoConfigBeanDefinitionParser implements BeanDefinitionParse
 			Class<?> clazz = Class.forName(bean.getBeanClassName());
 			Class<?>[] interfaces;
 			String beanName = getBeanName(clazz);
-			AbstractBeanDefinition targetBean = new GenericBeanDefinition();			
-			targetBean.setScope(BeanDefinition.SCOPE_SINGLETON);
+			AbstractBeanDefinition targetBean;			
 			if(clazz.isInterface()){
 				logger.debug("Add Interface '{}' to '{}'.", className, beanName);	
-				targetBean.setBeanClass(GenericEntityDaoImpl.class);
 				Class<?> targetType = getGenericModelClass(clazz);
 				if(targetType == null) throw new BeanCreationException("{} is not a valid GenericEntityDao bean.", beanName);
-				targetBean.getPropertyValues().addPropertyValue("modelClass", targetType);
+				
+				targetBean = new RootBeanDefinition(SimpleModelClassSupport.class);
+				targetBean.getPropertyValues().addPropertyValue("modelClass",targetType);
 				interfaces = new Class<?>[]{clazz, ModelClassSupport.class};
 			}else{
 				logger.debug("Add Class '{}' to '{}'.", className, beanName);
-				interfaces = targetBean.getBeanClass().getInterfaces();
-				targetBean.setBeanClass(clazz);
+				targetBean = new RootBeanDefinition(clazz);
+				interfaces = clazz.getInterfaces();
 				Method[] methods = targetBean.getBeanClass().getMethods();
 				for (Method method : methods) {
 					if (Modifier.isAbstract(method.getModifiers())) {
@@ -81,13 +80,10 @@ public class GenericDaoConfigBeanDefinitionParser implements BeanDefinitionParse
 				}
 			}			
 			//bean.setAttribute(ID_ATTRIBUTE, beanName);
-			AbstractBeanDefinition rootDefinition = new RootBeanDefinition(
-					ProxyFactoryBean.class);
-			rootDefinition.getPropertyValues().addPropertyValue("proxyInterfaces",
-					interfaces);
-			rootDefinition.getPropertyValues().addPropertyValue("target",
-					targetBean);
-			rootDefinition.getPropertyValues().addPropertyValue("interceptorNames", new String[]{"queryInterceptor"});
+			AbstractBeanDefinition rootDefinition = new GenericBeanDefinition();
+			rootDefinition.setParentName("parentGenericDaoProxy");
+			rootDefinition.getPropertyValues().addPropertyValue("proxyInterfaces",interfaces);
+			rootDefinition.getPropertyValues().addPropertyValue("target",targetBean);	
 			
 			BeanComponentDefinition definition =
                 new BeanComponentDefinition(rootDefinition, beanName);

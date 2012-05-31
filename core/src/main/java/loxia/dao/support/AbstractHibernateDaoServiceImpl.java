@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -44,14 +43,28 @@ public abstract class AbstractHibernateDaoServiceImpl implements DaoService, Ini
 	@Resource
 	private ApplicationContext ac;
 	
-	@Autowired
 	protected JdbcTemplate jdbcTemplate;
 	
-	@Autowired
 	protected DataSource dataSource;
 	
 	protected PageQueryProvider pageQueryProvider;	
 	
+	public JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
+
+	public DataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
 	public void afterPropertiesSet() throws Exception {
 		try{
 			pageQueryProvider = ac.getBean(PageQueryProvider.class);
