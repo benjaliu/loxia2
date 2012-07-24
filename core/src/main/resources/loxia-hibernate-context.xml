@@ -22,7 +22,7 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+	<bean id="sessionFactory" class="loxia.orm.hibernate3.AnnotationSessionFactoryBean">
 		<property name="dataSource">
 			<ref bean="dataSource"/>
 		</property>	
