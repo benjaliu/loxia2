@@ -32,6 +32,7 @@ public class JpaEntityColumnTranslator implements ColumnTranslator {
 			PropertyDescriptor[] propertyDescriptors =
 			    beanInfo.getPropertyDescriptors();
 			for(PropertyDescriptor p: propertyDescriptors){
+				if(p.getReadMethod() == null) continue;
 				if(p.getReadMethod().getAnnotation(Column.class) != null){				
 					attributeMap.put(p.getName(), p.getReadMethod().getAnnotation(Column.class).name());
 				}else if(p.getReadMethod().getAnnotation(JoinColumn.class) != null){
