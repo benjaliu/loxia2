@@ -119,6 +119,7 @@ public class CommonBeanRowMapper<T> extends BaseRowMapper<T> {
 	}
 	
 	private void setAttributeAndColumnDefinition(PropertyDescriptor p, ColumnTranslator translator) throws IntrospectionException{
+		if(p.getReadMethod() == null) return;
 		if(p.getReadMethod().getAnnotation(JoinColumn.class) != null){
 			String subAttr = null;
 			Class<?> subClass = null;
