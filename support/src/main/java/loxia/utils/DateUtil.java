@@ -79,14 +79,39 @@ public class DateUtil {
     	}
     	return df.parse(str);
     }
+    
+    public static Date addYear(Date date, int num) {
+        return addTimeIntervals(date, Calendar.YEAR, num);
+    }
+    
+    public static Date addMonths(Date date, int num) {
+        return addTimeIntervals(date, Calendar.MONTH, num);
+    }
 
     /**
      * Add specified number of days to a date.
      */
     public static Date addDays(Date date, int num) {
-        Calendar c = Calendar.getInstance();
+        return addTimeIntervals(date, Calendar.DATE, num);
+    }
+    
+    public static Date addHours(Date date, int num){
+    	return addTimeIntervals(date, Calendar.HOUR, num);
+    }
+    
+    public static Date addMinutes(Date date, int num){
+    	return addTimeIntervals(date, Calendar.MINUTE, num);
+    }
+    
+    public static Date addSeconds(Date date, int num){
+    	return addTimeIntervals(date, Calendar.SECOND, num);
+    }
+    
+    private static Date addTimeIntervals(Date date, int type, int num){
+    	if(date == null) throw new IllegalArgumentException();
+    	Calendar c = Calendar.getInstance();
         c.setTime(date);
-        c.add(Calendar.DATE, num);
+        c.add(type, num);
         return c.getTime();
     }
 
