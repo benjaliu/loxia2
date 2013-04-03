@@ -19,6 +19,7 @@
 			<alias attr-name="end" prop-name="endCellIndex"/>
 			<alias attr-name="dataName" prop-name="dataName"/>
 			<alias attr-name="loop" prop-name="loop"/>			
+			<alias attr-name="direction" prop-name="direction"/>
 		</set-properties-rule>
 		<call-method-rule methodname="setLoopClassByClassName" paramcount="1"/>
 		<call-param-rule paramnumber="0" attrname="loopClass"/>

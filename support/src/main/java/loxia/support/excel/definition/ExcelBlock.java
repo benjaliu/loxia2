@@ -6,12 +6,16 @@ import java.util.List;
 import loxia.support.excel.ExcelUtil;
 
 public class ExcelBlock implements Comparable<ExcelBlock>{
+	public static final String LOOP_DIRECTION_HORIZONAL = "horizontal";
+	public static final String LOOP_DIRECTION_VERTICAL = "vertical";
+	
 	private int startRow = 0;
 	private int startCol = 0;
 	private int endRow = 0;
 	private int endCol = 0;
 	private String dataName;
 	private boolean isLoop = false;
+	private String direction = LOOP_DIRECTION_HORIZONAL;
 	private LoopBreakCondition breakCondition;
 	private Class<? extends Object> loopClass;
 	private List<ExcelCell> cells = new ArrayList<ExcelCell>();
@@ -75,6 +79,15 @@ public class ExcelBlock implements Comparable<ExcelBlock>{
 	public void setLoop(boolean isLoop) {
 		this.isLoop = isLoop;
 	}
+	
+	public String getDirection() {
+		return direction;
+	}
+
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
+
 	public Class<? extends Object> getLoopClass() {
 		return loopClass;
 	}
@@ -130,7 +143,7 @@ public class ExcelBlock implements Comparable<ExcelBlock>{
 	
 	@Override
 	public String toString() {
-		return getStartCellIndex() + ":" + getEndCellIndex();
+		return "ExcelBlock[" + getStartCellIndex() + ":" + getEndCellIndex() + "]";
 	}
 	
 	@Override
@@ -167,6 +180,7 @@ public class ExcelBlock implements Comparable<ExcelBlock>{
 		block.setEndCol(endCol);
 		block.setEndRow(endRow);
 		block.setLoop(isLoop);
+		block.setDirection(direction);
 		block.setLoopClass(loopClass);
 		block.setStartCol(startCol);
 		block.setStartRow(startRow);

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<context:component-scan base-package="loxia.samples.**" />
+
+	<context:annotation-config />
+	
+	<bean id="excelManipulatorFactory" class="loxia.support.excel.ExcelManipulatorFactory">
+		<property name="config"><value>excel_template.xml</value></property>
+	</bean>
+	
+	<bean id="report1Writer" factory-bean="excelManipulatorFactory" factory-method="createExcelWriter">
+		<constructor-arg><value>reporttemplate-sample1.xlsx</value></constructor-arg>
+		<constructor-arg><value>report1</value></constructor-arg>
+	</bean>
+	
+	<bean id="report2Writer" factory-bean="excelManipulatorFactory" factory-method="createExcelWriter">
+		<constructor-arg type="java.lang.Integer"><value>1</value></constructor-arg>
+		<constructor-arg><value>reporttemplate-sample1.xlsx</value></constructor-arg>
+		<constructor-arg><value>report2</value></constructor-arg>
+	</bean>
+	
+	<bean id="report3Writer" factory-bean="excelManipulatorFactory" factory-method="createExcelWriter">
+		<constructor-arg type="java.lang.Integer"><value>1</value></constructor-arg>
+		<constructor-arg><value>reporttemplate-sample1.xlsx</value></constructor-arg>
+		<constructor-arg><value>report3</value></constructor-arg>
+	</bean>	
+	<bean id="calendarWriter" factory-bean="excelManipulatorFactory" factory-method="createExcelWriter">
+		<constructor-arg><value>reporttemplate-sample2.xlsx</value></constructor-arg>
+		<constructor-arg><value>calendar</value></constructor-arg>
+	</bean>
+	<bean id="report4Writer" factory-bean="excelManipulatorFactory" factory-method="createExcelWriter">
+		<constructor-arg><value>reporttemplate-sample3.xlsx</value></constructor-arg>
+		<constructor-arg><value>report4</value></constructor-arg>
+	</bean>
+	<bean id="report5Writer" factory-bean="excelManipulatorFactory" factory-method="createExcelWriter">
+		<constructor-arg><value>reporttemplate-sample4.xlsx</value></constructor-arg>
+		<constructor-arg><value>report5</value></constructor-arg>
+	</bean>
+</beans>

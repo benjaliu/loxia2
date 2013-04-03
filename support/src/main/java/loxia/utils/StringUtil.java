@@ -24,7 +24,9 @@ public class StringUtil {
     	for (int i = 0; i < arr.length; i++) {
 			sb.append(seperator + arr[i]);
 		}
-    	if (sb.length() > 0) sb.deleteCharAt(0);
+    	if (sb.length() > 0) {
+    		sb.delete(0, seperator.length());
+    	}
     	return sb.toString();
     }
 }

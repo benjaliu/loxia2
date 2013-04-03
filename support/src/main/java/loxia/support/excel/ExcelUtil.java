@@ -9,9 +9,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExcelUtil {
 	public static final Pattern DYNAMIC_CELL_PATTREN = Pattern.compile("[A-Z][A-Z]?\\d+");
+	
+	private static final Logger logger = LoggerFactory.getLogger(ExcelUtil.class);
 	
 	public static String getCellIndex(int row, int col){
 		CellReference cell = new CellReference(row, col);
@@ -73,12 +77,16 @@ public class ExcelUtil {
 	
 	public static void copyBlock(Sheet sheet, int startRow, int startCol, int endRow, int endCol, 
 			boolean copyStyle, int rowOffset, int colOffset, List<CellRangeAddress> mergedRegions){
-		for(int row=startRow; row<=endRow; row++){
+		for(int row=startRow; row<=endRow; row++){					
 			Row oldRow = sheet.getRow(row);
 			if(oldRow == null) continue;
 			Row newRow = sheet.getRow(row + rowOffset);
 			if(newRow == null) newRow = sheet.createRow(row + rowOffset);			
 			if(oldRow.getHeight() >= 0) newRow.setHeight(oldRow.getHeight());
+			if(logger.isDebugEnabled()){
+				logger.debug("copy row {} to {}", row, row+rowOffset);
+				logger.debug("Set row height :{}", newRow.getHeightInPoints());
+			}
 			for(int col=startCol; col<=endCol; col++){
 				Cell oldCell = oldRow.getCell(col);
 				if(oldCell == null) continue;

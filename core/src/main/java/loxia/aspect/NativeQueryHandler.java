@@ -65,7 +65,10 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 		List<Object> conditions = new ArrayList<Object>();
 		String queryString = getNativeQuery(queryStringWithName, params, conditions);
 		
-		logger.debug("Query[{}] will be executed.",queryString);
+		if(logger.isDebugEnabled()){
+			logger.debug("NativeQuery[{}] will be executed", queryName);
+			logger.debug("{}",queryString);
+		}
 		
 		Sort[] sorts = getSorts(args);
 		RowMapper<?> rowMapper = getRowMapper(args);

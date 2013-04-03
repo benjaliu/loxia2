@@ -4,7 +4,7 @@
   <groupId>loxia2</groupId>
   <artifactId>parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.5.1</version>
+  <version>2.5.2</version>
   <name>Loxia2 Platform Parent</name>
   <url>http://code.google.com/p/loxia2/</url>
   
@@ -17,12 +17,11 @@
    </licenses>
 
    <properties>
-   		<loxia2.version>2.5.1</loxia2.version>
+   		<loxia2.version>2.5.2</loxia2.version>
    		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>3.0.1.RELEASE</spring.version>
+        <spring.version>3.1.0.RELEASE</spring.version>
         <hibernate.version>3.5.1-Final</hibernate.version>
         <struts2.version>2.1.8</struts2.version>
-        <jbpm.version>4.3</jbpm.version>
    </properties>
    <modules>
         <module>core</module>
@@ -69,8 +68,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
 			    	<encoding>utf-8</encoding>
-	                <source>1.5</source>
-	                <target>1.5</target>
+	                <source>1.6</source>
+	                <target>1.6</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -121,30 +120,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jxr-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pmd-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-			</plugin>
-			<plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clover-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>clirr-maven-plugin</artifactId>
-			</plugin>		
 		</plugins>
 	</reporting>    
     <dependencyManagement>
@@ -173,6 +148,11 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
@@ -236,38 +216,11 @@
 				<artifactId>hibernate-annotations</artifactId>
 				<version>${hibernate.version}</version>
 			</dependency>
-			
-			<dependency> 
-	            <groupId>org.jbpm.jbpm4</groupId> 
-	            <artifactId>jbpm-api</artifactId> 
-	            <version>${jbpm.version}</version> 
-	        </dependency> 
-	        <dependency> 
-	            <groupId>org.jbpm.jbpm4</groupId> 
-	            <artifactId>jbpm-jpdl</artifactId> 
-	            <version>${jbpm.version}</version> 
-	        </dependency> 
 	        <dependency> 
 	          <groupId>xerces</groupId> 
 	          <artifactId>xercesImpl</artifactId> 
 	          <version>2.9.1</version> 
-	        </dependency>         
-	        <dependency> 
-	            <groupId>org.jbpm.jbpm4</groupId> 
-	            <artifactId>jbpm-pvm</artifactId> 
-	            <version>${jbpm.version}</version> 
-	        </dependency> 
-	        <dependency> 
-	            <groupId>org.jbpm.jbpm4</groupId> 
-	            <artifactId>jbpm-log</artifactId> 
-	            <version>${jbpm.version}</version> 
-	        </dependency> 
-	        <dependency> 
-	            <groupId>org.jbpm.jbpm4</groupId> 
-	            <artifactId>jbpm-db</artifactId> 
-	            <version>${jbpm.version}</version> 
-	        </dependency> 
-			
+	        </dependency>     			
 			<dependency>
 				<groupId>org.apache.struts</groupId>
 				<artifactId>struts2-core</artifactId>

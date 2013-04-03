@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.List;
 
 import loxia.support.excel.ExcelUtil;
+import loxia.utils.StringUtil;
 
-public class ExcelSheet{
+public class ExcelSheet{	
+
 	private String name;
 	private String displayName;
 	private List<ExcelBlock> excelBlocks = new ArrayList<ExcelBlock>();
@@ -80,4 +82,8 @@ public class ExcelSheet{
 		return excelSheet;
 	}
 	
+	@Override
+	public String toString() {
+		return "ExcelSheet [name=" + name + ", excelBlocks=\r\n\t" + StringUtil.join(excelBlocks, "\r\n\t") + "]";
+	}
 }

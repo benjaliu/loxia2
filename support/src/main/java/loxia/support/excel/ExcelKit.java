@@ -48,9 +48,9 @@ public class ExcelKit {
 	}
 	
 	public Workbook createWorkbook(String type){
-		if(XLSX.equals(type)){
+		if(XLSX.equals(type) || type == null){
 			return new XSSFWorkbook();
-		}else if(XLS.equals(type) || type == null){
+		}else if(XLS.equals(type)){
 			return new HSSFWorkbook();
 		}else
 			throw new IllegalArgumentException();

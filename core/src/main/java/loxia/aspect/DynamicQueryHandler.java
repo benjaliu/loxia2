@@ -56,7 +56,10 @@ public class DynamicQueryHandler extends AbstractQueryHandler {
 		}
 		
 		String queryString = getDynamicQuery(queryName, params);			
-		logger.debug("Query[{}] will be executed.",queryString);
+		if(logger.isDebugEnabled()){
+			logger.debug("DynamicQuery[{}] will be executed", queryName);
+			logger.debug("{}",queryString);
+		}
 		
 		Sort[] sorts = getSorts(args);
 		

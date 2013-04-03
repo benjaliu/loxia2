@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<sheets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:noNamespaceSchemaLocation="exceltemplate-1.0.xsd">
+	<sheet name="report1">		
+		<block start="A2" end="F2">
+			<cell position="B2" dataName="head.reportDate"/>
+			<cell position="E2" dataName="head.reporter"/>
+		</block>
+		<block start="A5" end="G5" loop="true" dataName="bodylist">
+			<cell position="A5" dataName="sn"/>
+			<cell position="B5" dataName="name"/>
+			<cell position="C5" dataName="lineDate"/>
+			<cell position="D5" dataName="intValue"/>
+			<cell position="E5" dataName="floatValue"/>
+			<cell position="F5" dataName="=D5*E5"/>
+		</block>
+		<block start="F9" end="G9">
+			<cell position="G9" dataName="head.reporter"/>
+		</block>
+	</sheet>	
+	<sheet name="report2">		
+		<block start="A2" end="F2">
+			<cell position="B2" dataName="head.reportDate"/>
+			<cell position="E2" dataName="head.reporter"/>
+		</block>
+		<block start="A5" end="G5" loop="true" dataName="bodylist">
+			<cellstyle start="A5" end="G5" position="A1"><![CDATA[sn%2>0]]></cellstyle>
+			<cellstyle start="A5" end="G5" position="A2"><![CDATA[sn%2==0]]></cellstyle>
+			<cell position="A5" dataName="sn"/>
+			<cell position="B5" dataName="name"/>
+			<cell position="C5" dataName="lineDate"/>
+			<cell position="D5" dataName="intValue"/>
+			<cell position="E5" dataName="floatValue"/>
+			<cell position="F5" dataName="=D5*E5">
+				<cellstyle position="A3"><![CDATA[intValue>10 && intValue <= 15]]></cellstyle>
+				<cellstyle position="B3"><![CDATA[intValue>15]]></cellstyle>
+			</cell>
+		</block>
+		<block start="F9" end="G9">
+			<cell position="G9" dataName="head.reporter"/>
+		</block>
+	</sheet>	
+	<sheet name="report3">		
+		<block start="A2" end="F2">
+			<cell position="B2" dataName="head.reportDate"/>
+			<cell position="E2" dataName="head.reporter"/>
+		</block>
+		<block start="A5" end="G5" loop="true" dataName="bodylist">
+			<cellstyle start="A5" end="G5" position="A1"><![CDATA[#lineNum%2>0]]></cellstyle>
+			<cellstyle start="A5" end="G5" position="A2"><![CDATA[#lineNum%2==0]]></cellstyle>
+			<cell position="A5" dataName="#lineNum+1"/>
+			<cell position="B5" dataName="name"/>
+			<cell position="C5" dataName="lineDate"/>
+			<cell position="D5" dataName="intValue"/>
+			<cell position="E5" dataName="#preLine.intValue"/>
+			<cell position="F5" dataName="=D5*E5">
+				<cellstyle position="A3"><![CDATA[intValue>10 && intValue <= 15]]></cellstyle>
+				<cellstyle position="B3"><![CDATA[intValue>15]]></cellstyle>
+			</cell>
+		</block>
+		<block start="F9" end="G9">
+			<cell position="G9" dataName="head.reporter"/>
+		</block>
+	</sheet>
+	<sheet name="report4">
+		<block start="A4" end="F4">
+			<cell position="B4" dataName="reportDate"/>
+			<cell position="E4" dataName="reporter"/>
+		</block>
+		<block start="C6" end="E7" loop="true" direction="vertical" dataName="months">
+			<cell position="C6" dataName="month"/>
+		</block>
+		<block start="A8" end="E8" loop="true" dataName="list">
+			<cell position="A8" dataName="skuId"/>
+			<cell position="B8" dataName="skuName"/>
+			<childblock start="C8" dataName="monthList">
+				<cell position="C8" dataName="selling"/>
+				<cell position="D8" dataName="returns"/>
+				<cell position="E8" dataName="revenue"/>
+			</childblock>
+		</block>
+	</sheet>
+	<sheet name="report5">		
+		<block start="C13" end="C26">
+			<cell position="C13" dataName="v1"/>
+			<cell position="C14" dataName="v2"/>
+			<cell position="C15" dataName="v3"/>
+			<cell position="C16" dataName="v4"/>
+			<cell position="C17" dataName="v5"/>
+			<cell position="C18" dataName="v6"/>
+			<cell position="C19" dataName="v7"/>
+			<cell position="C20" dataName="v8"/>
+			<cell position="C21" dataName="v9"/>
+			<cell position="C22" dataName="v10"/>
+			<cell position="C23" dataName="v11"/>
+			<cell position="C24" dataName="v12"/>
+			<cell position="C25" dataName="v13"/>
+			<cell position="C26" dataName="v14"/>
+		</block>	
+		<block start="F13" end="F18">
+			<cell position="F13" dataName="v1"/>
+			<cell position="F14" dataName="v2"/>
+			<cell position="F15" dataName="v3"/>
+			<cell position="F16" dataName="v4"/>
+			<cell position="F17" dataName="v5"/>
+			<cell position="F18" dataName="v6"/>
+		</block>	
+	</sheet>
+	<sheet name="calendar">
+		<block start="AI1" end="AT10">
+			<cell position="AK1" dataName="year"/>
+			<cell position="AK4" dataName="month"/>
+		</block>		
+		<block start="A15" end="CA22" loop="true" dataName="weeks">
+			<cell position="F15" dataName="d1.date"/>
+			<cell position="F17" dataName="d1.cdate"/>
+			<cell position="B20" dataName="d1.terms"/>
+			<cell position="Q15" dataName="d2.date"/>
+			<cell position="Q17" dataName="d2.cdate"/>
+			<cell position="M20" dataName="d2.terms"/>
+			<cell position="AB15" dataName="d3.date"/>
+			<cell position="AB17" dataName="d3.cdate"/>
+			<cell position="X20" dataName="d3.terms"/>
+			<cell position="AM15" dataName="d4.date"/>
+			<cell position="AM17" dataName="d4.cdate"/>
+			<cell position="AI20" dataName="d4.terms"/>
+			<cell position="AX15" dataName="d5.date"/>
+			<cell position="AX17" dataName="d5.cdate"/>
+			<cell position="AT20" dataName="d5.terms"/>
+			<cell position="BI15" dataName="d6.date"/>
+			<cell position="BI17" dataName="d6.cdate"/>
+			<cell position="BF20" dataName="d6.terms"/>
+			<cell position="BT15" dataName="d7.date"/>
+			<cell position="BT17" dataName="d7.cdate"/>
+			<cell position="BQ20" dataName="d7.terms"/>
+		</block>
+	</sheet>
+</sheets>

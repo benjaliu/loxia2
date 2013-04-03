@@ -24,6 +24,9 @@ public class ExcelManipulatorFactory {
 	
 	private Map<String, ExcelSheet> sheetDefinitions = new HashMap<String, ExcelSheet>();	
 	
+	private static final String BLANK_SHEET_DEF = "blank";
+	private static final ExcelSheet BLANK_SHEET = new ExcelSheet();
+	
 	@SuppressWarnings("unchecked")
 	public void setConfig(String... configurations){
 		for(String config: configurations){
@@ -45,43 +48,49 @@ public class ExcelManipulatorFactory {
 			}
 		}
 	}
-	public ExcelWriter createExcelWriter(Integer styleSheetPosition, String writerClazzName, String... sheets){
-		ExcelWriter excelWriter = createExcelWriterInner(writerClazzName, sheets);
+	public ExcelWriter createExcelWriter(Integer styleSheetPosition, Class<? extends ExcelWriter> clazz, String[] sheets){
+		ExcelWriter excelWriter = createExcelWriterInner(clazz, null, sheets);
 		excelWriter.getDefinition().setStyleSheetPosition(styleSheetPosition);
 		return excelWriter;
 	}
 	
-	public ExcelWriter createExcelWriter(Integer styleSheetPosition, String... sheets){
-		ExcelWriter excelWriter = createExcelWriterInner(null, sheets);
+	public ExcelWriter createExcelWriter(Integer styleSheetPosition, String[] sheets){
+		ExcelWriter excelWriter = createExcelWriterInner(null, null, sheets);
 		excelWriter.getDefinition().setStyleSheetPosition(styleSheetPosition);
 		return excelWriter;
 	}
 	
-	public ExcelWriter createExcelWriter(String writerClazzName, String... sheets){
-		ExcelWriter excelWriter = createExcelWriterInner(writerClazzName, sheets);
+	public ExcelWriter createExcelWriter(Integer styleSheetPosition, String writeTemplateName, String[] sheets){
+		ExcelWriter excelWriter = createExcelWriterInner(null, writeTemplateName, sheets);
+		excelWriter.getDefinition().setStyleSheetPosition(styleSheetPosition);
+		return excelWriter;
+	}
+	
+	public ExcelWriter createExcelWriter(Class<? extends ExcelWriter> clazz, String[] sheets){
+		ExcelWriter excelWriter = createExcelWriterInner(clazz, null, sheets);
+		return excelWriter;
+	}
+	
+	public ExcelWriter createExcelWriter(String writeTemplateName, String[] sheets){
+		ExcelWriter excelWriter = createExcelWriterInner(null, writeTemplateName, sheets);
 		return excelWriter;
 	}
 	
 	public ExcelWriter createExcelWriter(String... sheets){
-		return createExcelWriterInner(null, sheets);
+		return createExcelWriterInner(null, null, sheets);
 	}
 	
-	private ExcelWriter createExcelWriterInner(String writerClazzName, String... sheets){
+	private ExcelWriter createExcelWriterInner(Class<? extends ExcelWriter> clazz, String writeTemplateName, String... sheets){
 		ExcelWriter excelWriter = null;
-		if(writerClazzName == null || writerClazzName.trim().length() ==0)
+		if(clazz == null)
 			excelWriter = new DefaultExcelWriter();
 		else{
-			try {
-				Class<?> clazz = loadClass(writerClazzName, this.getClass());
-				if(! ExcelWriter.class.isAssignableFrom(clazz))
-					throw new IllegalArgumentException(writerClazzName + " is not a valid ExcelWriter");
+			try {				
 				excelWriter = (ExcelWriter)clazz.newInstance();
-			} catch (ClassNotFoundException e) {
-				throw new RuntimeException("Class not found:" + writerClazzName);
 			} catch (InstantiationException e) {
-				throw new RuntimeException("Initiate ExcelWriter[" + writerClazzName + "] failure");
+				throw new RuntimeException("Initiate ExcelWriter[" + clazz + "] failure");
 			} catch (IllegalAccessException e) {
-				throw new RuntimeException("Initiate ExcelWriter[" + writerClazzName + "] failure");
+				throw new RuntimeException("Initiate ExcelWriter[" + clazz + "] failure");
 			}
 		}
 		ExcelManipulatorDefinition definition = new ExcelManipulatorDefinition();
@@ -90,6 +99,15 @@ public class ExcelManipulatorFactory {
 			definition.getExcelSheets().add(sheetDefinition);			
 		}
 		excelWriter.setDefinition(definition);
+		if(writeTemplateName != null){
+			if(excelWriter instanceof DefaultExcelWriter){
+				DefaultExcelWriter dew = (DefaultExcelWriter)excelWriter;
+				dew.initBufferedTemplate(Thread.currentThread().getContextClassLoader()
+				.getResourceAsStream(writeTemplateName));
+			}{
+				//for other customizations
+			}
+		}
 		return excelWriter;
 	}
 	
@@ -97,22 +115,17 @@ public class ExcelManipulatorFactory {
 		return createExcelReader(null, sheets);
 	}
 	
-	public ExcelReader createExcelReader(String readerClazzName, String... sheets){
+	public ExcelReader createExcelReader(Class<? extends ExcelReader> clazz, String... sheets){
 		ExcelReader excelReader = null;
-		if(readerClazzName == null || readerClazzName.trim().length() ==0)
+		if(clazz == null)
 			excelReader = new DefaultExcelReader();
 		else{
 			try {
-				Class<?> clazz = loadClass(readerClazzName, this.getClass());
-				if(! ExcelReader.class.isAssignableFrom(clazz))
-					throw new IllegalArgumentException(readerClazzName + " is not a valid ExcelReader");
 				excelReader = (ExcelReader)clazz.newInstance();
-			} catch (ClassNotFoundException e) {
-				throw new RuntimeException("Class not found:" + readerClazzName);
 			} catch (InstantiationException e) {
-				throw new RuntimeException("Initiate ExcelReader[" + readerClazzName + "] failure");
+				throw new RuntimeException("Initiate ExcelReader[" + clazz + "] failure");
 			} catch (IllegalAccessException e) {
-				throw new RuntimeException("Initiate ExcelReader[" + readerClazzName + "] failure");
+				throw new RuntimeException("Initiate ExcelReader[" + clazz + "] failure");
 			}
 		}
 		ExcelManipulatorDefinition definition = new ExcelManipulatorDefinition();
@@ -125,25 +138,10 @@ public class ExcelManipulatorFactory {
 	}
 	
 	private ExcelSheet getExcelSheet(String sheet){
+		if(BLANK_SHEET_DEF.equalsIgnoreCase(sheet)) return BLANK_SHEET;
 		ExcelSheet sheetDefinition = sheetDefinitions.get(sheet);
 		if(sheetDefinition == null)
 			throw new RuntimeException("No sheet defintion found with name: " + sheet);
 		return sheetDefinition.cloneSheet();
 	}
-	
-	private Class<?> loadClass(String className, Class<?> callingClass) throws ClassNotFoundException {
-        try {
-            return Thread.currentThread().getContextClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
-            try {
-                return Class.forName(className);
-            } catch (ClassNotFoundException ex) {
-                try {
-                    return ExcelManipulatorFactory.class.getClassLoader().loadClass(className);
-                } catch (ClassNotFoundException exc) {
-                    return callingClass.getClassLoader().loadClass(className);
-                }
-            }
-        }
-    }
 }
