@@ -15,10 +15,11 @@ loxia.regional['zh-CN'] = {
 			
 			LABEL_OK : "确定",
 			LABEL_CANCEL : "取消",
+            LABEL_REFRESH : "刷新",
 			LABEL_PAGE_FIRST: "首页",
 			LABEL_PAGE_LAST: "末页",
 			LABEL_PAGE_PREV: "上一页",
 			LABEL_PAGE_NEXT: "下一页",
 			LABEL_PAGE_GOTO: "GO",
-			LABEL_PAGE_INFO: "第{0}页/共{1}页"
+			LABEL_PAGE_INFO: "总计{0}页 共{1}条记录"
 		};

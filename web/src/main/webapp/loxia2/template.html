@@ -40,6 +40,11 @@ var s1 = ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"];
 var s2 = [{value:"1",label:"c++"},{value:"2",label:"java"},{value:"3",label:"php"},
                   {value:"4",label:"coldfusion"},{value:"5",label:"javascript"},{value:"6",label:"asp"},
                   {value:"7",label:"ruby"}];
+
+function chxtmpt(data,args,idx){
+    return "<input type='checkbox'/>";
+}
+
 $j(document).ready(function(){
 	
 	loxia.init({debug: true, region: 'zh-CN'});
@@ -92,9 +97,20 @@ $j(document).ready(function(){
 	});
 
     $j("#simpleTable").loxiasimpletable({
-        cols:[{name:"name",label:"Name", width: 100},{name:"age",label:"Age", width: "20%", align: "right"}]
+        page: true,
+        //sorts:[{label:"按日期排序", sortStr:"createTime asc"},{label:"按人员排序", sortStr:"mid asc"}],
+        cols:[{label:"<input type='checkbox'/>", template: "chxtmpt"},
+            {name:"name",label:"Name", width: 100, sort: ["name asc","name desc"]},
+            {name:"age",label:"Age", width: "20%", align: "right", sort: "age"}],
+        dataurl:{currentPage:10, totalPages:10, count: 100,
+            size:20, sortStr:"mid asc", firstPage: false, lastPage: true,
+            items:[{name:"Mike",age:20},{name:"Micky",age:18}]}
     });
-    $j("#simpleTable").loxiasimpletable("refresh",[{name:"Mike",age:20},{name:"Micky",age:18}]);
+    $j("#simpleTable").loxiasimpletable("refresh",{currentPage:1, totalPages:10, count: 100,
+            size:20, sortStr:"name asc", firstPage: true, lastPage: false,
+            items:[{name:"Mike",age:20},{name:"Micky",age:18}]});
+
+    $j("#simpleTable").bind("sortchanged",function(){console.log("changed")});
 });
 
 function checkFieldLength(value, obj){
