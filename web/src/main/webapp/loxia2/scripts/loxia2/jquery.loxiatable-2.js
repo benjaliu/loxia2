@@ -262,18 +262,27 @@
                 var $th = $(this).parent("th"), idx = $th.parent("tr").children("th").index($th),
                     c = $(this).is(":checked");
 
-                if(idx ==0){
-                    $("tbody", _this.element).find("tr").each(function(){
+                $("tbody", _this.element).find("tr").each(function(){
+                    if(idx == 0){
                         if(c){
                             $(this).addClass("selected");
                         }else{
                             $(this).removeClass("selected");
                         }
-                        $(this).find("td.col-0 input[type='checkbox']").prop("checked",c);
-                    });
-                }
+                    }
+                    $(this).find("td.col-" + idx +" input[type='checkbox']").prop("checked",c);
+                });
+
             });
             this.element.on("click", "tbody td.col-0 input[type='checkbox']", function(){
+                if($(this).is(":checked")){
+                    $(this).parentsUntil("tr").parent().addClass("selected");
+                }else{
+                    $(this).parentsUntil("tr").parent().removeClass("selected");
+                }
+            });
+            this.element.on("click", "tbody td.col-0 input[type='radio']", function(){
+                $(this).parentsUntil("tbody").parent().children("tr.selected").removeClass("selected");
                 if($(this).is(":checked")){
                     $(this).parentsUntil("tr").parent().addClass("selected");
                 }else{
@@ -373,7 +382,7 @@
             }
 
             var cols = this.option("cols");
-            var t = "<table>";
+            var t = "<table cellspacing='0' cellpadding='0'>";
             var thead = "<thead><tr>";
             for(var i=0; i< cols.length; i++){
                 thead += "<th class='col-" + i + "'" + (cols[i].width?(" width='" + cols[i].width + "'"):"") +
