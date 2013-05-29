@@ -479,7 +479,7 @@
             $(".ui-loxia-nav a",this.element).removeClass("disabled");
             if(f){
                 $(".ui-loxia-nav .home, .ui-loxia-nav .prev",this.element).addClass("disabled");
-            }else{
+            }else if(l){
                 $(".ui-loxia-nav .end, .ui-loxia-nav .next",this.element).addClass("disabled");
             }
 
