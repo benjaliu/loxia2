@@ -293,23 +293,27 @@
                 _this.refresh();
             });
             this.element.on("click", ".ui-loxia-nav .home", function(){
+                if($(this).hasClass("disabled")) return;
                 _this.option("currentPage", 1);
                 _this.refresh();
                 $(_this.element).trigger("gotopage",[this]);
             });
             this.element.on("click", ".ui-loxia-nav .prev", function(){
+                if($(this).hasClass("disabled")) return;
                 var p = _this.option("currentPage");
                 _this.option("currentPage", (p-1>0?p-1:1));
                 _this.refresh();
                 $(_this.element).trigger("gotopage",[this]);
             });
             this.element.on("click", ".ui-loxia-nav .next", function(){
+                if($(this).hasClass("disabled")) return;
                 var p = _this.option("currentPage"), t = _this.option("totalPages");
                 _this.option("currentPage", (p+1>t?t:p+1));
                 _this.refresh();
                 $(_this.element).trigger("gotopage",[this]);
             });
             this.element.on("click", ".ui-loxia-nav .end", function(){
+                if($(this).hasClass("disabled")) return;
                 _this.option("currentPage", _this.option("totalPages"));
                 _this.refresh();
                 $(_this.element).trigger("gotopage",[this]);
