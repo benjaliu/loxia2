@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -33,6 +34,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
+
+import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  * A JSONObject is an unordered collection of name/value pairs. Its
@@ -238,7 +241,43 @@ public class JSONObject extends AbstractJSONObject{
 	public void setObject(Object bean, String propFilterStr){
     	JSONPropFilter filter = new JSONPropFilter(propFilterStr, objStrTransferMap.keySet());
     	this.myHashMap = new HashMap<String, Object>();
-    	Class<? extends Object> klass = bean.getClass();
+    	PropertyDescriptor[] props = PropertyUtils.getPropertyDescriptors(bean.getClass());
+    	for(PropertyDescriptor prop: props){
+    		if("class".equals(prop.getName())) continue;
+    		if(prop.getReadMethod() != null){
+    			String key = prop.getName();
+    			try{
+	    			Object value = prop.getReadMethod().invoke(bean, (Object[])null);
+	    			
+	    			if(filter.isValid(key,value)){ 
+	                	if(value == null){ 
+	                		Class<? extends Object> c = prop.getReadMethod().getReturnType();
+	                		if(Map.class.isAssignableFrom(c) ||
+	                				Collection.class.isAssignableFrom(c) ||
+	                				c.isArray()) continue;
+	                		this.myHashMap.put(key, NULL);                    		
+	                	}else if(value instanceof Map){
+	        				Map<String,Object> m = (Map<String,Object>) value;
+	        				this.myHashMap.put(key, new JSONObject(m,filter.getFilterStr(key),objStrTransferMap));
+	        			}else if(value instanceof Collection){
+	        				Collection<? extends Object> c = (Collection<? extends Object>)value;
+	        				this.myHashMap.put(key, new JSONArray(c,filter.getFilterStr(key),objStrTransferMap));
+	        			}else if(value.getClass().isArray()){
+	        				this.myHashMap.put(key, new JSONArray(value,filter.getFilterStr(key),objStrTransferMap));
+	        			}else if(filter.isSupportedClass(value)){
+	        				this.put(key, value);
+	        			}else{
+	        				this.myHashMap.put(key, new JSONObject(value,filter.getFilterStr(key),objStrTransferMap));
+	        			}
+	        		}
+    			}catch(Exception e){
+    				e.printStackTrace();
+    				//do nothing
+    			}
+    		}
+    	}
+    	
+    	/*Class<? extends Object> klass = bean.getClass();
         Method[] methods = klass.getMethods();
         for (int i = 0; i < methods.length; i += 1) {
             try {
@@ -285,9 +324,9 @@ public class JSONObject extends AbstractJSONObject{
                 }
             } catch (Exception e) {
             	e.printStackTrace();
-                /* forget about it */
+                
             }
-        }
+        }*/
     }
 
 
