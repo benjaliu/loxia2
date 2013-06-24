@@ -350,10 +350,10 @@
                 }
             });
         },
-        refresh: function(url,method){
+        refresh: function(url,method,dataargs){
             var cols = this.option("cols");
-            var dataurl = url||this.option("dataurl");
-            var httpmethod = method||this.option("httpmethod");
+            var dataurl = url||this.option("dataurl")||$(loxia._getForm(this.option("form"))).attr("action");
+            var httpmethod = method||this.option("httpmethod")||$(loxia._getForm(this.option("form"))).attr("method");
             if(cols.length == 0 || dataurl == undefined
                 || dataurl == null || dataurl.length == 0)
                 this.element.html();
@@ -361,12 +361,16 @@
                 var _d = {};
                 if(loxia.isString(dataurl)){
                     var data = {};
+                    if(this.option("form")){
+                        data = loxia._ajaxFormToObj(this.option("form"));
+                    }else if(loxia.isString(dataargs)){
+                        data = loxia._ajaxFormToObj(dataargs);
+                    }else if(dataargs)
+                        data = dataargs;
                     if(this.option("page")){
                         data = $.extend(data,{
-                            page:{
-                                startPage:this.option("currentPage"),
-                                size:this.option("size")
-                            },
+                            "page.start":this.option("currentPage"),
+                            "page.size":this.option("size"),
                             sortStr: this.option("sortStr")
                         });
                     }
@@ -376,11 +380,11 @@
                 }
                 this._resetTable(_d);
             }
-            $(this.element).trigger("reload",[this]);
+            $(this.element).trigger("reload",[[this,_d]]);
         },
 
         _resetTable: function(data){
-            if(data == null || data.length ==0){
+            if(data == null || data.exception || ($.isArray(data) && data.length ==0)){
                 this.element.html();
                 return;
             }

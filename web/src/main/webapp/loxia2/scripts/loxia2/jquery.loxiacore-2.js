@@ -231,9 +231,9 @@
                 if(this.isString(form)){
                     f = $("#"+form);
                     if(f.length ==0)
-                        f = $("form[name='" + form +"']").get(0);
+                        f = $("form[name='" + form +"']");
                 }
-                return f;
+                return (f instanceof jQuery)? f.get(0):f;
             },
 
             /*used in building ajax data object from one form*/
@@ -297,7 +297,7 @@
                     success : function(data, textStatus){
                         _data = data;
                     },
-                    error : function(XMLHttpRequest, textStatus, errorThrown){
+                    error : args.error? args.error: function(XMLHttpRequest, textStatus, errorThrown){
                         _data = {};
                         var exception = {};
                         exception["message"] = "Error occurs when fetching data from url:" + this.url;
