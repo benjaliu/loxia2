@@ -1,19 +1,19 @@
 package loxia.aspect;
 
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hibernate.type.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import loxia.annotation.QueryParam;
-import loxia.core.utils.HibernateUtil;
 import loxia.dao.DaoService;
 import loxia.dao.Page;
 import loxia.dao.Sort;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractQueryHandler {
 	protected static final Logger logger = LoggerFactory.getLogger(QueryAspect.class);
@@ -31,10 +31,13 @@ public abstract class AbstractQueryHandler {
 		for(int i=0; i < paramAnnos.length; i++){
 			for(int j=0; j< paramAnnos[i].length; j++){
 				if(paramAnnos[i][j] != null && paramAnnos[i][j] instanceof QueryParam){
-					if(args[i] != null && args[i] instanceof Map)
+					if(args[i] != null && args[i] instanceof Map){
 						params.putAll((Map<String,Object>)args[i]);
-					QueryParam qp = (QueryParam)paramAnnos[i][j];
-					params.put(qp.value(), args[i]);
+					}else{
+						QueryParam qp = (QueryParam)paramAnnos[i][j];
+						params.put(qp.value(), args[i]);
+					}
+					
 				}
 			}
 		}
@@ -42,23 +45,23 @@ public abstract class AbstractQueryHandler {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected Map<String,Type> getParamClazzes(Method m, Object[] args){
-		Map<String, Type> params = new HashMap<String, Type>();
-		Class<?>[] classes = m.getParameterTypes();
+	protected Map<String,Object[]> getParamsEx(Method m, Object[] args){
+		Map<String, Object[]> params = new HashMap<String, Object[]>();
 		Annotation[][] paramAnnos = m.getParameterAnnotations();
+		Class<?>[] ptypes = m.getParameterTypes();
 		for(int i=0; i < paramAnnos.length; i++){
 			for(int j=0; j< paramAnnos[i].length; j++){
 				if(paramAnnos[i][j] != null && paramAnnos[i][j] instanceof QueryParam){
 					if(args[i] != null && args[i] instanceof Map){
-						Map<String,Object> argMap = (Map<String,Object>)args[i];
-						for(String key: argMap.keySet()){
-							//set to string type if value is null in map params
-							params.put(key, HibernateUtil.translateClass(
-									argMap.get(key) == null? String.class: argMap.get(key).getClass()));
+						Map<String,Object> map = (Map<String,Object>)args[i];
+						for(String key: map.keySet()){
+							Object val = map.get(key);
+							params.put(key, new Object[]{val,val == null?
+									String.class : val.getClass()});
 						}
 					}
 					QueryParam qp = (QueryParam)paramAnnos[i][j];
-					params.put(qp.value(), HibernateUtil.translateClass(classes[i]));
+					params.put(qp.value(), new Object[]{args[i], ptypes[i]});
 				}
 			}
 		}
@@ -89,5 +92,54 @@ public abstract class AbstractQueryHandler {
 			}
 		}
 		return sorts;
+	}
+	
+	private Object[] getParamValueInternal(String key, Object[] valObj){
+		if(key == null || key.trim().length() ==0) return valObj;
+		Object val = valObj[0];
+		Class<?> clazz = (Class<?>)valObj[1];
+		
+		if(val == null){
+			PropertyDescriptor[] props = PropertyUtils.getPropertyDescriptors(clazz);
+			Class<?> c = String.class;
+			for(PropertyDescriptor p: props){
+				if(p.getName().equals(key))
+					c = p.getPropertyType();
+			}
+			return new Object[]{null, c};
+		}else if(key.indexOf('.') < 0){
+			try {
+				return new Object[]{PropertyUtils.getProperty(val, key),
+						PropertyUtils.getPropertyDescriptor(val, key).getPropertyType()};
+			} catch (Exception e) {
+				logger.error("Get Query Param Error: {} in {}", 
+						key, val.getClass());
+				throw new RuntimeException("Query Param Error");
+			} 
+		}else{
+			int delim = key.indexOf('.');
+			
+			String pname = key.substring(0,delim);
+			String cname = key.substring(delim+1);
+			try{
+				return getParamValueInternal(cname, new Object[]{PropertyUtils.getProperty(val, pname),
+						PropertyUtils.getPropertyDescriptor(val, pname).getPropertyType()});
+			} catch (Exception e) {
+				logger.error("Get Query Param Error: {} in {}", 
+						key, val.getClass());
+				throw new RuntimeException("Query Param Error");
+			} 			
+		}
+		
+	}
+	
+	protected Object[] getParamValueAndType(String key, Map<String, Object[]> paramMap){
+		int delim = key.indexOf('.');
+		if(delim <0)
+			return paramMap.get(key);
+		
+		String pname = key.substring(0,delim);
+		String cname = key.substring(delim+1);
+		return getParamValueInternal(cname, paramMap.get(pname));
 	}
 }

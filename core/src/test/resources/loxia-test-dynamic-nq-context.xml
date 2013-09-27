@@ -22,14 +22,14 @@
 			<value>
 				<![CDATA[select u.loginName, u.userName from users u
 					where 1=1
-					#if($loginName)
-						and u.loginName = :loginName
+					#if($u.loginName)
+						and u.loginName = :u.loginName
 					#end
-					#if($userName)
-						and u.userName = :userName
+					#if($u.userName)
+						and u.userName = :u.userName
 					#end
-					#if($password)
-						and u.password = :password
+					#if($u.password)
+						and u.password = :u.password
 					#end
 				]]>
 			</value>

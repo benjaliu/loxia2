@@ -60,10 +60,11 @@ public class LocalGenericEntityDaoTests extends AbstractTestNGSpringContextTests
 		System.out.println(anoUsers.size());
 		System.out.println(userDao.findByLoginName(0, 20, null).size());
 		System.out.println(userDao.findByLoginName(0, 20, "a").size());
-		userDao.findByLoginNameSql(0, 20, "u", null, null);
-		userDao.findByLoginNameSql(0, 20, "u", null, "w");	
-		users = userDao.findByLoginNameSql1(0, 20, null, null, null);
-		System.out.println(users.iterator().next().getUserName());
+		InnerUser uu = new InnerUser();
+		uu.setLoginName("u");
+		uu.setUserName(null);
+		uu.setPassword(null);		
+		userDao.findByLoginNameSql(0, 20, uu);
 		userDao.executeDDL("shutdown");
 	}
 }

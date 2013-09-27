@@ -248,7 +248,7 @@
     };
 
     $.widget("ui.loxiaedittable", loxiaEditTable);
-    $.ui.loxiadate.prototype.options = {};
+    $.ui.loxiaedittable.prototype.options = {};
 
     var loxiaSimpleTable = {
         _create: function(){
@@ -354,11 +354,11 @@
             var cols = this.option("cols");
             var dataurl = url||this.option("dataurl")||$(loxia._getForm(this.option("form"))).attr("action");
             var httpmethod = method||this.option("httpmethod")||$(loxia._getForm(this.option("form"))).attr("method");
+            var _d = [];
             if(cols.length == 0 || dataurl == undefined
-                || dataurl == null || dataurl.length == 0)
-                this.element.html();
-            else{
-                var _d = {};
+                || dataurl == null || dataurl.length == 0){
+                //do nothing
+            }else{
                 if(loxia.isString(dataurl)){
                     var data = {};
                     if(this.option("form")){
@@ -378,17 +378,12 @@
                 }else{
                     _d = dataurl;
                 }
-                this._resetTable(_d);
             }
+            this._resetTable(_d);
             $(this.element).trigger("reload",[[this,_d]]);
         },
 
         _resetTable: function(data){
-            if(data == null || data.exception || ($.isArray(data) && data.length ==0)){
-                this.element.html();
-                return;
-            }
-
             var cols = this.option("cols");
             var t = "<table cellspacing='0' cellpadding='0'>";
             var thead = "<thead><tr>";
@@ -399,29 +394,35 @@
             thead += "</tr></thead>";
             var tbody = "<tbody>";
 
-            this.option("count", data.count);
-            this.option("sortStr", data.sortStr);
+            if(data == null || data.exception || ($.isArray(data) && data.length ==0)){
+                //do nothing
+            }else{
+                this.option("count", data.count);
+                this.option("sortStr", data.sortStr);
 
-            if(this.option("page")){
-                this.option("currentPage", data.currentPage);
-                this.option("totalPages", data.totalPages);
-                this.option("size", data.size);
-                this.option("firstPage", data.firstPage);
-                this.option("lastPage", data.lastPage);
+                if(this.option("page")){
+                    this.option("currentPage", data.currentPage);
+                    this.option("totalPages", data.totalPages);
+                    this.option("size", data.size);
+                    this.option("firstPage", data.firstPage);
+                    this.option("lastPage", data.lastPage);
 
+                }
             }
+
             var nav = this._drawNavigator();
             if(this.option("page")){
+                console.dir(data);
                 for(var i=0; i< data.items.length; i++)
                     tbody += this._drawLine(data.items[i], i);
                 tbody += "</tbody>";
                 t += thead + tbody + "</table>";
 
             }else{
-                if(data.length){
+                if($.isArray(data) && data.length){
                     for(var i=0; i< data.length; i++)
                         tbody += this._drawLine(data[i], i);
-                }else{
+                }else if(!$.isArray(data)){
                     tbody += this._drawLine(data, 0);
                 }
                 tbody += "</tbody>";

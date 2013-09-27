@@ -25,6 +25,7 @@
         <internal.repo.path>file://${user.home}/git-maven-repo/loxia2-repo</internal.repo.path>
    </properties>
    <modules>
+   		<module>api</module>
         <module>core</module>
         <module>repository</module>
         <module>security</module>

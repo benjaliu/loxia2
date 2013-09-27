@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import loxia.core.utils.HibernateUtil;
 import loxia.core.utils.StringUtil;
 import loxia.dao.DaoService;
 import loxia.dao.PageQueryProvider;
@@ -18,7 +19,6 @@ import loxia.dao.Sort;
 
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -300,14 +300,14 @@ public abstract class AbstractHibernateDaoServiceImpl implements DaoService, Ini
 		return list.get(0);
 	}
 	
-	public int batchUpdateByNativeQuery(String queryString, Object[] params, Type[] types) {
+	public int batchUpdateByNativeQuery(String queryString, Object[] params, Class<?>[] types) {
 		logger.debug("Batch Native Update[{}]",queryString);
 		Session session = getSession();
 		SQLQuery query = session.createSQLQuery(queryString);
 		if(params != null && params.length > 0){
 			for(int i=0; i< params.length; i++){
 				logger.debug("{}) : {} [{}]", new Object[]{i+1, params[i], types[i]});
-				query.setParameter(i, params[i], types[i]);
+				query.setParameter(i, params[i], HibernateUtil.translateClass(types[i]));
 			}
 		}		
 		return query.executeUpdate();

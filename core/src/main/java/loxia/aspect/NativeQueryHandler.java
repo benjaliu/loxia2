@@ -12,6 +12,7 @@ import java.util.Map;
 import loxia.annotation.NativeQuery;
 import loxia.annotation.NativeQuery.DEFAULT;
 import loxia.annotation.NativeUpdate;
+import loxia.core.utils.HibernateUtil;
 import loxia.dao.ColumnTranslator;
 import loxia.dao.DaoService;
 import loxia.dao.DynamicNamedQueryProvider;
@@ -47,7 +48,10 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 	}
 	
 	private Object handleNativeQueryNative(NativeQuery nativeQuery, Object obj, Method m, Object[] args){
-		Map<String, Object> params = getParams(m, args);
+		Map<String, Object[]> paramsEx = getParamsEx(m, args);
+		Map<String,Object> templateParams = new HashMap<String, Object>();
+		for(String key: paramsEx.keySet())
+			templateParams.put(key, paramsEx.get(key)[0]);
 		
 		Page page = getPage(args);
 		boolean pagable = (page != null) ||nativeQuery.pagable();		
@@ -61,9 +65,9 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 			queryName += "." + m.getName();				
 		}
 		
-		String queryStringWithName = getDynamicQuery(queryName, params);		
+		String queryStringWithName = getDynamicQuery(queryName, templateParams);		
 		List<Object> conditions = new ArrayList<Object>();
-		String queryString = getNativeQuery(queryStringWithName, params, conditions);
+		String queryString = getNativeQuery(queryStringWithName, paramsEx, conditions);
 		
 		if(logger.isDebugEnabled()){
 			logger.debug("NativeQuery[{}] will be executed", queryName);
@@ -142,8 +146,10 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 	}
 	
 	private int handleNativeUpdateNative(NativeUpdate nativeUpdate, Object obj, Method m, Object[] args){
-		Map<String, Object> params = getParams(m, args);		
-		Map<String, Type> paramClazzes = getParamClazzes(m, args);
+		Map<String, Object[]> paramsEx = getParamsEx(m, args);	
+		Map<String,Object> templateParams = new HashMap<String, Object>();
+		for(String key: paramsEx.keySet())
+			templateParams.put(key, paramsEx.get(key)[0]);
 		
 		String queryName = nativeUpdate.value();
 		if(queryName.equals("")){
@@ -154,17 +160,17 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 			queryName += "." + m.getName();				
 		}
 		
-		String queryStringWithName = getDynamicQuery(queryName, params);		
+		String queryStringWithName = getDynamicQuery(queryName, templateParams);		
 		List<Object> conditions = new ArrayList<Object>();
 		List<Type> types = new ArrayList<Type>();
-		String queryString = getNativeUpdateQuery(queryStringWithName, params, paramClazzes, 
+		String queryString = getNativeUpdateQuery(queryStringWithName, paramsEx, 
 				conditions,types);
 		
 		logger.debug("Update[{}] will be executed.",queryString);
-		return daoService.batchUpdateByNativeQuery(queryString, conditions.toArray(), types.toArray(new Type[]{}));		
+		return daoService.batchUpdateByNativeQuery(queryString, conditions.toArray(), types.toArray(new Class<?>[]{}));		
 	}
 	
-	private String getNativeQuery(String queryName, Map<String, Object> params,
+	private String getNativeQuery(String queryName, Map<String, Object[]> paramsEx,
 			List<Object> conditions) {
 		StringBuffer sb = new StringBuffer();
 		boolean inParamName = false;
@@ -177,8 +183,8 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 				if(c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == ',' || c == ')'){
 					if(inParamName){
 						inParamName = false;
-						sb.append('?');
-						conditions.add(params.get(paramNameSb.toString()));
+						sb.append('?');					
+						conditions.add(getParamValueAndType(paramNameSb.toString(), paramsEx)[0]);
 						paramNameSb = new StringBuffer();
 					}
 					sb.append(c);
@@ -193,8 +199,8 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 		return sb.toString();
 	}
 	
-	private String getNativeUpdateQuery(String queryName, Map<String, Object> params,
-			Map<String,Type> typeParams, List<Object> conditions, List<Type> types) {
+	private String getNativeUpdateQuery(String queryName, Map<String, Object[]> paramsEx, 
+			List<Object> conditions, List<Type> types) {
 		StringBuffer sb = new StringBuffer();
 		boolean inParamName = false;
 		StringBuffer paramNameSb = new StringBuffer();
@@ -207,8 +213,9 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 					if(inParamName){
 						inParamName = false;
 						sb.append('?');
-						conditions.add(params.get(paramNameSb.toString()));
-						types.add(typeParams.get(paramNameSb.toString()));
+						Object[] v = getParamValueAndType(paramNameSb.toString(), paramsEx);
+						conditions.add(v[0]);
+						types.add(HibernateUtil.translateClass((Class<?>)v[1]));
 						paramNameSb = new StringBuffer();
 					}
 					sb.append(c);

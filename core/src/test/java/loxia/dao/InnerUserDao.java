@@ -39,13 +39,9 @@ public interface InnerUserDao extends GenericEntityDao<InnerUser ,Long> {
 	
 	@NativeQuery(pagable=true, alias="userName", clazzes=String.class)
 	List<String> findByLoginNameSql(int start, int pageSize, 
-			@QueryParam("loginName") String loginName, 
-			@QueryParam("userName") String userName, 
-			@QueryParam("password") String password);
+			@QueryParam("u") InnerUser u);
 	
 	@NativeQuery(value="InnerUser.findByLoginNameSql", pagable=true, model=InnerUser.class, alias="userName")
 	List<InnerUser> findByLoginNameSql1(int start, int pageSize, 
-			@QueryParam("loginName") String loginName, 
-			@QueryParam("userName") String userName, 
-			@QueryParam("password") String password);
+			@QueryParam("u") InnerUser u);
 }
