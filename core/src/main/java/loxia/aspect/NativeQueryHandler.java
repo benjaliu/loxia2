@@ -12,7 +12,6 @@ import java.util.Map;
 import loxia.annotation.NativeQuery;
 import loxia.annotation.NativeQuery.DEFAULT;
 import loxia.annotation.NativeUpdate;
-import loxia.core.utils.HibernateUtil;
 import loxia.dao.ColumnTranslator;
 import loxia.dao.DaoService;
 import loxia.dao.DynamicNamedQueryProvider;
@@ -28,7 +27,6 @@ import loxia.service.VelocityTemplateService;
 import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.hibernate.type.Type;
 import org.springframework.jdbc.core.RowMapper;
 
 public class NativeQueryHandler extends DynamicQueryHandler {
@@ -162,7 +160,7 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 		
 		String queryStringWithName = getDynamicQuery(queryName, templateParams);		
 		List<Object> conditions = new ArrayList<Object>();
-		List<Type> types = new ArrayList<Type>();
+		List<Class<?>> types = new ArrayList<Class<?>>();
 		String queryString = getNativeUpdateQuery(queryStringWithName, paramsEx, 
 				conditions,types);
 		
@@ -200,7 +198,7 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 	}
 	
 	private String getNativeUpdateQuery(String queryName, Map<String, Object[]> paramsEx, 
-			List<Object> conditions, List<Type> types) {
+			List<Object> conditions, List<Class<?>> types) {
 		StringBuffer sb = new StringBuffer();
 		boolean inParamName = false;
 		StringBuffer paramNameSb = new StringBuffer();
@@ -215,7 +213,7 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 						sb.append('?');
 						Object[] v = getParamValueAndType(paramNameSb.toString(), paramsEx);
 						conditions.add(v[0]);
-						types.add(HibernateUtil.translateClass((Class<?>)v[1]));
+						types.add((Class<?>)v[1]);
 						paramNameSb = new StringBuffer();
 					}
 					sb.append(c);
