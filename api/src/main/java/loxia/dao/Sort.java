@@ -13,6 +13,11 @@ public class Sort implements Serializable{
 	public static final String ASC = "asc";
 	public static final String DESC = "desc";	
 	
+	public Sort(){
+		this.field = "";
+		this.type = ASC;
+	}
+	
 	public Sort(String sortStr) {
 		String[] strs = sortStr.trim().split(" ");
 		this.field = strs[0];
