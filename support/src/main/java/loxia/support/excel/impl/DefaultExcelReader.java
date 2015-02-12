@@ -332,9 +332,8 @@ public class DefaultExcelReader implements ExcelReader, Serializable {
 		case Cell.CELL_TYPE_BLANK:
 			break;
 		case Cell.CELL_TYPE_ERROR:		
-			logger.warn("{}: Error with formula value! Error Value: {}",
-					ExcelUtil.getCellIndex(cell.getRowIndex(), cell.getColumnIndex()),
-					cellValue.getErrorValue());
+			logger.warn("{}: Error with formula value!",
+					ExcelUtil.getCellIndex(cell.getRowIndex(), cell.getColumnIndex()));
 			break;			
 		case Cell.CELL_TYPE_BOOLEAN:
 			value = cellValue.getBooleanValue();
