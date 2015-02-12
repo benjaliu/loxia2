@@ -25,10 +25,8 @@ import loxia.support.excel.exception.ExcelManipulateException;
 import loxia.utils.OgnlStack;
 import ognl.OgnlRuntime;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -213,16 +211,16 @@ public class DefaultExcelReader implements ExcelReader, Serializable {
 		
 		try {			
 			Object obj = stack.getValue(dataName);
-			Collection dataList;
+			Collection<Object> dataList;
 			if(obj == null){
-				dataList = new ArrayList();
+				dataList = new ArrayList<Object>();
 				stack.setValue(dataName, dataList);
 			}else if(!(obj instanceof Collection)){
 				readStatus.setStatus(ReadStatus.STATUS_SETTING_ERROR);
 				readStatus.setMessage("Property " + dataName + " is not a Collection");
 				return;
 			}else{
-				dataList = (Collection)obj;
+				dataList = (Collection<Object>)obj;
 			}
 			
 			int startRow = blockDefinition.getStartRow();
@@ -321,28 +319,32 @@ public class DefaultExcelReader implements ExcelReader, Serializable {
 	private Object getCellValue(Cell cell, FormulaEvaluator evaluator)
 	 throws ExcelManipulateException{	
 		if(cell == null) return null;
-		//log.debug("Read Value for: " + ExcelUtil.getCellIndex(cell.getRowIndex(), cell.getColumnIndex()));
+
 		Object value = null;
-		CellValue cellValue = evaluator.evaluate(cell);
-		if(cellValue == null) {
-			logger.debug("{}: null",ExcelUtil.getCellIndex(cell.getRowIndex(), cell.getColumnIndex()));
-			return null;
-		}
-		switch(cellValue.getCellType()){
+		
+		switch(evaluator.evaluateFormulaCell(cell)){
 		case Cell.CELL_TYPE_BLANK:
-		case Cell.CELL_TYPE_ERROR:			
+			break;
+		case Cell.CELL_TYPE_ERROR:	
+			logger.warn("{}: Error with formula calculation. Error Value: {}",
+					ExcelUtil.getCellIndex(cell.getRowIndex(), cell.getColumnIndex()),
+					cell.getErrorCellValue());
 			break;			
 		case Cell.CELL_TYPE_BOOLEAN:
-			value = cellValue.getBooleanValue();
+			value = cell.getBooleanCellValue();
 			break;
 		case Cell.CELL_TYPE_NUMERIC:
 			if(DateUtil.isCellDateFormatted(cell)) {
-				value = DateUtil.getJavaDate(cellValue.getNumberValue());
+				value = DateUtil.getJavaDate(cell.getNumericCellValue());
 			}else
-				value = cellValue.getNumberValue();
+				value = cell.getNumericCellValue();
 			break;
 		case Cell.CELL_TYPE_STRING:
-			value = cellValue.getStringValue();
+			value = cell.getRichStringCellValue().getString();
+			
+		//CELL_TYPE_FORMULA will never occur
+		case Cell.CELL_TYPE_FORMULA:
+			break;
 		}
 		logger.debug("{}: {}", ExcelUtil.getCellIndex(cell.getRowIndex(), cell.getColumnIndex()), value);
 		return value;
@@ -357,7 +359,7 @@ public class DefaultExcelReader implements ExcelReader, Serializable {
 			Row hrow = sheet.getRow(row + condition.getRowOffset());
 			if(hrow == null) return false;
 			Cell cell = hrow.getCell(col + condition.getColOffset());			
-			if(cell == null || cell.getCellType() != HSSFCell.CELL_TYPE_STRING) return false;
+			if(cell == null || cell.getCellType() != Cell.CELL_TYPE_STRING) return false;
 			if(condition.getFlagString().equals(cell.getRichStringCellValue().getString()))
 				return true;			
 		}
@@ -377,17 +379,18 @@ public class DefaultExcelReader implements ExcelReader, Serializable {
 	@SuppressWarnings("unchecked")
 	private Class<? extends Object> getPropertyType(Object object, String dataName) 
 		throws Exception {
+		if(object == null) return null;
 		//log.debug("Get Class for '" + dataName +"' in " + object.getClass());
 		if(object instanceof Map){
 			logger.debug("getPropertyType for Map[{}] with Key {}.", object, dataName);
-			if(object == null) return null;
 			Map<String, Object> map = (Map<String, Object>) object;
 			int delim = dataName.indexOf('.');
 			if(delim > 0){				
 				return getPropertyType(map.get(dataName.substring(0,delim)), 
 						dataName.substring(delim +1));
 			}else{
-				return map.get(dataName).getClass();
+				Object v = map.get(dataName);
+				return v == null? null : v.getClass();
 			}
 		}else{
 			logger.debug("getPropertyType for Object[{}] with property {}.", object, dataName);

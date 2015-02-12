@@ -342,7 +342,7 @@ public class DefaultExcelWriter implements ExcelWriter, Serializable {
 	private void writeLoopBlock(Sheet sheet, ExcelBlock blockDefinition,
 			OgnlStack stack, List<CellRangeAddress> mergedRegions, 
 			Map<String, CellStyle> styleMap, WriteStatus writeStatus){
-		if(blockDefinition.getDirection().equalsIgnoreCase(blockDefinition.LOOP_DIRECTION_HORIZONAL)){
+		if(blockDefinition.getDirection().equalsIgnoreCase(ExcelBlock.LOOP_DIRECTION_HORIZONAL)){
 			try {			
 				Object value = stack.getValue(blockDefinition.getDataName());
 				if(value == null) {

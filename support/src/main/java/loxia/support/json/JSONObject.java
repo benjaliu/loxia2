@@ -28,7 +28,6 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -92,6 +91,11 @@ import org.apache.commons.beanutils.PropertyUtils;
  */
 public class JSONObject extends AbstractJSONObject{
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8807692014105027002L;
+	
+	/**
      * The hash map where the JSONObject's properties are kept.
      */
     private HashMap<String,Object> myHashMap;

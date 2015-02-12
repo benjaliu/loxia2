@@ -85,6 +85,11 @@ public class JSONArray extends AbstractJSONObject{
 
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = -961583535690420017L;
+	
+	/**
      * The arrayList where the JSONArray's properties are kept.
      */
     private ArrayList<Object> myArrayList;

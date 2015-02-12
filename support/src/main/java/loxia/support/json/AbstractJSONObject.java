@@ -1,5 +1,6 @@
 package loxia.support.json;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -14,8 +15,14 @@ import loxia.support.LoxiaSupportConstants;
 import loxia.support.LoxiaSupportSettings;
 import loxia.utils.DateUtil;
 
-public abstract class AbstractJSONObject {
-	 static final Logger logger = LoggerFactory.getLogger("loxia.support.json");
+public abstract class AbstractJSONObject implements Serializable{
+	
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3735132982940669622L;
+	
+	static final Logger logger = LoggerFactory.getLogger("loxia.support.json");
 	/**
      * JSONBaseObject.NULL is equivalent to the value that JavaScript calls null,
      * whilst Java's null is equivalent to the value that JavaScript calls
