@@ -28,9 +28,15 @@ public abstract class AbstractJSONObject implements Serializable{
      * whilst Java's null is equivalent to the value that JavaScript calls
      * undefined.
      */
-     private static final class Null {
+     private static final class Null implements Serializable{
 
         /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1602770520746291440L;
+
+
+		/**
          * There is only intended to be a single instance of the NULL object,
          * so the clone method returns itself.
          * @return     NULL.
@@ -68,8 +74,12 @@ public abstract class AbstractJSONObject implements Serializable{
       */
      public static final Object NULL = new Null();
      
-     protected class InnerJSONTranslator implements JSONValueTranslator{    
-     	private String pattern;
+     protected class InnerJSONTranslator implements JSONValueTranslator, Serializable{    
+     	/**
+		 * 
+		 */
+		private static final long serialVersionUID = -9054426761022778820L;
+		private String pattern;
      	public InnerJSONTranslator(){
      		pattern = 
      			LoxiaSupportSettings.getInstance().get(LoxiaSupportConstants.DATE_PATTERN);
