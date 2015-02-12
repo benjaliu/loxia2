@@ -27,6 +27,7 @@ import ognl.OgnlRuntime;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -322,30 +323,36 @@ public class DefaultExcelReader implements ExcelReader, Serializable {
 
 		Object value = null;
 		
-		switch(evaluator.evaluateFormulaCell(cell)){
+		CellValue cellValue = evaluator.evaluate(cell);
+		if(cellValue == null) {
+			logger.debug("{}: null",ExcelUtil.getCellIndex(cell.getRowIndex(), cell.getColumnIndex()));
+			return null;
+		}
+		switch(cellValue.getCellType()){
 		case Cell.CELL_TYPE_BLANK:
 			break;
-		case Cell.CELL_TYPE_ERROR:	
-			logger.warn("{}: Error with formula calculation. Error Value: {}",
+		case Cell.CELL_TYPE_ERROR:		
+			logger.warn("{}: Error with formula value! Error Value: {}",
 					ExcelUtil.getCellIndex(cell.getRowIndex(), cell.getColumnIndex()),
-					cell.getErrorCellValue());
+					cellValue.getErrorValue());
 			break;			
 		case Cell.CELL_TYPE_BOOLEAN:
-			value = cell.getBooleanCellValue();
+			value = cellValue.getBooleanValue();
 			break;
 		case Cell.CELL_TYPE_NUMERIC:
 			if(DateUtil.isCellDateFormatted(cell)) {
-				value = DateUtil.getJavaDate(cell.getNumericCellValue());
+				value = DateUtil.getJavaDate(cellValue.getNumberValue());
 			}else
-				value = cell.getNumericCellValue();
+				value = cellValue.getNumberValue();
 			break;
 		case Cell.CELL_TYPE_STRING:
-			value = cell.getRichStringCellValue().getString();
-			
+			value = cellValue.getStringValue();
+			break;
 		//CELL_TYPE_FORMULA will never occur
 		case Cell.CELL_TYPE_FORMULA:
 			break;
 		}
+		
 		logger.debug("{}: {}", ExcelUtil.getCellIndex(cell.getRowIndex(), cell.getColumnIndex()), value);
 		return value;
 	}
