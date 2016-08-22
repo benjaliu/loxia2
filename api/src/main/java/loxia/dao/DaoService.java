@@ -65,7 +65,9 @@ public interface DaoService {
 	
 	<T> T findOneByNativeQuery(String queryString, Object[] params, RowMapper<T> rowMapper, Sort[] sorts);
 		
+	@Deprecated
 	int batchUpdateByNativeQuery(String queryString, Object[] params, Class<?>[] types);
+	int batchUpdateByNativeQuery(String queryString, Object[] params, int[] types);
 	
 	void executeDDL(String queryString);
 	

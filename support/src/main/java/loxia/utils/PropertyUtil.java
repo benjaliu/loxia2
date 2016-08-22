@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.beanutils.PropertyUtils;
 
 public class PropertyUtil {
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public static void copyProperties(Object fromBean, Object toBean, CopyableInterface copyable) 
 		throws IllegalAccessException, 
 		InvocationTargetException, 

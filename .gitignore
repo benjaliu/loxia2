@@ -2,3 +2,8 @@
 .classpath
 .settings
 target
+.gradle
+.idea
+bin
+build
+test-output

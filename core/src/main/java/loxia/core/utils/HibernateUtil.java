@@ -25,6 +25,7 @@ import org.hibernate.type.TimestampType;
 import org.hibernate.type.Type;
 
 public class HibernateUtil {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Type translateClass(Class<?> clazz){
 		if(clazz == null)
 			throw new IllegalArgumentException();

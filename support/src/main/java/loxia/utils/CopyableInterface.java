@@ -1,6 +1,6 @@
 package loxia.utils;
 
 public interface CopyableInterface {
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public boolean isCopyable(String propertyName, Object propertyValue, Class clazz);
 }

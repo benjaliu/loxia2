@@ -10,15 +10,8 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
-import loxia.core.utils.HibernateUtil;
-import loxia.core.utils.StringUtil;
-import loxia.dao.DaoService;
-import loxia.dao.PageQueryProvider;
-import loxia.dao.Pagination;
-import loxia.dao.Sort;
-
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -29,7 +22,15 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.StoredProcedure;
 
+import loxia.core.utils.HibernateUtil;
+import loxia.core.utils.StringUtil;
+import loxia.dao.DaoService;
+import loxia.dao.PageQueryProvider;
+import loxia.dao.Pagination;
+import loxia.dao.Sort;
 
+
+@SuppressWarnings("deprecation")
 public abstract class AbstractHibernateDaoServiceImpl implements DaoService, InitializingBean,
 		Serializable {
 
@@ -300,10 +301,13 @@ public abstract class AbstractHibernateDaoServiceImpl implements DaoService, Ini
 		return list.get(0);
 	}
 	
+	@Deprecated
 	public int batchUpdateByNativeQuery(String queryString, Object[] params, Class<?>[] types) {
 		logger.debug("Batch Native Update[{}]",queryString);
+		logger.debug("Batch Native Update[{}]",queryString);
 		Session session = getSession();
-		SQLQuery query = session.createSQLQuery(queryString);
+		@SuppressWarnings("rawtypes")
+		Query query = session.createNativeQuery(queryString);
 		if(params != null && params.length > 0){
 			for(int i=0; i< params.length; i++){
 				logger.debug("{}) : {} [{}]", new Object[]{i+1, params[i], types[i]});
@@ -312,11 +316,20 @@ public abstract class AbstractHibernateDaoServiceImpl implements DaoService, Ini
 		}		
 		return query.executeUpdate();
 	}
+	
+	public int batchUpdateByNativeQuery(String queryString, Object[] params, int[] types) {
+		logger.debug("Batch Native Update[{}]",queryString);
+		if(params != null && params.length > 0){
+			if(types == null || types.length != params.length)
+				throw new IllegalArgumentException("types array is not match with params");			
+			return jdbcTemplate.update(queryString, params, types);
+		}else{
+			return jdbcTemplate.update(queryString);
+		}
+	}
 
 	public void executeDDL(String queryString) {
-		Session session = getSession();
-		SQLQuery query = session.createSQLQuery(queryString);
-		query.executeUpdate();
+		jdbcTemplate.execute(queryString);
 	}	
 	
 	private class InnerStoreProcedure extends StoredProcedure {

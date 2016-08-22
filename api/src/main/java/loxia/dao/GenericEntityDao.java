@@ -40,8 +40,12 @@ public interface GenericEntityDao<T, PK extends Serializable> {
 	@Transactional
 	int updateByQuery(String query, Map<String,Object> params);
 	
+	@Deprecated
 	@Transactional
 	int updateByNativeQuery(String query, Object[] params, Class<?>[] types);
+	
+	@Transactional
+	int updateByNativeQuery(String query, Object[] params, int[] types);
 	
 	@Transactional
 	void executeDDL(String ddl);

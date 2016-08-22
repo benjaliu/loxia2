@@ -1,5 +1,7 @@
 package loxia.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +12,7 @@ import javax.persistence.TableGenerator;
 
 @Entity
 @Table(name = "users")
-public class InnerUser {
+public class InnerUser implements Serializable{
 
 	/**
 	 * 

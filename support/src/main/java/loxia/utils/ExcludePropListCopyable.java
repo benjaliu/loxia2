@@ -15,7 +15,7 @@ private Set<String> props;
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public boolean isCopyable(String propertyName, Object propertyValue, Class clazz) {
 		if(props.contains(propertyName))
 			return false;

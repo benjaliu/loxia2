@@ -5,9 +5,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Deprecated
 public class FileUtil {
 	// Returns the contents of the file in a byte array.
-    public static byte[] getBytesFromFile(File file) throws IOException {
+    @SuppressWarnings("resource")
+	public static byte[] getBytesFromFile(File file) throws IOException {
         InputStream is = new FileInputStream(file);
     
         // Get the size of the file

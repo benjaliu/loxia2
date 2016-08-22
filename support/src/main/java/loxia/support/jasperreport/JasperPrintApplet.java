@@ -31,7 +31,7 @@ public class JasperPrintApplet extends Applet {
 		printReport(reportURL, false);
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	public void previewReport(String reportURL){
 		try {
 			if(reportURL.indexOf("://") >0)
@@ -123,7 +123,7 @@ public class JasperPrintApplet extends Applet {
 		}		
 	}
 	
-	private class PrintPrivilegeAction implements PrivilegedAction {
+	private class PrintPrivilegeAction implements PrivilegedAction<Integer> {
 
 		private List<JasperPrint> printList;
 		private boolean showPrintDlg;
@@ -133,7 +133,7 @@ public class JasperPrintApplet extends Applet {
 			this.showPrintDlg = showPrintDlg;
 		}
 		
-		public Object run() {
+		public Integer run() {
 			System.out.println("Print Thread");
 			try {
 				for (JasperPrint jp: printList) {
@@ -143,7 +143,7 @@ public class JasperPrintApplet extends Applet {
 			} catch (JRException e) {
 				e.printStackTrace();
 			}
-            return null;
+            return printList.size();
 		}
 		
 	}

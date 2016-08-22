@@ -1,4 +1,4 @@
-package loxia.orm.hibernate3;
+package loxia.orm.hibernate5;
 
 import org.springframework.core.io.Resource;
 

@@ -1,0 +1,28 @@
+dependencies {
+    compile (
+    	project(':loxia-api'),
+    	libraries.'slf4j-api',
+		libraries.'logback-classic',
+		libraries.'logback-core',
+		libraries.'jcl-over-slf4j',
+		libraries.'jul-to-slf4j',
+		libraries.'jta',
+		libraries.'commons-beanutils',
+		libraries.'spring-core',
+		libraries.'spring-beans',
+		libraries.'spring-context',
+		libraries.'spring-context-support',
+    	libraries.'aspectjweaver',
+    	libraries.'spring-aspects',
+    	libraries.'spring-aop',
+    	libraries.'spring-tx',
+    	libraries.'spring-orm',
+    	libraries.'spring-jdbc',
+    	libraries.'hibernate-core',
+    	libraries.'velocity'
+    )
+    
+    testCompile (      	
+    	libraries.'hsqldb'
+    )
+}

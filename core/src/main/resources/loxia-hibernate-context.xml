@@ -18,11 +18,11 @@
 	</bean>
 	
 	<tx:annotation-driven order="10"/>
-	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
-	<bean id="sessionFactory" class="loxia.orm.hibernate3.AnnotationSessionFactoryBean">
+	<bean id="sessionFactory" class="loxia.orm.hibernate5.AnnotationSessionFactoryBean">
 		<property name="dataSource">
 			<ref bean="dataSource"/>
 		</property>	

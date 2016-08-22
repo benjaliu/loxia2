@@ -5,12 +5,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import loxia.aspect.SimpleModelClassSupport;
-import loxia.dao.GenericEntityDao;
-import loxia.dao.ModelClassSupport;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -21,9 +15,12 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.ClassUtils;
 import org.w3c.dom.Element;
 
+import loxia.aspect.SimpleModelClassSupport;
+import loxia.dao.GenericEntityDao;
+import loxia.dao.ModelClassSupport;
+
 public class GenericDaoBeanDefinitionParser extends
 		AbstractBeanDefinitionParser {
-	private static final Logger logger = LoggerFactory.getLogger(GenericDaoBeanDefinitionParser.class);
 	
 	public static final String INTERFACE_ATTRIBUTE = "interface";
 

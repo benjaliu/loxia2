@@ -1,0 +1,88 @@
+apply plugin: 'eclipse'
+
+ext{
+	jdk = '1.8'
+	group = ''
+	name = 'loxia2'
+	
+	versions = [
+		hibernate: '5.2.2.Final',
+		logback: '1.1.7',
+		poi: '3.14',
+		slf4j: '1.7.21',
+		spring: '4.3.2.RELEASE'
+	]
+	
+	libraries = [
+		//logger
+		'logback-classic': "ch.qos.logback:logback-classic:${versions.logback}",
+        'logback-core': "ch.qos.logback:logback-core:${versions.logback}",
+		'slf4j-api': "org.slf4j:slf4j-api:${versions.slf4j}",
+		'jcl-over-slf4j': "org.slf4j:jcl-over-slf4j:${versions.slf4j}",
+		'jul-to-slf4j': "org.slf4j:jul-to-slf4j:${versions.slf4j}",
+		
+		'jta': "javax.transaction:jta:1.1",
+		'aspectjweaver': "org.aspectj:aspectjweaver:1.8.9",
+		'testng': "org.testng:testng:6.9.10",
+		'hsqldb': "hsqldb:hsqldb:1.8.0.7",
+		'ognl': "ognl:ognl:3.1.10",
+		'velocity': "velocity:velocity-dep:1.4",
+		'jasperreports': "jasperreports:jasperreports:3.5.3",
+		
+		//commons
+		'commons-beanutils':"commons-beanutils:commons-beanutils:1.9.2",
+		'commons-digester':"commons-digester:commons-digester:2.1",
+		
+		//hibernate
+		'hibernate-core': "org.hibernate:hibernate-core:${versions.hibernate}",
+		
+		//spring
+		'spring-core': "org.springframework:spring-core:${versions.spring}",
+        'spring-beans': "org.springframework:spring-beans:${versions.spring}",
+        'spring-jdbc': "org.springframework:spring-jdbc:${versions.spring}",
+        'spring-tx': "org.springframework:spring-tx:${versions.spring}",
+        'spring-context': "org.springframework:spring-context:${versions.spring}",
+        'spring-context-support': "org.springframework:spring-context-support:${versions.spring}",
+        
+        'spring-orm': "org.springframework:spring-orm:${versions.spring}",
+        'spring-aspects': "org.springframework:spring-aspects:${versions.spring}",
+        'spring-aop': "org.springframework:spring-aop:${versions.spring}",
+
+        'spring-test': "org.springframework:spring-test:${versions.spring}",
+        
+        //poi
+        'poi': "org.apache.poi:poi:${versions.poi}",
+        'poi-ooxml': "org.apache.poi:poi-ooxml:${versions.poi}"
+		
+	]
+}
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	
+	sourceCompatibility = jdk
+    targetCompatibility = jdk
+    
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+	
+	repositories {
+		mavenCentral()
+	    maven {
+	        url "http://repository.jboss.com/maven2/"
+	    }	    
+	}
+	
+	dependencies {
+		
+		testCompile (
+			libraries.'testng',
+			libraries.'spring-test'
+		)
+	}
+	
+	task compile << { task ->
+		println "start to compile ${task.project.name}"
+		compileJava
+	}
+}

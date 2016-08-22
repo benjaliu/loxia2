@@ -45,6 +45,7 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 		return handleNativeQueryNative(nativeQuery, pjp.getThis(), ms.getMethod(), pjp.getArgs());
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Object handleNativeQueryNative(NativeQuery nativeQuery, Object obj, Method m, Object[] args){
 		Map<String, Object[]> paramsEx = getParamsEx(m, args);
 		Map<String,Object> templateParams = new HashMap<String, Object>();
@@ -143,6 +144,7 @@ public class NativeQueryHandler extends DynamicQueryHandler {
 		return handleNativeUpdateNative(nativeUpdate, pjp.getThis(), ms.getMethod(), pjp.getArgs());
 	}
 	
+	@SuppressWarnings("deprecation")
 	private int handleNativeUpdateNative(NativeUpdate nativeUpdate, Object obj, Method m, Object[] args){
 		Map<String, Object[]> paramsEx = getParamsEx(m, args);	
 		Map<String,Object> templateParams = new HashMap<String, Object>();

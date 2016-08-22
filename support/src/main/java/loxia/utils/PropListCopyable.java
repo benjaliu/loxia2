@@ -14,7 +14,7 @@ public class PropListCopyable implements CopyableInterface {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public boolean isCopyable(String propertyName, Object propertyValue, Class clazz) {
 		if(props.contains(propertyName))
 			return true;

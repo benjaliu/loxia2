@@ -36,6 +36,8 @@ public class VelocityTemplateService implements Serializable {
         Velocity.setProperty("resource.loader", "class");
         Velocity.setProperty("class.resource.loader.class",
                 "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        Velocity.addProperty(Velocity.RUNTIME_LOG_LOGSYSTEM_CLASS, "loxia.service.Slf4jLogSystem");
+        Velocity.addProperty(Slf4jLogSystem.RUNTIME_LOG_SLF4J_LOGGER, "velocity");
         try {
             Velocity.init();
             initFlag = true;

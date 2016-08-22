@@ -112,7 +112,12 @@ public class GenericEntityDaoImpl<T, PK extends Serializable> implements Generic
 		return daoService.batchUpdateByQuery(query, params);
 	}
 	
+	@Deprecated
 	public int updateByNativeQuery(String query, Object[] params, Class<?>[] types){
+		return daoService.batchUpdateByNativeQuery(query, params, types);
+	}
+	
+	public int updateByNativeQuery(String query, Object[] params, int[] types){
 		return daoService.batchUpdateByNativeQuery(query, params, types);
 	}
 

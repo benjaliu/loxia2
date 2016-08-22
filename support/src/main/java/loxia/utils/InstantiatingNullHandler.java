@@ -44,7 +44,7 @@ public class InstantiatingNullHandler implements NullHandler {
 		this.ignoreList = ignoreList;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object nullMethodResult(Map context, Object target, String methodName, Object[] args) {
 		Boolean flag = (Boolean)context.get(USING_LOXIA_NULL_HANDLER);		
 		if(handlerWrapper != null && ((flag == null) || !flag))
@@ -56,7 +56,7 @@ public class InstantiatingNullHandler implements NullHandler {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object nullPropertyValue(Map context, Object target, Object property) {
     	Boolean flag = (Boolean)context.get(USING_LOXIA_NULL_HANDLER);		
     	if(handlerWrapper != null && ((flag == null) || !flag))
@@ -112,7 +112,7 @@ public class InstantiatingNullHandler implements NullHandler {
     	return false;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
 	private Object createObject(Class clazz, Object target, String property, Map context) throws Exception {
         if (Collection.class.isAssignableFrom(clazz)) {
             return new ArrayList();
