@@ -9,10 +9,12 @@ dependencies {
 		libraries.'spring-beans',
 		libraries.'spring-context',
 		libraries.'spring-context-support',
+		libraries.'spring-aspects',
 		libraries.'commons-digester',
 		libraries.'poi',
 		libraries.'poi-ooxml',
 		libraries.'ognl',
-		libraries.'jasperreports'
+		libraries.'jasperreports',
+		libraries.'memcache'
 	)
 }

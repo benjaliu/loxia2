@@ -52,8 +52,10 @@ ext{
         
         //poi
         'poi': "org.apache.poi:poi:${versions.poi}",
-        'poi-ooxml': "org.apache.poi:poi-ooxml:${versions.poi}"
+        'poi-ooxml': "org.apache.poi:poi-ooxml:${versions.poi}",
 		
+		//memcache
+		'memcache': "net.spy:spymemcached:2.12.1"
 	]
 }
 
