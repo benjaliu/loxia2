@@ -1,6 +1,6 @@
 dependencies {
     compile (
-    	project(':loxia-api'),
+    	project(':loxia2-api'),
     	libraries.'slf4j-api',
 		libraries.'logback-classic',
 		libraries.'logback-core',

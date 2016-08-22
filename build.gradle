@@ -1,9 +1,13 @@
+import java.text.SimpleDateFormat
+
+apply plugin: 'java'
 apply plugin: 'eclipse'
 
 ext{
 	jdk = '1.8'
-	group = ''
-	name = 'loxia2'
+	project_group = 'loxia2'
+	project_name = 'loxia2'
+	project_version = '2.6.0'
 	
 	versions = [
 		hibernate: '5.2.2.Final',
@@ -57,14 +61,45 @@ ext{
 		//memcache
 		'memcache': "net.spy:spymemcached:2.12.1"
 	]
+	
+	defaultManifest = { proj ->
+	
+		return manifest { 
+            def buildTimeAndDate = new Date()
+            def buildDate = new SimpleDateFormat('yyyy-MM-dd').format(buildTimeAndDate)
+            def buildTime = new SimpleDateFormat('HH:mm').format(buildTimeAndDate)
+
+            def git_cmd = "git rev-parse HEAD"
+            def git_proc = git_cmd.execute()
+
+            attributes 'SCM-Revision': git_proc.text.trim()
+
+            attributes 'Built-By': 'Benjamin'
+            attributes 'Created-By': System.properties['java.version'] + " (" + System.properties['java.vendor'] + " " + System.getProperty("java.vm.version") + ")"
+            attributes 'Build-Date': buildDate
+            attributes 'Build-Time': buildTime
+            attributes 'Timestamp': String.valueOf(System.currentTimeMillis())
+            attributes 'Specification-Title': proj.archivesBaseName
+            attributes 'Specification-Version': proj.version
+            attributes 'Specification-Vendor': proj.group
+            attributes 'Implementation-Title': proj.archivesBaseName
+            attributes 'Implementation-Version': proj.version
+            attributes 'Implementation-Vendor': proj.group
+            attributes 'provider': 'gradle'
+        }
+	}
 }
 
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
+	apply plugin: 'maven'
 	
 	sourceCompatibility = jdk
     targetCompatibility = jdk
+    
+    group = project_group
+    version = project_version
     
     [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 	
@@ -83,8 +118,38 @@ subprojects {
 		)
 	}
 	
-	task compile << { task ->
-		println "start to compile ${task.project.name}"
-		compileJava
+	jar {
+		doFirst {
+			manifest = defaultManifest(project)
+		}
+	}
+	
+	task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from 'build/docs/javadoc'
+        doFirst {
+            manifest = defaultManifest(project)
+        }
+    }
+	
+	task sourcesJar(type: Jar){
+		classifier = 'sources'
+        from sourceSets.main.allSource
+        doFirst {
+            manifest = defaultManifest(project)
+        }
+	}
+	
+	artifacts {
+        archives jar
+        archives sourcesJar
+    }
+    
+    uploadArchives {
+	    repositories {
+	        mavenDeployer {
+	            repository(url: "file://" + System.properties['user.home'] + "/git-maven-repo/loxia2-repo/releases")
+	        }
+	    }
 	}
 }

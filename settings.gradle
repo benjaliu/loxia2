@@ -1,5 +1,7 @@
 include 'api', 'core', 'support'
-def project_prefix = 'loxia-'
-project(':api').name = "${project_prefix}api"
-project(':core').name ="${project_prefix}core"
-project(':support').name ="${project_prefix}support"
+
+def project_name = 'loxia2'
+
+project(':api').name = "${project_name}-api"
+project(':core').name ="${project_name}-core"
+project(':support').name ="${project_name}-support"
